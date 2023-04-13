@@ -80,6 +80,61 @@
 		</tr>
 		</table>
     </div>
+    <div class="-\32 18">
+    	<table>
+		<%
+				for(int i=0;i<pvlist.size();i++){
+					PostBean pbean = pvlist.get(i);
+					UserinfoBean uibean = umgr.getPMember(pbean.getUserEmail());
+		%>
+		<tr>
+			<td width="30">
+				<div class="box" style="background: #BDBDBD;">
+					<img class="profile" src="photo/<%=uibean.getUserImage()%>" width="30" height="30">
+				</div>
+			</td>
+			<td width="250"><b><%=uibean.getUserNickName()%></b></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<img src="photo/<%=pbean.getImageName()%>" width="350" height="150">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			<a href="javascript:heart('<%=pbean.getPostId()%>')">
+			<img src="img/heart.jpg" align="top"></a> 좋아요 <%=pbean.getLikeNum() %>개</td>
+			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
+		</tr>
+		<tr>
+			<td colspan="3" width="200"> 
+				<%
+						Vector<CommentBean> cvlist = cmgr.listPReply(pbean.getPostId());
+						for(int j=0;j<cvlist.size();j++){
+							CommentBean cbean = cvlist.get(j);
+				%>
+				<b><%=cbean.getUserEmail()%></b> <%=cbean.getCommentDetail()%>&nbsp;
+				<%if(email.equals(cbean.getUserEmail())){%>
+					<a href="javascript:rDel('<%=cbean.getCommentId()%>')">x</a><%}%><br>			
+				<%}%>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input id="comment<%=pbean.getPostId()%>" placeholder="댓글달기..." size="50">
+			</td>
+			<td align="center">
+				<a href="javascript:cmtPost('<%=pbean.getPostId()%>')">게시</a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3"><br></td>
+		</tr>
+		<%}%>
+	</table>
+    	
+    </div>
     <div class="bbb">
     	<p>회원님을 위한 추천</p>
     	<hr>

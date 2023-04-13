@@ -160,3 +160,14 @@ li a {
     height: 100%;
     object-fit: cover;
 }
+
+
+.-\32 18 {
+  width: 480px;
+  height: 800px;
+  margin: 0 0 20px;
+  padding: 9px 0 19px;
+  border-radius: 5px;
+  border: solid 1px var(--invalid-name);
+  background-color: #fff;
+}
