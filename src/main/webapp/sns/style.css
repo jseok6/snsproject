@@ -1,104 +1,119 @@
-:root {
-    --text-color: #f0f4f5;
-    --background-color: #263343;
-    --accent-color: rgb(87, 170, 166)
-}      
 body {
-    margin : 0;
-    font-family: 'Source Sans Pro';
+  margin: 0;
+  background-color: #e0e0e0;
+}
+.scroll{
+	
+}
+.aaa {
+  width: 480px;
+  height: 112.1px;
+  margin: 52px 44px 25.9px 360px;
+  padding: 17px 20px 9.1px 23px;
+  border: solid 1px var(--invalid-name);
+  background-color: #fff;
+  position: relative; 
+  left: 330px; 
+  top: 40px;
+}
+.bbb {
+  width: 350px;
+  height: 400px;
+  margin: 52px 44px 25.9px 360px;
+  padding: 17px 20px 9.1px 23px;
+  border: solid 1px var(--invalid-name);
+  background-color: #e0e0e0;
+  position: relative; 
+  left: 930px; 
+  top: -190px;
+}
+.ccc {
+	width: 520px;
+  	height: 850px;
+  	margin: 0 0 20px;
+  	padding: 9px 0 19px;
+  	border-radius: 5px;
+  	border: solid 1px var(--invalid-name);
+	background-color: #fff;
+  	position:relative;
+	left:690px;
+  	top:-450px;
 }
 
-a {
-    text-decoration: none;
-    color: var(--text-color);
+.profileimage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #263343;
-    padding: 8px 12px;
+.box1 {
+	width: 50px;
+	height: 50px;
+	border-radius: 30%;
+	overflow: hidden;
 }
-
-.navbar__logo {
-    font-size: 24px;
-    color: cadetblue;
+.box2 {
+	width: 210px;
+	height: 70px;
+	border-radius: 30%;
+	overflow: hidden;
 }
-
-.navbar__menu li {
-    padding: 10px 20px;
+.box3 {
+	width: 30px;
+	height: 30px;
+	border-radius: 70%;
+	overflow: hidden;
 }
-
-.navbar__icons {
-    list-style: none;
-    display :flex;
-    color:white;
-    padding-left: 0px;
-}
-
-.navbar__icons li {
-    /* padding: 8px 12px; */
+.profile {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.navbar__menu {
-    display: flex;
-    list-style: none;
-    padding-left: 0px;
+
+
+.Nick-State {
+  width: 62px;
+  height: 30px;
+  margin: 0 62px 0 7.4px;
+  font-family: MalgunGothic;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2.14;
+  letter-spacing: normal;
+  text-align: left;
+  color: #303030;
+}
+.Text-State {
+	width: 150px;
+ 	height: 25px;
+  	margin: 0 62px 0 7.4px;
+  	font-family: MalgunGothic;
+  	font-size: 14px;
+  	font-weight: normal;
+  	font-stretch: normal;
+  	font-style: normal;
+  	line-height: 2.14;
+  	letter-spacing: normal;
+  	text-align: left;
+  	color: #a4a4a4;
 }
 
-.navbar__menu li {
-    padding: 8px 13px;
-}
-
-.navbar__menu li:hover {
-    background-color : rgb(87, 170, 166);
-    border-radius: 5px;
-}
-
-.navbar__icons li {
-    padding : 10px;
-}
-
-.navbar__toggleBtn {
-    display: none;
-}
-
-@media screen and (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding : 10px 24px;
-    }
-    
-    .navbar__menu {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .navbar__menu li {
-        width: 100%;
-        text-align: center;
-    }
-
-    .navbar__icons{
-        display: none;
-        width: 100%;
-        justify-content: center;
-    }
-
-    .navbar__toggleBtn {
-        display: block;
-        position: absolute;
-        right : 20px;
-        font-size: 24px;
-        color :rgb(87, 170, 166);
-    }
-
-    .navbar__menu.active,
-    .navbar__icons.active {
-        display: flex;
-        transition: 1s ease-out;
-    }
+.socialproject {
+  width: 168px;
+  height: 35px;
+  margin: 36.5px 133.4px 0 0.3px;
+  font-family: HelveticaNeue;
+  font-size: 12px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2.5;
+  letter-spacing: normal;
+  position:relative;
+  text-align: left;
+  left: 1320px;
+  top: -170px;
+  color: #a4a4a4;
 }

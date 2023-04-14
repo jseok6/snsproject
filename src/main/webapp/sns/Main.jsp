@@ -10,7 +10,7 @@
 		//}
 		UserinfoBean mbean = umgr.getPMember(email);
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);
-		Vector<PostBean> pvlist = umgr.listPBlog(email);
+		Vector<PostBean> plist = umgr.listPBlog(email);
 		
 %>
 <!DOCTYPE html>
@@ -21,7 +21,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pho talk</title>
     <link rel="shortcut icon" type="image/x-icon" href="mainLogo.png" />
-    <link href="profile.css" rel="stylesheet" type="text/css">
+    <link href="profile.css" rel="stylesheet" type="text/css"/>
+    <link type="text/css" rel="stylesheet" href="style.css"></link>
  	<script type="text/javascript">
  		function goURL(url, gid) {
 			document.frm1.action=url;
@@ -33,6 +34,11 @@
 			document.frm1.gid.value=gid;
 			document.frm1.submit();
  		}
+ 		function del(num) {
+			document.frm.action = "pBlogDelete";
+			document.frm.num.value=num;
+			document.frm.submit();
+		}
  	</script>
  	
 </head>
@@ -59,17 +65,18 @@
         <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
     </ul>
-    <div class="sss">
+    <!-- <div style="overflow:scroll; height:1900px;"> -->
+    <div class="aaa">
     	<table>
 		<tr>
 		<%
 				for(int i=0;i<uilist.size();i++){
 					UserinfoBean ubean = uilist.get(i);
 		%>
-			<td width="80">
+			<td width="100">
 				<div class="box1">
 					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
-						<img class="profile1" src="./photo/profile1.jpg" width="80" height="50">
+						<img class="profileimage" src="./photo/profile1.jpg">
 					</a>
 				</div>
 				<div>
@@ -80,17 +87,51 @@
 		</tr>
 		</table>
     </div>
-    <div class="-\32 18">
+    <div class="bbb">
+    	<h3>회원님을 위한 추천</h3>
+    	<hr>
     	<table>
+    	<%
+				for(int i=0;i<uilist.size();i++){
+					UserinfoBean ubean = uilist.get(i);
+		%>
+		<tr>
+		
+			<td width="50">
+				<div class="box1">
+					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
+						<img class="profileimage" src="./photo/profile1.jpg">
+					</a>
+				</div>
+				
+			</td>
+			<td>
+			<div class="box2">
+					<h4 class="Nick-State"><%=ubean.getUserNickName()%></h4>
+					<p class="Text-State">회원님을 팔로우합니다 </p>
+			</div>
+			</td>
+			<td>
+				<a href="#" onclick="dofriend()" class="follow-btn">팔로우</a>
+			</td>
+		<%}%>	
+		</tr>
+		</table>
+    </div>
+    <div class="socialproject">
+    	<h5>© 2023 Social Net Work Project</h5>
+    </div>
+    <div class="ccc">
+    <table>
 		<%
-				for(int i=0;i<pvlist.size();i++){
-					PostBean pbean = pvlist.get(i);
+				for(int i=0;i<plist.size();i++){
+					PostBean pbean = plist.get(i);
 					UserinfoBean uibean = umgr.getPMember(pbean.getUserEmail());
 		%>
 		<tr>
 			<td width="30">
-				<div class="box" style="background: #BDBDBD;">
-					<img class="profile" src="photo/<%=uibean.getUserImage()%>" width="30" height="30">
+				<div class="box3" style="background: #BDBDBD;">
+					<img class="profile" src="./photo/<%=uibean.getUserImage()%>" width="30" height="30">
 				</div>
 			</td>
 			<td width="250"><b><%=uibean.getUserNickName()%></b></td>
@@ -104,18 +145,21 @@
 		<tr>
 			<td colspan="2">
 			<a href="javascript:heart('<%=pbean.getPostId()%>')">
-			<img src="img/heart.jpg" align="top"></a> 좋아요 <%=pbean.getLikeNum() %>개</td>
+			<img src="./img/heart.jpg" align="top"></a> 좋아요 <%=pbean.getLikeNum() %>개</td>
 			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
+		</tr>
+		<tr colspan="3">
+			<td width="225"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
 		</tr>
 		<tr>
 			<td colspan="3" width="200"> 
 				<%
-						Vector<CommentBean> cvlist = cmgr.listPReply(pbean.getPostId());
-						for(int j=0;j<cvlist.size();j++){
-							CommentBean cbean = cvlist.get(j);
-				%>
+						Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
+						for(int j=0;j<clist.size();j++){
+							CommentBean cbean = clist.get(j);
+				%><!-- 게시물아이디 -->
 				<b><%=cbean.getUserEmail()%></b> <%=cbean.getCommentDetail()%>&nbsp;
-				<%if(email.equals(cbean.getUserEmail())){%>
+				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 					<a href="javascript:rDel('<%=cbean.getCommentId()%>')">x</a><%}%><br>			
 				<%}%>
 			</td>
@@ -133,29 +177,7 @@
 		</tr>
 		<%}%>
 	</table>
-    	
-    </div>
-    <div class="bbb">
-    	<p>회원님을 위한 추천</p>
-    	<hr>
-    	<table>
-    	<%
-				for(int i=0;i<uilist.size();i++){
-					UserinfoBean uibean = uilist.get(i);
-		%>
-		<tr>
-			<td width="350">
-				<div class="box1">
-					<a href="javascript:goURL('guest.jsp','<%=uibean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
-						<img class="profile1" src="./photo/profile1.jpg" width="80" height="50">
-					</a>
-				</div>
-				<h5><%=uibean.getUserNickName()%></h5> <a href="#" onclick="dofriend()"><h5>팔로우</h5></a>
-			</td>
-		</tr>
-		<%}%>
-		</table>
-		
-    </div>
+	</div>
+	</div>
 </body>
 </html>

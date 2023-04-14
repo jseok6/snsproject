@@ -43,15 +43,15 @@ public class CommentMgr {
 	}
 
 	//덧글 삭제
-	public void deletePReply(int rnum) {
+	public void deletePReply(int num) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
 		try {
 			con = pool.getConnection();
-			sql = "delete from tblPReply where rnum=? ";
+			sql = "delete from comment where commentId=? ";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, rnum);
+			pstmt.setInt(1, num);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class CommentMgr {
 		Vector<CommentBean> vlist = new Vector<CommentBean>();
 		try {
 			con = pool.getConnection();
-			sql = "select * from comment where postId=? order by rnum desc";
+			sql = "select * from comment where postId=? order by commentId desc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();

@@ -11,10 +11,7 @@ nav {
   background-color: #fff;
 }
 
-body {
-  margin: 0;
-  background-color: var(--white);
-}
+
 
 #PhoTalk {
   width: 121px;
@@ -112,34 +109,8 @@ li a {
   src : url("/fonts/malgun.ttf");
   font-family: "malgun" 
 }
-.sss {
-  width: 380px;
-  height: 112.1px;
-  margin: 52px 44px 25.9px 360px;
-  padding: 17px 20px 9.1px 23px;
-  border: solid 1px var(--invalid-name);
-  background-color: #DCDCDC;
-  position: fixed; 
-  left: 280px; 
-  top: 130px;
-}
-.bbb {
-  width: 350px;
-  height: 4600px;
-  margin: 52px 44px 25.9px 360px;
-  padding: 17px 20px 9.1px 23px;
-  border: solid 1px var(--invalid-name);
-  background-color: #FF00FF;
-  position: fixed; 
-  left: 780px; 
-  top: 130px;
-}
-.box1 {
-	width: 50px;
-	height: 50px;
-	border-radius: 30%;
-	overflow: hidden;
-}
+
+
 .box3 {
   	width: 50px;
 	height: 50px;
@@ -155,19 +126,4 @@ li a {
     border-radius: 70%;
     overflow: hidden;
 }
-.profile {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
-
-.-\32 18 {
-  width: 480px;
-  height: 800px;
-  margin: 0 0 20px;
-  padding: 9px 0 19px;
-  border-radius: 5px;
-  border: solid 1px var(--invalid-name);
-  background-color: #fff;
-}
