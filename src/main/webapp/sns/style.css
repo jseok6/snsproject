@@ -30,7 +30,7 @@ body {
 .ccc {
 	width: 520px;
   	height: 850px;
-  	margin: 0 0 20px;
+  	margin: 0 0;
   	padding: 9px 0 19px;
   	border-radius: 5px;
   	border: solid 1px var(--invalid-name);
@@ -54,11 +54,17 @@ body {
 	height: 50px;
 	border-radius: 70%;
 	overflow: hidden;
+	border: 2px solid red;
+}
+.boxnored {
+	width: 50px;
+	height: 50px;
+	border-radius: 70%;
+	overflow: hidden;
 }
 .box2 {
 	width: 210px;
 	height: 70px;
-	border-radius: 70%;
 	overflow: hidden;
 }
 .box3 {

@@ -107,7 +107,7 @@
 		<tr>
 		
 			<td width="50">
-				<div class="box1">
+				<div class="boxnored">
 					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
 						<img class="profileimage" src="./photo/profile1.jpg">
 					</a>
@@ -152,7 +152,7 @@
 		</tr>
 		<tr>
 			<td colspan="3">
-				<img src="photo/<%=pbean.getImageName()%>" width="350" height="150">
+				<img src="photo/<%=pbean.getImageName()%>" width="515" height="480">
 			</td>
 		</tr>
 		<tr>
@@ -181,12 +181,22 @@
 				<b><%=cbean.getUserEmail()%></b> <%=cbean.getCommentDetail()%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 					<a href="javascript:rDel('<%=cbean.getCommentId()%>')">x</a><%}%><br>
-					<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 달기 수정 삭제
+					<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 달기&nbsp; 수정&nbsp; 삭제&nbsp;
 					<br>			
 				<%}%>
 				
 			</td>
 		</tr>
+		<tr>
+			<td colspan="3" width="500" >
+				<br>
+				<img src="./img/postLikeCount.svg">&nbsp;<%=pbean.getLikeNum() %>&nbsp;
+				<img src="./img/postMessageCount.svg">&nbsp;댓글<%=pbean.getCommentNum() %>&nbsp;개
+				<hr>
+			</td>
+			
+		</tr>
+		
 		<tr>
 			<td colspan="2">
 				<input id="comment<%=pbean.getPostId()%>" placeholder="댓글달기..." size="30">
