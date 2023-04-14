@@ -144,7 +144,11 @@
 				</div>
 			</td>
 			<td width="250"><b><%=uibean.getUserNickName()%></b></td>
-			<td>&nbsp;</td>
+			<td><a href="javascript:hamberger('<%=pbean.getUserEmail()%>')">
+					<img src="./img/postCategory.svg" aling="top">
+				</a>
+			
+			</td>
 		</tr>
 		<tr>
 			<td colspan="3">
@@ -176,13 +180,16 @@
 				%><!-- 게시물아이디 -->
 				<b><%=cbean.getUserEmail()%></b> <%=cbean.getCommentDetail()%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-					<a href="javascript:rDel('<%=cbean.getCommentId()%>')">x</a><%}%><br>			
+					<a href="javascript:rDel('<%=cbean.getCommentId()%>')">x</a><%}%><br>
+					<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 달기 수정 삭제
+					<br>			
 				<%}%>
+				
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input id="comment<%=pbean.getPostId()%>" placeholder="댓글달기..." size="50">
+				<input id="comment<%=pbean.getPostId()%>" placeholder="댓글달기..." size="30">
 			</td>
 			<td align="center">
 				<a href="javascript:cmtPost('<%=pbean.getPostId()%>')">게시</a>
