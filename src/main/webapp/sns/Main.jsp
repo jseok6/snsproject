@@ -39,6 +39,15 @@
 			document.frm.num.value=num;
 			document.frm.submit();
 		}
+ 		function heart(){
+ 			document.frm.action = "pBloheart";
+ 		}
+		function chat(){
+			document.frm.action = "pBlogChat";
+ 		}
+		function share(){
+			document.frm.action = "pBlogShare";
+		}
  	</script>
  	
 </head>
@@ -143,9 +152,16 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2">
-			<a href="javascript:heart('<%=pbean.getPostId()%>')">
-			<img src="./img/heart.jpg" align="top"></a> 좋아요 <%=pbean.getLikeNum() %>개</td>
+			<td colspan="2" >
+			<a href="javascript:heart('<%=pbean.getPostId()%>')" class="ddd">
+			<img src="./img/heart.jpg" align="top"></a> 
+			
+			<a href="javascript:chat('<%=pbean.getPostId()%>')" class="ddd">
+			<img src="./img/postMessageFalse.svg" align="top"></a>
+			
+			<a href="javascript:share('<%=pbean.getPostId()%>')" class="ddd">
+			<img src="./img/postShare.svg" align="top"></a>
+			</td>
 			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
 		</tr>
 		<tr colspan="3">
