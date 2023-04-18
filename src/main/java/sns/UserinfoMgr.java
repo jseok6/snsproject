@@ -31,7 +31,7 @@ public class UserinfoMgr {
 			UserinfoBean bean = new UserinfoBean();
 			try {
 				con = pool.getConnection();
-				sql = "select userNickName,userImage from userinfo where userEmail=?";
+				sql = "select userNickName,userImage,userNickName from userinfo where userEmail=?";
 				pstmt = con.prepareStatement(sql);
 				pstmt.setString(1, email);
 				rs = pstmt.executeQuery();
@@ -39,6 +39,7 @@ public class UserinfoMgr {
 					bean.setUserEmail(email);
 					bean.setUserName(rs.getString(1));
 					bean.setUserImage(rs.getString(2));
+					bean.setUserNickName(rs.getString(3));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

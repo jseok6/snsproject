@@ -20,7 +20,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pho talk</title>
-    <link rel="shortcut icon" type="image/x-icon" href="mainLogo.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="./images/mainLogo.png" />
     <link href="profile.css" rel="stylesheet" type="text/css"/>
     <link type="text/css" rel="stylesheet" href="style.css"></link>
  	<script type="text/javascript">
@@ -48,6 +48,12 @@
 		function share(){
 			document.frm.action = "pBlogShare";
 		}
+		function cup(){
+			
+		}
+		function cdel(){
+			
+		}
  	</script>
  	
 </head>
@@ -73,6 +79,27 @@
         <li><a href="#"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
         <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
+        <%
+        	for(int i=0; i<22; i++){
+        		%>
+        		<br>
+        		<%
+        	}
+        %>
+        <dt>
+        	&nbsp;
+        	<a href="#소개"><span class="leftintroduce">소개</span></a>
+        	<a href="#채용"><span class="leftintroduce">채용안내</span></a>
+        	<a href="#이용"><span class="leftintroduce">이용약관</span></a>
+        	<a href="#도움"><span class="leftintroduce">도움말</span></a>
+        	<a href="#운영"><span class="leftintroduce">운영정책</span></a>
+        	<a href="#위치"><span class="leftintroduce">위치</span></a>
+        </dt>
+        <dt>
+        	&nbsp;
+        	<span class="leftintroduce">사이트맵 © 2023 Social Net Work Project</span>
+        </dt>
+        
     </ul>
     <!-- <div style="overflow:scroll; height:1900px;"> -->
     <div class="aaa">
@@ -130,22 +157,25 @@
     <div class="socialproject">
     	<h5>© 2023 Social Net Work Project</h5>
     </div>
-    <div class="ccc">
-    <table>
-		<%
+    <%
 				for(int i=0;i<plist.size();i++){
 					PostBean pbean = plist.get(i);
 					UserinfoBean uibean = umgr.getPMember(pbean.getUserEmail());
-		%>
+	%>
+    <div class="ccc">
+    <table>
+    	
+		
 		<tr>
+		
 			<td width="30">
-				<div class="box3" style="background: #BDBDBD;">
-					<img class="profile" src="./photo/<%=uibean.getUserImage()%>" width="30" height="30">
+				<div class="box3">
+					<img class="profile" src="./photo/<%=uibean.getUserImage()%>" width="35" height="35">
 				</div>
 			</td>
 			<td width="250"><b><%=uibean.getUserNickName()%></b></td>
 			<td><a href="javascript:hamberger('<%=pbean.getUserEmail()%>')">
-					<img src="./img/postCategory.svg" aling="top">
+					<img src="./img/postCategory.svg">
 				</a>
 			
 			</td>
@@ -168,49 +198,63 @@
 			</td>
 			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
 		</tr>
-		<tr colspan="3">
+		<tr>
 			<td width="225"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
 		</tr>
 		<tr>
-			<td colspan="3" width="200"> 
+			<td colspan="3" width="500"> 
 				<%
 						Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
 						for(int j=0;j<clist.size();j++){
 							CommentBean cbean = clist.get(j);
 				%><!-- 게시물아이디 -->
 				<b><%=cbean.getUserEmail()%></b> <%=cbean.getCommentDetail()%>&nbsp;
-				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-					<a href="javascript:rDel('<%=cbean.getCommentId()%>')">x</a><%}%><br>
-					<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 달기&nbsp; 수정&nbsp; 삭제&nbsp;
+				<br>
+					<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+					<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
+					<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+					<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
 					<br>			
 				<%}%>
 				
 			</td>
 		</tr>
+		
 		<tr>
-			<td colspan="3" width="500" >
+		
+			<td colspan="3" width="500">
 				<br>
+				<div class="asdf">
 				<img src="./img/postLikeCount.svg">&nbsp;<%=pbean.getLikeNum() %>&nbsp;
 				<img src="./img/postMessageCount.svg">&nbsp;댓글<%=pbean.getCommentNum() %>&nbsp;개
+				<%
+				for(int j=0;j<38;j++){
+					%>
+					&nbsp;
+					<% 
+				}
+				%>
+				공유하기 <%=pbean.getShareNum() %> 회
+				</div>
 				<hr>
 			</td>
 			
 		</tr>
 		
-		<tr>
-			<td colspan="2">
-				<input id="comment<%=pbean.getPostId()%>" placeholder="댓글달기..." size="30">
+		<tr>	
+			<td colspan="3" width="500">
+				<img src="./img/postMessageProfile.svg" class="postMessageProfile">&nbsp;
+				<input class="postTextbox" id="comment<%=pbean.getPostId()%>" value="댓글을 입력하세요."/>
+				뭐지
 			</td>
-			<td align="center">
-				<a href="javascript:cmtPost('<%=pbean.getPostId()%>')">게시</a>
-			</td>
+
 		</tr>
 		<tr>
-			<td colspan="3"><br></td>
+			<td colspan="3"></td>
 		</tr>
-		<%}%>
+		
 	</table>
 	</div>
-	</div>
+	<%}%>
 </body>
 </html>

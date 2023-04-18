@@ -29,14 +29,14 @@ body {
 }
 .ccc {
 	width: 520px;
-  	height: 850px;
+  	height: 900px;
   	margin: 0 0;
   	padding: 9px 0 19px;
   	border-radius: 5px;
   	border: solid 1px var(--invalid-name);
 	background-color: #fff;
   	position:relative;
-	left:690px;
+  		left:690px;
   	top:-450px;
 }
 .ddd{
@@ -126,4 +126,60 @@ body {
   left: 1320px;
   top: -170px;
   color: #a4a4a4;
+}
+
+.leftintroduce {
+  width: 30px;
+  height: 20px;
+  margin: 0 10px 0 0.3px;
+  font-family: HelveticaNeue;
+  font-size: 8px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2.5;
+  letter-spacing: normal;
+  position:relative;
+  text-align: left;
+  color: #a4a4a4;
+}
+
+.fff  {
+  width: 30px;
+  height: 10px;
+  margin: 26.1px 246px 3.2px 7.8px;
+  font-family: MalgunGothic;
+  font-size: 8px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: #303030;
+}
+.asdf {
+ 
+  font-family: MalgunGothic;
+  font-size: 12px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: #303030;
+}
+img.postMessageProfile {
+  width: 50px;
+  height: 50px;
+  margin: 5px 8px 0 10px;
+  object-fit: contain;
+}
+.postTextbox {
+  width: 350px;
+  height: 20px;
+  margin-bottom:30px;
+  border-radius: 25px;
+  padding: 17px 17px 17px 16px;
 }
