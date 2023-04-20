@@ -29,35 +29,81 @@
 			document.frm1.gid.value=gid;
 			document.frm1.submit();
 		}
- 		function dofriend(url,gid){
- 			document.frm1.action=url;
-			document.frm1.gid.value=gid;
-			document.frm1.submit();
+ 		function heart(postId){//햇음
+ 			document.frm.action = "PostHeartCntServlet";
+			document.frm.postId.value=postId;
+			document.frm.submit();
+ 		}
+ 		function cdel(commentId){//햇음
+			document.frm.action="cdel";
+			document.frm.commentId.value=commentId;
+			document.frm.submit();
+		}
+ 		function hamberger(userEmail){//햄버거 모달 스크립트 완료
+			const modal = document.querySelector('.modal');
+		    const ham = document.querySelector('.ham');
+		    const cancelBtn = document.querySelector('.modal_close');
+		    ham.addEventListener('click', () => {
+		    modal.style.display = 'block';
+		    });
+		    cancelBtn.addEventListener('click', () => {
+		        modal.style.display = 'none';
+		      });
+		}
+ 		function share(postId){//공유하기모달 반쯤완료
+ 			const sharebtn=document.querySelector('.sharebtn');
+ 			const sharecancel=document.querySelector('.sharecancel');
+ 			const sharemodal=document.querySelector('.sharemodal');
+ 			sharebtn.addEventListener('click', () => {
+ 				sharemodal.style.display='block';
+ 			});
+ 			sharecancel.addEventListener('click', () => {
+ 				sharemodal.style.display='none';
+ 			});
+		}
+ 		function dofriend(friendEmail){//팔로우
+ 			document.frm.action="FollowServlet";
+ 			document.frm.friendEmail.value=friendEmail;
+			document.frm.submit();
+ 		}
+ 		var nowUrl = window.location.href;//링크 url따오기 완료
+ 		function copyUrl(){
+ 			navigator.clipboard.writeText(nowUrl).then(res=>{
+ 				  alert("주소가 복사되었습니다!");
+ 				})
  		}
  		function del(num) {
 			document.frm.action = "pBlogDelete";
 			document.frm.num.value=num;
 			document.frm.submit();
 		}
- 		function heart(){
- 			document.frm.action = "pBloheart";
- 		}
+ 		
 		function chat(){
 			document.frm.action = "pBlogChat";
  		}
-		function share(){
-			document.frm.action = "pBlogShare";
-		}
+		
 		function cup(){
 			
 		}
-		function cdel(){
-			
+		
+		function creply(comment_num){
+			var user;
 		}
+		
  	</script>
  	
 </head>
 <body>
+<form method="post" name="frm">
+		<input type="hidden" name="userNickName">
+		<input type="hidden" name="postId">
+		<input type="hidden" name="commentId">
+		<input type="hidden" name="userEmail">
+		<input type="hidden" name="friendEmail">
+</form>
+<form method="post" name="frm1" action="Main.jsp">
+	<input type="hidden" name="gid">
+</form>
     <nav>
     <div class = "navbar">
          <a href="javascript:goURL('Main.jsp','')"><img src="./images/mainLogo.png"  alt="Image Button"/></a>
@@ -102,6 +148,7 @@
         
     </ul>
     <!-- <div style="overflow:scroll; height:1900px;"> -->
+<div data-role="page">
     <div class="aaa">
     	<table>
 		<tr>
@@ -131,8 +178,7 @@
 				for(int i=0;i<uilist.size();i++){
 					UserinfoBean ubean = uilist.get(i);
 		%>
-		<tr>
-		
+		<tr>	
 			<td width="50">
 				<div class="boxnored">
 					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
@@ -148,7 +194,7 @@
 			</div>
 			</td>
 			<td>
-				<a href="#" onclick="dofriend()" class="follow-btn">팔로우</a>
+				<a href="javascript:dofriend('<%=ubean.getUserEmail() %>')" class="follow-btn">팔로우</a>
 			</td>
 		<%}%>	
 		</tr>
@@ -164,21 +210,19 @@
 	%>
     <div class="ccc">
     <table>
-    	
-		
 		<tr>
-		
 			<td width="30">
 				<div class="box3">
 					<img class="profile" src="./photo/<%=uibean.getUserImage()%>" width="35" height="35">
 				</div>
 			</td>
 			<td width="250"><b><%=uibean.getUserNickName()%></b></td>
-			<td><a href="javascript:hamberger('<%=pbean.getUserEmail()%>')">
+			<td><a href="javascript:hamberger('<%=pbean.getUserEmail()%>')" class="ham">
 					<img src="./img/postCategory.svg">
+						
 				</a>
-			
 			</td>
+			
 		</tr>
 		<tr>
 			<td colspan="3">
@@ -187,14 +231,16 @@
 		</tr>
 		<tr>
 			<td colspan="2" >
-			<a href="javascript:heart('<%=pbean.getPostId()%>')" class="ddd">
-			<img src="./img/heart.jpg" align="top"></a> 
 			
-			<a href="javascript:chat('<%=pbean.getPostId()%>')" class="ddd">
-			<img src="./img/postMessageFalse.svg" align="top"></a>
-			
-			<a href="javascript:share('<%=pbean.getPostId()%>')" class="ddd">
-			<img src="./img/postShare.svg" align="top"></a>
+			<a href="javascript:heart('<%=pbean.getPostId()%>')" id="ddd">
+				<img src="./img/heart.jpg" align="top">
+			</a> 
+			<a href="javascript:chat('<%=pbean.getPostId()%>')" id="ddd">
+				<img src="./img/postMessageFalse.svg" align="top">
+			</a>
+			<a href="javascript:share('<%=pbean.getPostId()%>')" id="ddd" class="sharebtn">
+				<img src="./img/postShare.svg" align="top">
+			</a>
 			</td>
 			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
 		</tr>
@@ -208,13 +254,17 @@
 						for(int j=0;j<clist.size();j++){
 							CommentBean cbean = clist.get(j);
 				%><!-- 게시물아이디 -->
-				<b><%=cbean.getUserEmail()%></b> <%=cbean.getCommentDetail()%>&nbsp;
-				<br>
-					<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-					<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
-					<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-					<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
-					<br>			
+					<%if(cbean.getCommentParrent().equals("0")){%>
+						<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
+						<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+						<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
+						<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+						<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
+						<br>
+					<%}%>&nbsp;
+					
+								
 				<%}%>
 				
 			</td>
@@ -225,7 +275,9 @@
 			<td colspan="3" width="500">
 				<br>
 				<div class="asdf">
+				
 				<img src="./img/postLikeCount.svg">&nbsp;<%=pbean.getLikeNum() %>&nbsp;
+				
 				<img src="./img/postMessageCount.svg">&nbsp;댓글<%=pbean.getCommentNum() %>&nbsp;개
 				<%
 				for(int j=0;j<38;j++){
@@ -254,7 +306,32 @@
 		</tr>
 		
 	</table>
+	
+	</div>
+	<!-- 햄버거모달 -->
+	<div class="modal">
+    			<div>
+        			<span id="main-modal-text">신고하기</span><br>
+        			<hr>
+        			<a href="javascript:share('<%=pbean.getPostId()%>')" class="sharebtn"><span id="main-modal-text">공유하기</span></a><br>
+        			<hr>
+        			<a href="javascript:copyUrl('<%=pbean.getPostId()%>')"><span id="main-modal-text">링크복사</span></a><br>
+        			<hr>
+        			<span id="main-modal-text" class="modal_close">취소</span>
+    			</div>
 	</div>
 	<%}%>
+</div>
+
+<!-- 공유하기모달 -->
+<div class="sharemodal">
+  <div class="share-header">
+    <span>공유하기</span>
+    <div class="sharecancel">x</div>
+  </div>
+  <hr>
+  <img src="./img/postShareNaver.jpg" class="postShareNaver"/>  
+  <img src="./img/postShareKakao.jpg" class="postShareKakao"/>
+</div>
 </body>
 </html>

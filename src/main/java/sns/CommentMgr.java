@@ -60,6 +60,8 @@ public class CommentMgr {
 			pool.freeConnection(con, pstmt);
 		}
 	}
+	
+	
 	//덧글 전부삭제
 	public void deleteAllPReply(int num) {
 		Connection con = null;
@@ -87,7 +89,7 @@ public class CommentMgr {
 		Vector<CommentBean> vlist = new Vector<CommentBean>();
 		try {
 			con = pool.getConnection();
-			sql = "select * from comment where postId=? order by commentId desc";
+			sql = "select * from comment where postId=? order by commentId Asc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();

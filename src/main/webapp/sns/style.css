@@ -1,6 +1,16 @@
 body {
   margin: 0;
   background-color: #e0e0e0;
+  width: 1920px;
+  height: 1080px;
+}
+
+a {
+  text-decoration-line: none;
+/*   text-decoration-line: underline; */
+/*   text-decoration-line: overline; */
+/*   text-decoration-line: line-through; */
+/*   text-decoration-line: underline line-through overline; */
 }
 .scroll{
 	
@@ -26,6 +36,7 @@ body {
   position: relative; 
   left: 930px; 
   top: -190px;
+  
 }
 .ccc {
 	width: 520px;
@@ -39,7 +50,7 @@ body {
   		left:690px;
   	top:-450px;
 }
-.ddd{
+#ddd{
 	width:100px;
 	height:45px;
 	margin-right:20px;
@@ -183,3 +194,79 @@ img.postMessageProfile {
   border-radius: 25px;
   padding: 17px 17px 17px 16px;
 }
+
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 250px;
+	height: 170px;
+	margin: 10px 16px 287px 73px;
+	padding: 10px 0 7px;
+	text-align:center;
+	display: none;
+	border-radius: 7px;
+	box-shadow: 0 3px 30px 0 rgba(0, 0, 0, 0.16);
+	background-color: #fff;
+}
+#main-modal-text {
+  width: 60px;
+  height: 20px;
+  margin: 0 95px 10px;
+  font-family: MalgunGothic;
+  font-size: 15px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2;
+  letter-spacing: normal;
+  text-align: center;
+  color: black;
+}
+.sharemodal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 340px;
+  	height: 175px;
+	margin: 0 0.5px 0 0;
+
+  	border-radius: 5px;
+  	border: solid 1px var(--invalid-name);
+	text-align:center;
+	display: none;
+	box-shadow: 0 3px 30px 0 rgba(0, 0, 0, 0.16);
+	background-color: #fff;
+}
+.share-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align:center;
+}
+
+.share-header span {
+  margin-left: 135px;
+}
+.sharecancel{
+	margin-right:20px;
+}
+.postShareNaver {
+  width: 72px;
+  height: 72px;
+  margin-bottom:10px;
+  margin-right:30px;
+  margin-top:20px;
+  object-fit: contain;
+}
+.postShareKakao {
+  width: 72px;
+  height: 72px;
+  margin-bottom:10px;
+  margin-left:30px;
+  margin-top:20px;
+  object-fit: contain;
+}
+
