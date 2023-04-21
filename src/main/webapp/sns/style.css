@@ -120,6 +120,11 @@ a {
   	text-align: left;
   	color: #a4a4a4;
 }
+.commentcolor{
+	width: 447px;
+  	height: 111px;
+	color: #8e8e8e;
+}
 
 .socialproject {
   width: 168px;
@@ -187,12 +192,12 @@ img.postMessageProfile {
   margin: 5px 8px 0 10px;
   object-fit: contain;
 }
+
 .postTextbox {
   width: 350px;
-  height: 20px;
-  margin-bottom:30px;
-  border-radius: 25px;
-  padding: 17px 17px 17px 16px;
+  height: 50px;
+  border-radius: 30px;
+  margin-top:-20px;
 }
 
 .modal {

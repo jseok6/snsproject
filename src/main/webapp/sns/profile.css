@@ -113,19 +113,3 @@ li a {
 }
 
 
-.box3 {
-  	width: 50px;
-	height: 50px;
-	border-radius: 30%;
-	overflow: hidden;
-}
-
-
-
-.box {
-    width: 150px;
-    height: 150px; 
-    border-radius: 70%;
-    overflow: hidden;
-}
-

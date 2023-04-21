@@ -2,6 +2,7 @@
 <%@page import="java.util.Vector,sns.*"%>
 <jsp:useBean id="umgr" class="sns.UserinfoMgr"/>
 <jsp:useBean id="cmgr" class="sns.CommentMgr"/>
+<jsp:useBean id="fmgr" class="sns.FriemdmanagerMgr"/>
 <%
 		//String email = (String)session.getAttribute("idKey");
 		String email="jseok@aaa.com";
@@ -11,6 +12,7 @@
 		UserinfoBean mbean = umgr.getPMember(email);
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);
 		Vector<PostBean> plist = umgr.listPBlog(email);
+		
 		
 %>
 <!DOCTYPE html>
@@ -61,11 +63,24 @@
  				sharemodal.style.display='none';
  			});
 		}
- 		function dofriend(friendEmail){//팔로우
- 			document.frm.action="FollowServlet";
+ 		function dofriend(email){//팔로우
+ 			const sentence=email;
+ 			const [friendEmail,userEmail]=sentence.split(",");
  			document.frm.friendEmail.value=friendEmail;
+ 			document.frm.userEmail.value=userEmail;
+ 			document.frm.action="FollowServlet";
 			document.frm.submit();
+			const followBtn = document.querySelector(".follow-btn");
+			followBtn.addEventListener("click", function() {
+		 		  followBtn.innerHTML = "팔로워";
+		 	});
  		}
+ 		
+
+ 		
+ 		
+ 		
+ 		
  		var nowUrl = window.location.href;//링크 url따오기 완료
  		function copyUrl(){
  			navigator.clipboard.writeText(nowUrl).then(res=>{
@@ -94,13 +109,7 @@
  	
 </head>
 <body>
-<form method="post" name="frm">
-		<input type="hidden" name="userNickName">
-		<input type="hidden" name="postId">
-		<input type="hidden" name="commentId">
-		<input type="hidden" name="userEmail">
-		<input type="hidden" name="friendEmail">
-</form>
+
 <form method="post" name="frm1" action="Main.jsp">
 	<input type="hidden" name="gid">
 </form>
@@ -126,7 +135,7 @@
         <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%
-        	for(int i=0; i<22; i++){
+        	for(int i=0; i<23; i++){
         		%>
         		<br>
         		<%
@@ -154,7 +163,7 @@
 		<tr>
 		<%
 				for(int i=0;i<uilist.size();i++){
-					UserinfoBean ubean = uilist.get(i);
+					UserinfoBean ubean = uilist.get(i);//정보에 뜰 사람들
 		%>
 			<td width="100">
 				<div class="box1">
@@ -194,7 +203,17 @@
 			</div>
 			</td>
 			<td>
-				<a href="javascript:dofriend('<%=ubean.getUserEmail() %>')" class="follow-btn">팔로우</a>
+				<a href="javascript:dofriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="follow-btn">
+				<%
+					if(fmgr.friendCheck(ubean.getUserEmail(), mbean.getUserEmail())){
+						%>
+						팔로워<% 
+					}
+					else {
+						%>팔로우<% 
+					}
+				%>
+				</a>
 			</td>
 		<%}%>	
 		</tr>
@@ -254,6 +273,7 @@
 						for(int j=0;j<clist.size();j++){
 							CommentBean cbean = clist.get(j);
 				%><!-- 게시물아이디 -->
+				
 					<%if(cbean.getCommentParrent().equals("0")){%>
 						<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
 						<br>
@@ -262,6 +282,7 @@
 						<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 						<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
 						<br>
+				
 					<%}%>&nbsp;
 					
 								
@@ -297,7 +318,7 @@
 			<td colspan="3" width="500">
 				<img src="./img/postMessageProfile.svg" class="postMessageProfile">&nbsp;
 				<input class="postTextbox" id="comment<%=pbean.getPostId()%>" value="댓글을 입력하세요."/>
-				뭐지
+				
 			</td>
 
 		</tr>
@@ -333,5 +354,12 @@
   <img src="./img/postShareNaver.jpg" class="postShareNaver"/>  
   <img src="./img/postShareKakao.jpg" class="postShareKakao"/>
 </div>
+<form method="post" name="frm">
+		<input type="hidden" name="userNickName">
+		<input type="hidden" name="postId">
+		<input type="hidden" name="commentId">
+		<input type="hidden" name="userEmail">
+		<input type="hidden" name="friendEmail">
+</form>
 </body>
 </html>

@@ -15,13 +15,13 @@ public class FollowServlet extends HttpServlet {
 			throws ServletException, IOException {
 		FriemdmanagerMgr fmgr=new FriemdmanagerMgr();
 		String userEmail=request.getParameter("userEmail");
-		String followEmail=request.getParameter("followEmail");
+		String followEmail=request.getParameter("friendEmail");
+		System.out.println(userEmail);
+		System.out.println(followEmail);
 		fmgr.followfirend(userEmail,followEmail);
 		String gid = request.getParameter("gid");
 		if(gid==null)
 			response.sendRedirect("Main.jsp");
-		else 
-			response.sendRedirect("Main.jsp?gid="+gid);
 		
 	}
 

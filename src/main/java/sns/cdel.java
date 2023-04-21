@@ -14,7 +14,6 @@ public class cdel extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		CommentMgr cmgr = new CommentMgr();
 		int commentId = Integer.parseInt(request.getParameter("commentId"));
-		System.out.println(commentId);
 		cmgr.deletePReply(commentId);
 		String gid = request.getParameter("gid");
 		if(gid==null)
