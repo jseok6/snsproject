@@ -25,6 +25,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="./images/mainLogo.png" />
     <link href="profile.css" rel="stylesheet" type="text/css"/>
     <link type="text/css" rel="stylesheet" href="style.css"></link>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
  	<script type="text/javascript">
  		function goURL(url, gid) {
 			document.frm1.action=url;
@@ -75,18 +76,26 @@
 		 		  followBtn.innerHTML = "팔로워";
 		 	});
  		}
- 		
-
- 		
- 		
- 		
- 		
  		var nowUrl = window.location.href;//링크 url따오기 완료
  		function copyUrl(){
  			navigator.clipboard.writeText(nowUrl).then(res=>{
  				  alert("주소가 복사되었습니다!");
  				})
  		}
+ 		function report(postId){
+ 			const modal = document.querySelector('.modal');
+ 			  $.ajax({
+ 				    url: "postReport", 
+ 				    type: "POST",
+ 				    data: { postId: postId },
+ 				    success: function(result) {
+ 				    	modal.style.display = 'none';
+ 				    },
+ 				    error: function(xhr, status, error) {
+ 				    }
+ 				  });
+ 		}
+ 		
  		function del(num) {
 			document.frm.action = "pBlogDelete";
 			document.frm.num.value=num;
@@ -332,7 +341,7 @@
 	<!-- 햄버거모달 -->
 	<div class="modal">
     			<div>
-        			<span id="main-modal-text">신고하기</span><br>
+        			<a href="javascript:report('<%=pbean.getPostId()%>')"><span id="main-modal-text">신고하기</span></a><br>
         			<hr>
         			<a href="javascript:share('<%=pbean.getPostId()%>')" class="sharebtn"><span id="main-modal-text">공유하기</span></a><br>
         			<hr>
