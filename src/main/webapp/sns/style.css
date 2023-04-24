@@ -193,7 +193,7 @@ img.postMessageProfile {
   object-fit: contain;
 }
 
-.postTextbox {
+#postTextbox {
   width: 350px;
   height: 50px;
   border-radius: 30px;

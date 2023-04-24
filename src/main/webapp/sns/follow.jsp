@@ -59,7 +59,7 @@
 </nav>
     <ul>
         <li>
-            <a href="#">
+            <a href="Main.jsp">
                 <img class = "homeTrue" src="./images/mainHomeFalse.png"  alt="Image Button" width="25" >
                 <span class = "sidebar">홈</span>
             </a>

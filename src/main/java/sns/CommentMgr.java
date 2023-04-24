@@ -24,17 +24,16 @@ public class CommentMgr {
 		PreparedStatement pstmt = null;
 		String sql = null;
 		try {
-			UserinfoBean ubean=new UserinfoBean();
-			PostBean pbean=new PostBean();
+			
 			con = pool.getConnection();
-			sql = "insert comment(postId,userEmail,commentDetail,commentParent,commentChild,commentDate,commentCorrenct)values(?,?,?,?,?,now(),?) ";
+			sql = "insert comment(postId,userEmail,commentDetail,commentParrent,commentChild,commentDate,commentCorrect)values(?,?,?,?,?,now(),?) ";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, pbean.getPostId());
-			pstmt.setString(2, ubean.getUserEmail());
+			pstmt.setInt(1, bean.getPostId());
+			pstmt.setString(2, bean.getUserEmail());
 			pstmt.setString(3, bean.getCommentDetail());
 			pstmt.setString(4, bean.getCommentParrent());
 			pstmt.setString(5, bean.getCommentChild());
-			pstmt.setString(6, bean.getCommentCorrect());
+			pstmt.setString(6, null);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,12 +85,24 @@ public class CommentMgr {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
+		String sql2=null;
 		Vector<CommentBean> vlist = new Vector<CommentBean>();
 		try {
 			con = pool.getConnection();
-			sql = "select * from comment where postId=? order by commentId Asc";
-			pstmt = con.prepareStatement(sql);
+			sql = "select * from comment where postId=? order by if (isnull(commentParrent), commentId, commentParrent),  commentChild;";
+			sql2="SELECT * FROM comment \r\n"
+					+ "WHERE postId = ? \r\n"
+					+ "ORDER BY \r\n"
+					+ "  CASE \r\n"
+					+ "    WHEN commentId = ? THEN 0 \r\n"
+					+ "    ELSE 1 \r\n"
+					+ "  END, \r\n"
+					+ "  commentId, \r\n"
+					+ "  commentChild, \r\n"
+					+ "  commentParrent;";
+			pstmt = con.prepareStatement(sql2);
 			pstmt.setInt(1, num);
+			pstmt.setInt(2, num);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				CommentBean bean = new CommentBean();

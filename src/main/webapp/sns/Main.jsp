@@ -32,12 +32,12 @@
 			document.frm1.gid.value=gid;
 			document.frm1.submit();
 		}
- 		function heart(postId){//햇음
+ 		function heart(postId){//햇음 하트누르면 하트올라가기
  			document.frm.action = "PostHeartCntServlet";
 			document.frm.postId.value=postId;
 			document.frm.submit();
  		}
- 		function cdel(commentId){//햇음
+ 		function cdel(commentId){//햇음 코멘트삭제
 			document.frm.action="cdel";
 			document.frm.commentId.value=commentId;
 			document.frm.submit();
@@ -69,20 +69,30 @@
  			const [friendEmail,userEmail]=sentence.split(",");
  			document.frm.friendEmail.value=friendEmail;
  			document.frm.userEmail.value=userEmail;
- 			document.frm.action="FollowServlet";
-			document.frm.submit();
 			const followBtn = document.querySelector(".follow-btn");
-			followBtn.addEventListener("click", function() {
-		 		  followBtn.innerHTML = "팔로워";
-		 	});
+			$.ajax({
+				    url: "FollowServlet", 
+				    type: "POST",
+				    data: { friendEmail: friendEmail,
+				    		userEmail:userEmail
+				    },
+				    success: function(result) {
+				    	followBtn.addEventListener("click", function() {
+					 		  followBtn.innerHTML = "팔로워";
+					 	});
+				    },
+				    error: function(xhr, status, error) {
+				    }
+				  });
  		}
+ 		
  		var nowUrl = window.location.href;//링크 url따오기 완료
  		function copyUrl(){
  			navigator.clipboard.writeText(nowUrl).then(res=>{
  				  alert("주소가 복사되었습니다!");
  				})
  		}
- 		function report(postId){
+ 		function report(postId){//신고하기 버튼 누르면 report 숫자올라가기 완료
  			const modal = document.querySelector('.modal');
  			  $.ajax({
  				    url: "postReport", 
@@ -96,24 +106,42 @@
  				  });
  		}
  		
- 		function del(num) {
-			document.frm.action = "pBlogDelete";
-			document.frm.num.value=num;
-			document.frm.submit();
-		}
  		
-		function chat(){
-			document.frm.action = "pBlogChat";
- 		}
-		
-		function cup(){
-			
-		}
-		
-		function creply(comment_num){
-			var user;
-		}
-		
+ 		document.addEventListener('DOMContentLoaded', function() {
+ 			  var input = document.querySelector('.postTextbox');
+ 			 var postId = input.dataset.postid;
+ 			var userEmail = '';
+ 			  if (input.hasAttribute('data-userEmail')) {
+ 			    userEmail = input.getAttribute('data-userEmail');
+ 			  }
+ 			  if (input) {
+ 			    input.addEventListener('keydown', function(event) {
+ 			      if (event.key === 'Enter') {
+ 			        addComment(postId,userEmail);
+ 			      }
+ 			    });
+ 			  }
+ 			 function addComment(posetId,userEmail){
+ 				 // Send Ajax request
+ 				$.ajax({
+ 				    url: "commentAdd", 
+ 				    type: "POST",
+ 				    data: { postId: postId,
+ 				    		commentDetail:input.value,
+ 				    		userEmail:userEmail
+ 				    },
+ 				    success: function(result) {
+ 				    	input.value = ""; // clear input field
+ 				    	
+ 				    },
+ 				    
+ 				    error: function(xhr, status, error) {
+ 				    }
+ 				  });
+ 	 		
+ 	 		}
+ 			 
+ 			});
  	</script>
  	
 </head>
@@ -139,7 +167,7 @@
                 <span class = "sidebar">홈</span>
             </a>
         </li>
-        <li><a href="#"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
+        <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
         <li><a href="#"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
         <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
@@ -278,25 +306,21 @@
 		<tr>
 			<td colspan="3" width="500"> 
 				<%
-						Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
-						for(int j=0;j<clist.size();j++){
-							CommentBean cbean = clist.get(j);
-				%><!-- 게시물아이디 -->
+				Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
+				for(int j=0;j<clist.size();j++){
+					CommentBean cbean = clist.get(j);
+		%>	
 				
-					<%if(cbean.getCommentParrent().equals("0")){%>
-						<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
-						<br>
-						&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-						<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
-						<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-						<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
-						<br>
-				
-					<%}%>&nbsp;
-					
-								
-				<%}%>
-				
+				<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
+				<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
+				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
+				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
+				<br>
+			
+		<%}%>
 			</td>
 		</tr>
 		
@@ -326,8 +350,7 @@
 		<tr>	
 			<td colspan="3" width="500">
 				<img src="./img/postMessageProfile.svg" class="postMessageProfile">&nbsp;
-				<input class="postTextbox" id="comment<%=pbean.getPostId()%>" value="댓글을 입력하세요."/>
-				
+				<input class="postTextbox" id="postTextbox" placeholder="댓글을 입력하세요." data-postid="<%=pbean.getPostId()%>" data-userEmail="<%=mbean.getUserEmail() %>"/>
 			</td>
 
 		</tr>
@@ -369,6 +392,7 @@
 		<input type="hidden" name="commentId">
 		<input type="hidden" name="userEmail">
 		<input type="hidden" name="friendEmail">
+		<input type="hidden" name="comment">
 </form>
 </body>
 </html>
