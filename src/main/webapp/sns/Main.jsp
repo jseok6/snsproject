@@ -88,8 +88,10 @@
  		
  		var nowUrl = window.location.href;//링크 url따오기 완료
  		function copyUrl(){
+ 			const modal = document.querySelector('.modal');
  			navigator.clipboard.writeText(nowUrl).then(res=>{
  				  alert("주소가 복사되었습니다!");
+ 				  modal.style.display='none';
  				})
  		}
  		function report(postId){//신고하기 버튼 누르면 report 숫자올라가기 완료
@@ -309,16 +311,27 @@
 				Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
 				for(int j=0;j<clist.size();j++){
 					CommentBean cbean = clist.get(j);
+					if(!cbean.getCommentParrent().equals("0")){
 		%>	
 				
-				<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
+				<c><%=cbean.getUserEmail()%></c>&nbsp;<%=cbean.getCommentDetail()%>
 				<br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
+				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a><%}%>&nbsp;
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a></c><%}%>&nbsp;
 				<br>
+				<%} else {%>
+					<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
+				<br>
+				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
+				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
+				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a></b><%}%>&nbsp;
+				<br>
+				<%} %>
 			
 		<%}%>
 			</td>

@@ -108,7 +108,7 @@ li a {
 }
 
 @font-face {
-  src : url("/fonts/malgun.ttf");
+  src : url("./fonts/malgun.ttf");
   font-family: "malgun" 
 }
 
