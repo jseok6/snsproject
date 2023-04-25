@@ -115,7 +115,6 @@ public class FriemdmanagerMgr {
 		PreparedStatement pstmt = null;
 		String sql = null;
 		try {
-			FriendmanagerBean bean=new FriendmanagerBean();
 			con=pool.getConnection();
 			sql="delete from friendmanager where userEmail=? AND friendEmail=?";
 			pstmt=con.prepareStatement(sql);
@@ -128,5 +127,23 @@ public class FriemdmanagerMgr {
 		} finally {
 			pool.freeConnection(con, pstmt);
 		}
+	}
+	public FriendmanagerBean friendlist(String email) {
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		String sql=null;
+		FriendmanagerBean bean=new FriendmanagerBean();
+		try {
+			con=pool.getConnection();
+			sql="select friendEmail from friendmanager where userEmail=? and friendSign=1";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1, email);
+			pstmt.executeQuery();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return bean;
 	}
 }

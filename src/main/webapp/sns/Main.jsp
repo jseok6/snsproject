@@ -9,9 +9,9 @@
 		//if(email==null) {
 			//response.sendRedirect("login.jsp");
 		//}
-		UserinfoBean mbean = umgr.getPMember(email);
-		Vector<UserinfoBean> uilist = umgr.listPMember(email);
-		Vector<PostBean> plist = umgr.listPBlog(email);
+		UserinfoBean mbean = umgr.getPMember(email);//유저정보 불러오기(유저이메일,이름,프로파일,별명저장)
+		Vector<UserinfoBean> uilist = umgr.listPMember(email);//본인을 제외한 5명리스트 불러오기(유저이메일 별명,유저이미지저장)
+		Vector<PostBean> plist = umgr.listPBlog(email);//게시물리스트(포스트빈에 다저장)
 		
 		
 %>
@@ -56,12 +56,16 @@
 		    });
 		}
  		function share(postId){//공유하기모달 반쯤완료
+ 			const modal = document.querySelector('.modal');
+ 		
  			const sharebtns=document.querySelectorAll('.sharebtn');
  			const sharecancel=document.querySelector('.sharecancel');
  			const sharemodal=document.querySelector('.sharemodal');
  			for (var i = 0; i <sharebtns.length ; i++) {
  			sharebtns[i].addEventListener('click', () => {
  				sharemodal.style.display='block';
+ 			 	modal.style.display = 'none';
+ 			 	
  			});
 			}
  			sharecancel.addEventListener('click', () => {
@@ -148,6 +152,8 @@
  	 		}
  			 
  			});
+ 		
+ 			
  	</script>
  	
 </head>
@@ -174,7 +180,7 @@
             </a>
         </li>
         <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
-        <li><a href="#"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
+        <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
         <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%
@@ -392,7 +398,6 @@
 	</div>
 	<%}%>
 </div>
-
 <!-- 공유하기모달 -->
 <div class="sharemodal">
   <div class="share-header">
@@ -400,7 +405,10 @@
     <div class="sharecancel">x</div>
   </div>
   <hr>
-  <img src="./img/postShareNaver.jpg" class="postShareNaver"/>  
+  <a href="#" onclick="javascript:window.open('http://share.naver.com/web/shareView.nhn?url='+encodeURIComponent(document.URL)+'&title='+encodeURIComponent(document.title),
+ 'naversharedialog', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" alt="Share on Naver" >
+		<img src="./img/postShareNaver.jpg" class="postShareNaver"></a>
+  
   <img src="./img/postShareKakao.jpg" class="postShareKakao"/>
 </div>
 <form method="post" name="frm">

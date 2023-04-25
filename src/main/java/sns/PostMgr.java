@@ -86,4 +86,68 @@ public class PostMgr {
 				pool.freeConnection(con, pstmt);
 			}
 	}
+	//freind의 게시물리스트
+		public PostBean friendimage(String email) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = null;
+			PostBean bean=new PostBean();
+			try {
+				con = pool.getConnection();
+				sql = "select * from post where userEmail=? order by postId desc";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, email);
+				rs = pstmt.executeQuery();
+				
+				while (rs.next()) {
+					bean.setPostId(rs.getInt(1));
+					bean.setUserEmail(rs.getString(2));
+					bean.setLikeNum(rs.getInt(3));
+					bean.setImageName(rs.getString(4));
+					bean.setVideoName(rs.getString(5));
+					bean.setShareNum(rs.getInt(6));
+					bean.setCommentNum(rs.getInt(7));
+					bean.setCreationDate(rs.getString(8));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			return bean;
+		}
+	//본인을 제외한 게시물리스트
+	public PostBean listPBlog(String email) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		PostBean bean=new PostBean();
+		try {
+			con = pool.getConnection();
+			sql = "select * from post where userEmail!=? order by postId desc";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				bean.setPostId(rs.getInt(1));
+				bean.setUserEmail(rs.getString(2));
+				bean.setLikeNum(rs.getInt(3));
+				bean.setImageName(rs.getString(4));
+				bean.setVideoName(rs.getString(5));
+				bean.setShareNum(rs.getInt(6));
+				bean.setCommentNum(rs.getInt(7));
+				bean.setCreationDate(rs.getString(8));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return bean;
+	}
+	
+	
 }

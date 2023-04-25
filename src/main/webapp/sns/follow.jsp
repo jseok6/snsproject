@@ -27,6 +27,7 @@
     <link href="profile.css" rel="stylesheet" type="text/css"/>
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <link type="text/css" rel="stylesheet" href="follow.css"></link>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
     	function follow(emailnick){
     		const followmodal = document.querySelector('.followmodal');
@@ -40,21 +41,21 @@
             document.querySelector("#followNickName").textContent = nickName;
             for (var i = 0; i <followBtns.length ; i++) {
                 followBtns[i].addEventListener('click', () => {
-                	// Call the servlet using AJAX
-                    const xhr = new XMLHttpRequest();
-                    xhr.open("POST", "FollowAllow");
-                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            console.log(xhr.responseText);
-                        }
-                        else {
-                            console.log("Error: " + xhr.statusText);
-                        }
-                    };
-                    xhr.send("userEmail=" + encodeURIComponent(userEmail) + "&friendEmail=" + encodeURIComponent(friendEmail));
-                    followmodal.style.display = 'block';
-                    
+                	$.ajax({
+                	    url: 'FollowAllow',
+                	    type: 'POST',
+                	    data: {
+                	        userEmail: userEmail,
+                	        friendEmail: friendEmail
+                	    },
+                	    success: function(response) {
+                	        console.log(response);
+                	        followmodal.style.display = 'block';
+                	    },
+                	    error: function(xhr, status, error) {
+                	        console.log("Error: " + error);
+                	    }
+                	});
                 });
             }
             followCheck.addEventListener('click', () => {
@@ -90,8 +91,8 @@
                 <span class = "sidebar">홈</span>
             </a>
         </li>
-        <li><a href="#"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
-        <li><a href="#"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
+        <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
+        <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
         <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%

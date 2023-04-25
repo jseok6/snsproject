@@ -1,26 +1,25 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-
-<title>Insert title here</title>
+  <meta charset="utf-8">
+<head>
+  <title>네이버 공유하기</title>
+  
 </head>
 <body>
-<div>
-	<button type="button" class="copy-btn" onclick="copyUrl()">링크 복사</button>
+  <div class="jb-article">
+	<div class="jb-article"><p>네이버 블로그에 공유<span>
+		<script type="text/javascript" src="https://ssl.pstatic.net/share/js/naver_sharebutton.js">
+		</script>
+		<script type="text/javascript">
+		new ShareNaver.makeButton({"type": "a"});
+		</script>
+		
+		</span>
+		</p>	
+	</div>												
 </div>
-
-
-<script>
-
-let nowUrl = window.location.href;
-
-function copyUrl(){ 
-  //nowUrl 변수에 담긴 주소를
-  	navigator.clipboard.writeText(nowUrl).then(res=>{
-	  alert("주소가 복사되었습니다!");
-	})
-}
-</script>
+</span>
 </body>
 </html>
+       
