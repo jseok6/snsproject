@@ -99,8 +99,8 @@ public class FriemdmanagerMgr {
 				con=pool.getConnection();
 				sql="update friendmanager set friendSign=1 where userEmail=? and friendEmail=?";
 				pstmt=con.prepareStatement(sql);
-				pstmt.setString(1,friendEmail);
-				pstmt.setString(2, userEmail);
+				pstmt.setString(1, userEmail);
+				pstmt.setString(2, friendEmail);
 				pstmt.executeUpdate();
 				
 			} catch (Exception e) {
