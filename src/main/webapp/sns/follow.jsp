@@ -28,17 +28,30 @@
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <link type="text/css" rel="stylesheet" href="follow.css"></link>
     <script type="text/javascript">
-    	function follow(userEmail){
+    	function follow(emailnick){
     		const followmodal = document.querySelector('.followmodal');
-    		const followBtn=document.querySelector('.followBtn');
-    		const followCheck=document.querySelector('.followCheck');
-    		followBtn.addEventListener('click', () => {
-    			followmodal.style.display = 'block';
-    		   });
-    		followCheck.addEventListener('click', () => {
-    			followmodal.style.display = 'none';
-    		   });
+            const followBtns=document.querySelectorAll('.followBtn');
+            const followCheck=document.querySelector('.followCheck');
+            const sentence=emailnick;
+ 			const [friendEmail,nickName,userEmail]=sentence.split(",");
+ 			document.frm.friendEmail.value=friendEmail;
+ 			document.frm.nickName.value=nickName;
+ 			document.frm.userEmail.value=userEmail;
+            document.querySelector("#followNickName").textContent = nickName;
+            for (var i = 0; i <followBtns.length ; i++) {
+                followBtns[i].addEventListener('click', () => {
+                    followmodal.style.display = 'block';
+                    
+                });
+            }
+            followCheck.addEventListener('click', () => {
+                followmodal.style.display = 'none';
+            });
     	}
+    	function followCancel(){
+    		
+    	}
+    	
     </script>
     
 </head>
@@ -101,23 +114,25 @@
     <tr>
     <% for (int i = 0; i <flist.size() ; i++) { 
     	FriendmanagerBean fbean = flist.get(i);
-		UserinfoBean uibean = umgr.getPMember(fbean.getUserEmail());
+		UserinfoBean uibean = umgr.getPMember(fbean.getFriendEmail());
     	%>
     	<td>
     		<div class="followrequest">
+    			<!-- friendSign이 0일때 보이게 -->
+    			<%if (fmgr.friendCheck(uibean.getUserEmail(),mbean.getUserEmail())) {%>
     			<div class="followimage">
     				<img src="./photo/<%=uibean.getUserImage()%>" width="220" height="200" >
     			</div>
     			<div class="followidtext">
     				<p><br>&nbsp;&nbsp;<%=uibean.getUserNickName() %></p>
     				
-    				<a href="javascript:follow('<%=uibean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
-    				<img src="./img/followCancelBtn.svg" class="followCancelBtn">
+    				<a href="javascript:follow('<%=uibean.getUserEmail()%>,<%=uibean.getUserNickName()%>,<%=mbean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
+    				<a href="javascript:followCancel('<%=uibean.getUserEmail()%>')"><img src="./img/followCancelBtn.svg" class="followCancelBtn"></a>
     				<!-- 팔로우 모달 -->
 					<div class="followmodal">
     					<div>
     						<br>
-        					<h5><strong><%=uibean.getUserNickName() %></strong>님을 <c>팔로우</c> 하였습니다.</h5>
+        					<h5><strong id="followNickName"></strong>님을 <c>팔로우</c> 하였습니다.</h5>
     					</div>
     					<div>
     						<img src="./img/followModalCheckBtn.svg" class="followCheck">
@@ -125,8 +140,8 @@
 					</div>
     			</div>
     		</div>
+    		<%} %>
     	</td>
-    	
     	<% } %>
     	<td>
     	</td>
@@ -152,8 +167,7 @@
     			</div>
     			<div class="followidtext">
     				<p><br>&nbsp;&nbsp;<%=uibean.getUserNickName() %></p>
-    				
-    				<a href="javascript:follow('<%=uibean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
+    				<a href="javascript:follow('<%=uibean.getUserEmail()%>,<%=uibean.getUserNickName()%>,<%=mbean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
     				<img src="./img/followCancelBtn.svg" class="followCancelBtn">
     			</div>
     		</div>
@@ -163,5 +177,10 @@
     	</td>
     </tr>
     </table>
-    
+<form method="post" name="frm">
+		<input type="hidden" name="userEmail">
+		<input type="hidden" name="friendEmail">
+		<input type="hidden" name="nickName">
+</form>    
 </body>
+</html>

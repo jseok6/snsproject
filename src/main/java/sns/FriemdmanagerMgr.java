@@ -45,14 +45,13 @@ public class FriemdmanagerMgr {
 		String sql=null;
 		boolean flag=false;
 		try {
-			
 			con=pool.getConnection();
-			sql="SELECT * FROM friendmanager WHERE userEmail=? and friendEmail=?";
+			sql="SELECT friendSign FROM friendmanager WHERE userEmail=? and friendEmail=? and friendSign=?";
 			pstmt=con.prepareStatement(sql);
 			pstmt.setString(2, userEmail);
 			pstmt.setString(1, friendEmail);
+			pstmt.setInt(3, 0);
 			rs = pstmt.executeQuery();
-
 			flag = rs.next();
 		}
 		catch (Exception e){
@@ -90,5 +89,44 @@ public class FriemdmanagerMgr {
 			pool.freeConnection(con, pstmt, rs);
 		}
 		return vlist;
+	}
+	//친구목록 승인 0에서 1
+		public void friendallow(String userEmail, String friendEmail) {
+			Connection con=null;
+			PreparedStatement pstmt = null;
+			String sql = null;
+			try {
+				con=pool.getConnection();
+				sql="update friendmanager set friendSign=1 where userEmail=? and friendEmail=?";
+				pstmt=con.prepareStatement(sql);
+				pstmt.setString(1,friendEmail);
+				pstmt.setString(2, userEmail);
+				pstmt.executeUpdate();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+		}
+	//친구에서 삭제
+	public void delFriend(String email) {
+		Connection con=null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		try {
+			FriendmanagerBean bean=new FriendmanagerBean();
+			con=pool.getConnection();
+			sql="delete from friendmanager where userEmail=? AND friendEmail=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1,email);
+			pstmt.setString(2, email);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
 	}
 }

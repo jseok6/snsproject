@@ -44,22 +44,26 @@
 		}
  		function hamberger(userEmail){//햄버거 모달 스크립트 완료
 			const modal = document.querySelector('.modal');
-		    const ham = document.querySelector('.ham');
+		    const hams = document.querySelectorAll('.ham');
 		    const cancelBtn = document.querySelector('.modal_close');
-		    ham.addEventListener('click', () => {
-		    modal.style.display = 'block';
-		    });
+		    for(var i=0; i<hams.length; i++){
+		    hams[i].addEventListener('click', () => {
+		    	modal.style.display = 'block';
+		    	});
+		    }
 		    cancelBtn.addEventListener('click', () => {
 		        modal.style.display = 'none';
-		      });
+		    });
 		}
  		function share(postId){//공유하기모달 반쯤완료
- 			const sharebtn=document.querySelector('.sharebtn');
+ 			const sharebtns=document.querySelectorAll('.sharebtn');
  			const sharecancel=document.querySelector('.sharecancel');
  			const sharemodal=document.querySelector('.sharemodal');
- 			sharebtn.addEventListener('click', () => {
+ 			for (var i = 0; i <sharebtns.length ; i++) {
+ 			sharebtns[i].addEventListener('click', () => {
  				sharemodal.style.display='block';
  			});
+			}
  			sharecancel.addEventListener('click', () => {
  				sharemodal.style.display='none';
  			});
