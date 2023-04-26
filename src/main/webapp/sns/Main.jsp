@@ -53,7 +53,7 @@
         </li>
         <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
         <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
-        <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25"><span class="sidebar">Make</span></a></li>
+        <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25"><span class="sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%
         	for(int i=0; i<23; i++){
@@ -284,11 +284,17 @@
 			<h5 class="makebodytext">사진과 동영상을 선택하세요</h5>
 			<img src="./img/makePostSelectImage.svg" class="imageposition3">
 			<img src="./img/makePostSelectVideo.svg">
-			
+		</div> 				
+  	</div>
+</div>
+<!-- 편집하기모달 -->
+<div class="overlay">
+	<div class="fixmodal">
+		<div class="maketexttitle">
+			편집하기
+			<img src="./img/makePostCancelBtn.svg" class="makecancel">
 		</div>
-		
-		
-    				
+		<hr>				
   	</div>
 </div>
 <!-- 공유하기모달 -->
@@ -442,13 +448,25 @@
  		const makePostButton = document.querySelector('#make-post');
  		const overlay = document.querySelector('.overlay');
 		const makemodal=document.querySelector('.makemodal');
+		const makecancel=document.querySelector('.makecancel');
+		const imageposition3=document.querySelector('.imageposition3');
+		const fixmodal=document.querySelector('.fixmodal');
  		makePostButton.addEventListener('click', () => {
- 		  overlay.classList.toggle('active');
- 		  overlay.style.display='block'
- 		  makemodal.style.display='block';
+ 			overlay.classList.toggle('active');
+ 		 	overlay.style.display='block';
+ 		  	makemodal.style.display='block';
+ 		});
+ 		makecancel.addEventListener('click', ()=>{
+ 			overlay.classList.toggle('active');
+ 			overlay.style.display = 'none';
+ 			makemodal.style.display='none';
+ 		});
+ 		imageposition3.addEventListener('click', ()=>{
+ 			overlay.classList.toggle('active');
+ 			makemodal.style.display='none';
+ 			fixmodal.style.display='block';
  		});
  		
- 			
  	</script>
 </body>
 </html>

@@ -342,6 +342,16 @@ c{
 	line-height: 2;
 	letter-spacing: normal;
 }
-
-
+.fixmodal{
+	position:fixed;
+  top:20%;
+  left:33%;
+  width:600px;
+  height:600px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index:9999;
+  display:none;
+}
 
