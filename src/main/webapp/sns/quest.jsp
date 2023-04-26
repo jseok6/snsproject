@@ -1,3 +1,4 @@
+<!-- 친구들의 게시물 사진들 보여주기 -->
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="java.util.Vector,sns.*"%>
 <jsp:useBean id="umgr" class="sns.UserinfoMgr"/>
@@ -12,9 +13,8 @@
 		//}
 		UserinfoBean mbean = umgr.getPMember(email);
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);
-		Vector<FriendmanagerBean> flist=fmgr.listfMember(email);
+		Vector<FriendmanagerBean> flist=fmgr.friendpost(email);//프렌드sign이 1인애들 가져오기
 		Vector<PostBean> plist = umgr.listPBlog(email);
-		
 		
 %>
 
@@ -79,22 +79,24 @@
         
     </ul>
     <h5 class="quest">탐색</h5>
-
+	
     <table>
-        <% for (int i=0; i < uilist.size(); i+=3) { %>
+        <% for (int i=0; i < flist.size(); i+=3) { %>
             <tr>
-                <% for (int j=i; j < Math.min(i+3, uilist.size()); j++) { 
-                	
+                <% for (int j=i; j < Math.min(i+3, flist.size()); j++) { 
+           	
                 %>
                     <td>
                         <div class="imagebox">
-                        	<img src="./img/<%=pbean.getImageName() %>" class="followCheck">
+                        	<%	FriendmanagerBean bean=flist.get(j);
+                        		PostBean pbean=pmgr.postImage(bean.getFriendEmail());
+                        	%>
+                        	<img src="./photo/<%=pbean.getImageName()%>" width="320" height="320">
                         </div>
                     </td>
                 <% } %>
             </tr>
         <% } %>
    </table>
-
 </body>
 </html>

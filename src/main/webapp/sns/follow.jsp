@@ -12,6 +12,7 @@
 		UserinfoBean mbean = umgr.getPMember(email);
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);
 		Vector<FriendmanagerBean> flist=fmgr.listfMember(email);
+		Vector<FriendmanagerBean> fcommand=fmgr.friend(email);
 		
 		
 %>
@@ -51,6 +52,7 @@
                 	    success: function(response) {
                 	        console.log(response);
                 	        followmodal.style.display = 'block';
+                	        location.reload()
                 	    },
                 	    error: function(xhr, status, error) {
                 	        console.log("Error: " + error);
@@ -62,8 +64,33 @@
                 followmodal.style.display = 'none';
             });
     	}
-    	function followCancel(){
-    		
+    	function followCancel(emailnick){
+    		const followCancelBtns=document.querySelectorAll('.followCancelBtn');
+            const sentence=emailnick;
+ 			const [friendEmail,nickName,userEmail]=sentence.split(",");
+ 			document.frm.friendEmail.value=friendEmail;
+ 			document.frm.nickName.value=nickName;
+ 			document.frm.userEmail.value=userEmail;
+            document.querySelector("#followNickName").textContent = nickName;
+            for (var i = 0; i <followCancelBtns.length ; i++) {
+            	followCancelBtns[i].addEventListener('click', () => {
+                	$.ajax({
+                	    url: 'FollowCancel',
+                	    type: 'POST',
+                	    data: {
+                	        userEmail: userEmail,
+                	        friendEmail: friendEmail
+                	    },
+                	    success: function(response) {
+                	        console.log(response);
+                	        location.reload()
+                	    },
+                	    error: function(xhr, status, error) {
+                	        console.log("Error: " + error);
+                	    }
+                	});
+                });
+            }
     	}
     	
     </script>
@@ -141,7 +168,7 @@
     				<p><br>&nbsp;&nbsp;<%=uibean.getUserNickName() %></p>
     				
     				<a href="javascript:follow('<%=uibean.getUserEmail()%>,<%=uibean.getUserNickName()%>,<%=mbean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
-    				<a href="javascript:followCancel('<%=uibean.getUserEmail()%>')"><img src="./img/followCancelBtn.svg" class="followCancelBtn"></a>
+    				<a href="javascript:followCancel('<%=uibean.getUserEmail()%>,<%=uibean.getUserNickName()%>,<%=mbean.getUserEmail()%>')"><img src="./img/followCancelBtn.svg" class="followCancelBtn"></a>
     				<!-- 팔로우 모달 -->
 					<div class="followmodal">
     					<div>
@@ -170,9 +197,9 @@
     </div>
     <table>
     <tr>
-    <% for (int i = 0; i <flist.size() ; i++) { 
-    	FriendmanagerBean fbean = flist.get(i);
-		UserinfoBean uibean = umgr.getPMember(fbean.getUserEmail());
+    <% for (int i = 0; i <flist.size(); i++) { 
+    	FriendmanagerBean fbean = fcommand.get(i);
+		UserinfoBean uibean = umgr.followrecommend(fbean.getFriendEmail(), email);
     	%>
     	<td>
     		<div class="followrequest">

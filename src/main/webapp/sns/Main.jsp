@@ -86,7 +86,8 @@
 				    },
 				    success: function(result) {
 				    	followBtn.addEventListener("click", function() {
-					 		  followBtn.innerHTML = "팔로워";
+				    		followBtn.innerHTML = "팔로워";
+							location.reload()
 					 	});
 				    },
 				    error: function(xhr, status, error) {
@@ -152,6 +153,12 @@
  	 		}
  			 
  			});
+ 		const makePostButton = document.getElementById('make-post');
+ 		const overlay = document.querySelector('.overlay');
+
+ 		makePostButton.addEventListener('click', () => {
+ 		  overlay.classList.toggle('active');
+ 		});
  		
  			
  	</script>
@@ -217,7 +224,7 @@
 			<td width="100">
 				<div class="box1">
 					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
-						<img class="profileimage" src="./photo/profile1.jpg">
+						<img class="profileimage" src="./photo/<%=ubean.getUserImage()%>">
 					</a>
 				</div>
 				<div>
@@ -240,7 +247,7 @@
 			<td width="50">
 				<div class="boxnored">
 					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
-						<img class="profileimage" src="./photo/profile1.jpg">
+						<img class="profileimage" src="./photo/<%=ubean.getUserImage()%>">
 					</a>
 				</div>
 				
@@ -313,7 +320,7 @@
 			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
 		</tr>
 		<tr>
-			<td width="225"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
+			<td width="250"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
 		</tr>
 		<tr>
 			<td colspan="3" width="500"> 

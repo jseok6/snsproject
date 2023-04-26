@@ -108,4 +108,34 @@ public class UserinfoMgr {
 			}
 			return vlist;
 		}
+		
+		// 유저 정보 불러오기
+				public UserinfoBean followrecommend(String friendemail,String userEmail) {
+					Connection con = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+					String sql = null;
+					UserinfoBean bean = new UserinfoBean();
+					try {
+						con = pool.getConnection();
+						sql = "select userNickName,userImage,userNickName from userinfo where userEmail!=? and userEmail!=? order by rand() limit 5";
+						pstmt = con.prepareStatement(sql);
+						pstmt.setString(1, userEmail);
+						pstmt.setString(2, friendemail);
+						System.out.println(userEmail);
+						System.out.println(friendemail);
+						rs = pstmt.executeQuery();
+						if (rs.next()) {
+							bean.setUserEmail(userEmail);
+							bean.setUserName(rs.getString(1));
+							bean.setUserImage(rs.getString(2));
+							bean.setUserNickName(rs.getString(3));
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						pool.freeConnection(con, pstmt, rs);
+					}
+					return bean;
+				}
 }

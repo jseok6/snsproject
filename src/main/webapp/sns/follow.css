@@ -18,13 +18,15 @@ body{
   color: #303030;
 }
 .followrequest {
-  width: 220px;
-  height: 290px;
-  margin-left:380px;
-  margin-top:16px;
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.16);
-  border: solid 0.1px var(--invalid-name);
-  background-color: #fff;
+	position:relative;
+	top:25px;
+	left:230px;
+  	width: 220px;
+  	height: 290px;
+  	margin-left:150px;
+  	box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.16);
+  	border: solid 0.1px var(--invalid-name);
+  	background-color: #fff;
 }
 .followimage {
   width: 220px;
@@ -76,4 +78,14 @@ hr {
 }
 c {
 	color:blue;
+}
+
+.make {
+  width: 800px;
+  height: 800px;
+  margin: 60px 560px 140px 81px;
+  padding: 14.6px 0 315.7px;
+  border-radius: 7px;
+  box-shadow: 0 3px 30px 0 rgba(0, 0, 0, 0.16);
+  background-color: #fff;
 }

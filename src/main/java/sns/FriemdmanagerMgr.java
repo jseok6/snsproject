@@ -110,7 +110,7 @@ public class FriemdmanagerMgr {
 			}
 		}
 	//친구에서 삭제
-	public void delFriend(String email) {
+	public void delFriend(String userEmail,String followEmail) {
 		Connection con=null;
 		PreparedStatement pstmt = null;
 		String sql = null;
@@ -118,8 +118,8 @@ public class FriemdmanagerMgr {
 			con=pool.getConnection();
 			sql="delete from friendmanager where userEmail=? AND friendEmail=?";
 			pstmt=con.prepareStatement(sql);
-			pstmt.setString(1,email);
-			pstmt.setString(2, email);
+			pstmt.setString(1,userEmail);
+			pstmt.setString(2, followEmail);
 			pstmt.executeUpdate();
 			
 		} catch (Exception e) {
@@ -146,4 +146,60 @@ public class FriemdmanagerMgr {
 		}
 		return bean;
 	}
+	//friendEmail의 값 불러오기
+		public Vector<FriendmanagerBean> friend(String email) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = null;
+			Vector<FriendmanagerBean> vlist = new Vector<FriendmanagerBean>();
+			try {
+				con = pool.getConnection();
+				sql = "select * from friendmanager where userEmail =?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, email);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					FriendmanagerBean bean = new FriendmanagerBean();
+					bean.setFriendIndex(rs.getString(1));
+					bean.setUserEmail(rs.getString(2));
+					bean.setFriendEmail(rs.getString(3));
+					bean.setFriendSign(rs.getInt(4));
+					vlist.addElement(bean);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			return vlist;
+		}
+		//탐색창에 불러올 친구추가된 email 가져오기
+		public Vector<FriendmanagerBean> friendpost(String email) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = null;
+			Vector<FriendmanagerBean> vlist = new Vector<FriendmanagerBean>();
+			try {
+				con = pool.getConnection();
+				sql = "select * from friendmanager where userEmail =? and friendSign=1";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, email);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					FriendmanagerBean bean = new FriendmanagerBean();
+					bean.setFriendIndex(rs.getString(1));
+					bean.setUserEmail(rs.getString(2));
+					bean.setFriendEmail(rs.getString(3));
+					bean.setFriendSign(rs.getInt(4));
+					vlist.addElement(bean);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			return vlist;
+		}
 }
