@@ -311,8 +311,27 @@ c{
 .makebody{
 	width:600px;
 	height:532px;
-	
-	
+}
+.imageposition{
+	padding-left:230px;
+	padding-top:180px;
+  	object-fit: contain;
+}
+.imageposition2{
+	padding-left:30px;
+	padding-top:180px;
+  	object-fit: contain;
+}
+.makebodytext{
+	padding-left:210px;
+	color: #1877f2;
+	font-family: MalgunGothic;
+	font-size: 15px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 2;
+	letter-spacing: normal;
 }
 
 

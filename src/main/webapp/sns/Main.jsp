@@ -279,8 +279,11 @@
 		</div>
 		<hr>
 		<div class="makebody">
-			
+			<img src="./img/makePostImage.svg" class="imageposition">
+			<img src="./img/makePostVideo.svg" class="imageposition2"><br>
+			<h5 class="makebodytext">사진과 동영상을 선택하세요</h5>
 		</div>
+		
 		
     				
   	</div>
