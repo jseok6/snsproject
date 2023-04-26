@@ -270,8 +270,9 @@
 	</div>
 	<%}%>
 </div>
-<!-- 만들기모달 -->
+<!-- 화면꺼지게 -->
 <div class="overlay">
+	<!-- 만들기모달 -->
 	<div class="makemodal">
 		<div class="maketexttitle">
 			게시물 만들기
@@ -286,17 +287,16 @@
 			<img src="./img/makePostSelectVideo.svg">
 		</div> 				
   	</div>
-</div>
-<!-- 편집하기모달 -->
-<div class="overlay">
-	<div class="fixmodal">
+  	<!-- 편집하기모달 -->
+  	<div class="fixmodal">
 		<div class="maketexttitle">
-			편집하기
-			<img src="./img/makePostCancelBtn.svg" class="makecancel">
+		<img src="./img/makePostBackBtn.svg" class="makecancel">
+		편집하기
 		</div>
 		<hr>				
   	</div>
 </div>
+
 <!-- 공유하기모달 -->
 <div class="sharemodal">
   <div class="share-header">
@@ -462,9 +462,8 @@
  			makemodal.style.display='none';
  		});
  		imageposition3.addEventListener('click', ()=>{
- 			overlay.classList.toggle('active');
- 			makemodal.style.display='none';
- 			fixmodal.style.display='block';
+ 			makemodal.style.display = 'none';
+ 			fixmodal.style.display = 'block';
  		});
  		
  	</script>
