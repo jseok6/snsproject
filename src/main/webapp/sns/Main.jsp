@@ -275,8 +275,10 @@
 	<!-- 만들기모달 -->
 	<div class="makemodal">
 		<div class="maketexttitle">
-			게시물 만들기
-			<img src="./img/makePostCancelBtn.svg" class="makecancel">
+			<h5 class="maketitle">게시물 만들기
+				<img src="./img/makePostCancelBtn.svg" class="makecancel">
+			</h5>
+			
 		</div>
 		<hr>
 		<div class="makebody">
@@ -290,8 +292,8 @@
   	<!-- 편집하기모달 -->
   	<div class="fixmodal">
 		<div class="maketexttitle">
-		<img src="./img/makePostBackBtn.svg" class="makecancel">
-		편집하기
+		<img src="./img/makePostBackBtn.svg" class="makeBackBtn">
+		<h5>편집하기</h5>
 		</div>
 		<hr>				
   	</div>

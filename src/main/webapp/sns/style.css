@@ -301,13 +301,17 @@ c{
 .maketexttitle {
   width: 600px;
   height: 30px;
-  padding-left:250px;
-  padding-top:20px;
+}
+.maketitle {
+	padding-left:250px;
+	padding-top:5px;
 }
 .makecancel{
 	height:20px;
-	padding-left:210px;
+	padding-left:310px;
+	margin-bottom:10px;
 }
+
 .makebody{
 	width:600px;
 	height:532px;
@@ -353,5 +357,9 @@ c{
   	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   	z-index:9999;
   	display:none;
+}
+.makeBackBtn{
+	padding-left:-500px;
+	padding-right:300px;
 }
 
