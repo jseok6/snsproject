@@ -282,6 +282,9 @@
 			<img src="./img/makePostImage.svg" class="imageposition">
 			<img src="./img/makePostVideo.svg" class="imageposition2"><br>
 			<h5 class="makebodytext">사진과 동영상을 선택하세요</h5>
+			<img src="./img/makePostSelectImage.svg" class="imageposition3">
+			<img src="./img/makePostSelectVideo.svg">
+			
 		</div>
 		
 		
