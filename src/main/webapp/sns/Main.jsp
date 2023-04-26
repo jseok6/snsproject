@@ -26,142 +26,7 @@
     <link href="profile.css" rel="stylesheet" type="text/css"/>
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
- 	<script type="text/javascript">
- 		function goURL(url, gid) {
-			document.frm1.action=url;
-			document.frm1.gid.value=gid;
-			document.frm1.submit();
-		}
- 		function heart(postId){//햇음 하트누르면 하트올라가기
- 			document.frm.action = "PostHeartCntServlet";
-			document.frm.postId.value=postId;
-			document.frm.submit();
- 		}
- 		function cdel(commentId){//햇음 코멘트삭제
-			document.frm.action="cdel";
-			document.frm.commentId.value=commentId;
-			document.frm.submit();
-		}
- 		function hamberger(userEmail){//햄버거 모달 스크립트 완료
-			const modal = document.querySelector('.modal');
-		    const hams = document.querySelectorAll('.ham');
-		    const cancelBtn = document.querySelector('.modal_close');
-		    for(var i=0; i<hams.length; i++){
-		    hams[i].addEventListener('click', () => {
-		    	modal.style.display = 'block';
-		    	});
-		    }
-		    cancelBtn.addEventListener('click', () => {
-		        modal.style.display = 'none';
-		    });
-		}
- 		function share(postId){//공유하기모달 반쯤완료
- 			const modal = document.querySelector('.modal');
- 		
- 			const sharebtns=document.querySelectorAll('.sharebtn');
- 			const sharecancel=document.querySelector('.sharecancel');
- 			const sharemodal=document.querySelector('.sharemodal');
- 			for (var i = 0; i <sharebtns.length ; i++) {
- 			sharebtns[i].addEventListener('click', () => {
- 				sharemodal.style.display='block';
- 			 	modal.style.display = 'none';
- 			 	
- 			});
-			}
- 			sharecancel.addEventListener('click', () => {
- 				sharemodal.style.display='none';
- 			});
-		}
- 		function dofriend(email){//팔로우
- 			const sentence=email;
- 			const [friendEmail,userEmail]=sentence.split(",");
- 			document.frm.friendEmail.value=friendEmail;
- 			document.frm.userEmail.value=userEmail;
-			const followBtn = document.querySelector(".follow-btn");
-			$.ajax({
-				    url: "FollowServlet", 
-				    type: "POST",
-				    data: { friendEmail: friendEmail,
-				    		userEmail:userEmail
-				    },
-				    success: function(result) {
-				    	followBtn.addEventListener("click", function() {
-				    		followBtn.innerHTML = "팔로워";
-							location.reload()
-					 	});
-				    },
-				    error: function(xhr, status, error) {
-				    }
-				  });
- 		}
- 		
- 		var nowUrl = window.location.href;//링크 url따오기 완료
- 		function copyUrl(){
- 			const modal = document.querySelector('.modal');
- 			navigator.clipboard.writeText(nowUrl).then(res=>{
- 				  alert("주소가 복사되었습니다!");
- 				  modal.style.display='none';
- 				})
- 		}
- 		function report(postId){//신고하기 버튼 누르면 report 숫자올라가기 완료
- 			const modal = document.querySelector('.modal');
- 			  $.ajax({
- 				    url: "postReport", 
- 				    type: "POST",
- 				    data: { postId: postId },
- 				    success: function(result) {
- 				    	modal.style.display = 'none';
- 				    },
- 				    error: function(xhr, status, error) {
- 				    }
- 				  });
- 		}
- 		
- 		
- 		document.addEventListener('DOMContentLoaded', function() {
- 			  var input = document.querySelector('.postTextbox');
- 			 var postId = input.dataset.postid;
- 			var userEmail = '';
- 			  if (input.hasAttribute('data-userEmail')) {
- 			    userEmail = input.getAttribute('data-userEmail');
- 			  }
- 			  if (input) {
- 			    input.addEventListener('keydown', function(event) {
- 			      if (event.key === 'Enter') {
- 			        addComment(postId,userEmail);
- 			      }
- 			    });
- 			  }
- 			 function addComment(posetId,userEmail){
- 				 // Send Ajax request
- 				$.ajax({
- 				    url: "commentAdd", 
- 				    type: "POST",
- 				    data: { postId: postId,
- 				    		commentDetail:input.value,
- 				    		userEmail:userEmail
- 				    },
- 				    success: function(result) {
- 				    	input.value = ""; // clear input field
- 				    	
- 				    },
- 				    
- 				    error: function(xhr, status, error) {
- 				    }
- 				  });
- 	 		
- 	 		}
- 			 
- 			});
- 		const makePostButton = document.getElementById('make-post');
- 		const overlay = document.querySelector('.overlay');
-
- 		makePostButton.addEventListener('click', () => {
- 		  overlay.classList.toggle('active');
- 		});
- 		
- 			
- 	</script>
+ 	
  	
 </head>
 <body>
@@ -188,7 +53,13 @@
         </li>
         <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
         <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
-        <li><a href="#"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" ><span class = "sidebar">만들기</span></a></li>
+        <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25"><span class="sidebar">Make</span></a></li>
+			<div class="overlay">
+  				<div class="makemodal">
+    				<h2>Create Post</h2>
+    				<!-- Add your post creation form here -->
+  				</div>
+			</div>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%
         	for(int i=0; i<23; i++){
@@ -426,5 +297,143 @@
 		<input type="hidden" name="friendEmail">
 		<input type="hidden" name="comment">
 </form>
+<script type="text/javascript">
+ 		function goURL(url, gid) {
+			document.frm1.action=url;
+			document.frm1.gid.value=gid;
+			document.frm1.submit();
+		}
+ 		function heart(postId){//햇음 하트누르면 하트올라가기
+ 			document.frm.action = "PostHeartCntServlet";
+			document.frm.postId.value=postId;
+			document.frm.submit();
+ 		}
+ 		function cdel(commentId){//햇음 코멘트삭제
+			document.frm.action="cdel";
+			document.frm.commentId.value=commentId;
+			document.frm.submit();
+		}
+ 		function hamberger(userEmail){//햄버거 모달 스크립트 완료
+			const modal = document.querySelector('.modal');
+		    const hams = document.querySelectorAll('.ham');
+		    const cancelBtn = document.querySelector('.modal_close');
+		    for(var i=0; i<hams.length; i++){
+		    hams[i].addEventListener('click', () => {
+		    	modal.style.display = 'block';
+		    	});
+		    }
+		    cancelBtn.addEventListener('click', () => {
+		        modal.style.display = 'none';
+		    });
+		}
+ 		function share(postId){//공유하기모달 반쯤완료
+ 			const modal = document.querySelector('.modal');
+ 		
+ 			const sharebtns=document.querySelectorAll('.sharebtn');
+ 			const sharecancel=document.querySelector('.sharecancel');
+ 			const sharemodal=document.querySelector('.sharemodal');
+ 			for (var i = 0; i <sharebtns.length ; i++) {
+ 			sharebtns[i].addEventListener('click', () => {
+ 				sharemodal.style.display='block';
+ 			 	modal.style.display = 'none';
+ 			 	
+ 			});
+			}
+ 			sharecancel.addEventListener('click', () => {
+ 				sharemodal.style.display='none';
+ 			});
+		}
+ 		function dofriend(email){//팔로우
+ 			const sentence=email;
+ 			const [friendEmail,userEmail]=sentence.split(",");
+ 			document.frm.friendEmail.value=friendEmail;
+ 			document.frm.userEmail.value=userEmail;
+			const followBtn = document.querySelector(".follow-btn");
+			$.ajax({
+				    url: "FollowServlet", 
+				    type: "POST",
+				    data: { friendEmail: friendEmail,
+				    		userEmail:userEmail
+				    },
+				    success: function(result) {
+				    	followBtn.addEventListener("click", function() {
+				    		followBtn.innerHTML = "팔로워";
+							location.reload()
+					 	});
+				    },
+				    error: function(xhr, status, error) {
+				    }
+				  });
+ 		}
+ 		
+ 		var nowUrl = window.location.href;//링크 url따오기 완료
+ 		function copyUrl(){
+ 			const modal = document.querySelector('.modal');
+ 			navigator.clipboard.writeText(nowUrl).then(res=>{
+ 				  alert("주소가 복사되었습니다!");
+ 				  modal.style.display='none';
+ 				})
+ 		}
+ 		function report(postId){//신고하기 버튼 누르면 report 숫자올라가기 완료
+ 			const modal = document.querySelector('.modal');
+ 			  $.ajax({
+ 				    url: "postReport", 
+ 				    type: "POST",
+ 				    data: { postId: postId },
+ 				    success: function(result) {
+ 				    	modal.style.display = 'none';
+ 				    },
+ 				    error: function(xhr, status, error) {
+ 				    }
+ 				  });
+ 		}
+ 		
+ 		
+ 		document.addEventListener('DOMContentLoaded', function() {
+ 			  var input = document.querySelector('.postTextbox');
+ 			 var postId = input.dataset.postid;
+ 			var userEmail = '';
+ 			  if (input.hasAttribute('data-userEmail')) {
+ 			    userEmail = input.getAttribute('data-userEmail');
+ 			  }
+ 			  if (input) {
+ 			    input.addEventListener('keydown', function(event) {
+ 			      if (event.key === 'Enter') {
+ 			        addComment(postId,userEmail);
+ 			      }
+ 			    });
+ 			  }
+ 			 function addComment(posetId,userEmail){
+ 				 // Send Ajax request
+ 				$.ajax({
+ 				    url: "commentAdd", 
+ 				    type: "POST",
+ 				    data: { postId: postId,
+ 				    		commentDetail:input.value,
+ 				    		userEmail:userEmail
+ 				    },
+ 				    success: function(result) {
+ 				    	input.value = ""; // clear input field
+ 				    	
+ 				    },
+ 				    
+ 				    error: function(xhr, status, error) {
+ 				    }
+ 				  });
+ 	 		
+ 	 		}
+ 			 
+ 			});
+ 		const makePostButton = document.querySelector('#make-post');
+ 		const overlay = document.querySelector('.overlay');
+		const makemodal=document.querySelector('.makemodal');
+ 		makePostButton.addEventListener('click', () => {
+ 		  overlay.classList.toggle('active');
+ 		  overlay.style.display='block'
+ 		  makemodal.style.display='block';
+ 		});
+ 		
+ 			
+ 	</script>
 </body>
 </html>
