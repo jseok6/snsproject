@@ -54,12 +54,6 @@
         <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
         <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
         <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25"><span class="sidebar">Make</span></a></li>
-			<div class="overlay">
-  				<div class="makemodal">
-    				<h2>Create Post</h2>
-    				<!-- Add your post creation form here -->
-  				</div>
-			</div>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%
         	for(int i=0; i<23; i++){
@@ -275,6 +269,21 @@
     			</div>
 	</div>
 	<%}%>
+</div>
+<!-- 만들기모달 -->
+<div class="overlay">
+	<div class="makemodal">
+		<div class="maketexttitle">
+			게시물 만들기
+			<img src="./img/makePostCancelBtn.svg" class="makecancel">
+		</div>
+		<hr>
+		<div class="makebody">
+			
+		</div>
+		
+    				
+  	</div>
 </div>
 <!-- 공유하기모달 -->
 <div class="sharemodal">
