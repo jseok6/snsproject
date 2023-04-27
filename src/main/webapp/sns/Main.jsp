@@ -26,7 +26,7 @@
     <link href="profile.css" rel="stylesheet" type="text/css"/>
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
- 	
+ 	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
  	
 </head>
 <body>
@@ -53,7 +53,7 @@
         </li>
         <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
         <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
-        <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25"><span class="sidebar">만들기</span></a></li>
+        <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" class="makeimage"><span class="sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
         <%
         	for(int i=0; i<23; i++){
@@ -275,10 +275,7 @@
 	<!-- 만들기모달 -->
 	<div class="makemodal">
 		<div class="maketexttitle">
-			<h5 class="maketitle">게시물 만들기
-				<img src="./img/makePostCancelBtn.svg" class="makecancel">
-			</h5>
-			
+				<b>게시물 만들기</b><img src="./img/makePostCancelBtn.svg" class="makecancel">	
 		</div>
 		<hr>
 		<div class="makebody">
@@ -292,10 +289,34 @@
   	<!-- 편집하기모달 -->
   	<div class="fixmodal">
 		<div class="maketexttitle">
-		<img src="./img/makePostBackBtn.svg" class="makeBackBtn">
-		<h5>편집하기</h5>
+		&nbsp;&nbsp;<b>편집하기</b><img src="./img/makePostBackBtn.svg" class="makeBackBtn">
 		</div>
-		<hr>				
+		<hr>
+		<div class="makebody">
+			<b class="makepostBefore">Before</b>
+			<b class="makepostAfter">After</b>
+			<div class="choicepicture">
+				<input type="file" accept="image/*" class="imageInput">
+			</div>
+			<div class="choiceafterpicture">
+				 <img id="croppedImage" src="" alt="Cropped Image">
+			</div>
+			<img src="./img/makePostInsertBtn.svg" class="makepostInsert">
+		</div>				
+  	</div>
+  	<!-- 게시물완료모달 -->
+  	<div class="postcomplete">
+		<div class="maketexttitle">
+			<b class="postcomtitle">게시물이 올라갔습니다.</b>
+		</div>
+		<hr>
+		<div class="makebody">
+			<img src="./img/makePostCheckIcon.svg" class="makepostComple">
+			<br>
+			<b class="bodycomple">게시물이 올라갔습니다.</b>
+			<br>
+			<img src="./img/makePostCheckBtn.svg" class="makepostCheck">
+		</div>				
   	</div>
 </div>
 
@@ -447,26 +468,121 @@
  	 		}
  			 
  			});
+ 		//만들기버튼 기능들
  		const makePostButton = document.querySelector('#make-post');
  		const overlay = document.querySelector('.overlay');
 		const makemodal=document.querySelector('.makemodal');
 		const makecancel=document.querySelector('.makecancel');
 		const imageposition3=document.querySelector('.imageposition3');
 		const fixmodal=document.querySelector('.fixmodal');
+		const makeBackBtn=document.querySelector('.makeBackBtn');
+		const makepostInsert=document.querySelector('.makepostInsert');
+		const postcomplete=document.querySelector('.postcomplete');
+		const makepostCheck=document.querySelector('.makepostCheck');
  		makePostButton.addEventListener('click', () => {
  			overlay.classList.toggle('active');
  		 	overlay.style.display='block';
  		  	makemodal.style.display='block';
+ 		  	$(".makeimage").attr("src", "./images/mainMakePostTrue.svg");
  		});
  		makecancel.addEventListener('click', ()=>{
  			overlay.classList.toggle('active');
  			overlay.style.display = 'none';
  			makemodal.style.display='none';
+ 			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
  		});
  		imageposition3.addEventListener('click', ()=>{
  			makemodal.style.display = 'none';
  			fixmodal.style.display = 'block';
  		});
+ 		makeBackBtn.addEventListener('click', ()=>{
+ 			fixmodal.style.display='none';
+ 			makemodal.style.display='block';
+ 		});
+ 		makepostInsert.addEventListener('click',()=>{
+ 			fixmodal.style.display='none';
+ 			postcomplete.style.display='block';
+ 		});
+ 		makepostCheck.addEventListener('click',()=>{
+ 			overlay.classList.toggle('active');
+ 			overlay.style.display = 'none';
+ 			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
+ 			postcomplete.style.display='none';
+ 		})
+ 		 // Get the image input element
+const imageInput = document.querySelector('.imageInput');
+
+// Create a Cropper instance when an image is selected
+imageInput.addEventListener('change', function (event) {
+  const selectedImage = event.target.files[0];
+
+  // Create an <img> element to display the selected image
+  const image = document.createElement('img');
+  const choicepicture = document.querySelector('.choicepicture');
+  choicepicture.appendChild(image);
+
+  // Initialize the Cropper instance once the image is loaded
+  image.onload = function () {
+    // Resize the image to a maximum width of 250px and height of 250px
+    const MAX_WIDTH = 250;
+    const MAX_HEIGHT = 250;
+    const aspectRatio = image.width / image.height;
+    let newWidth = image.width;
+    let newHeight = image.height;
+
+    if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
+      if (newWidth / newHeight > aspectRatio) {
+        newWidth = MAX_WIDTH;
+        newHeight = newWidth / aspectRatio;
+      } else {
+        newHeight = MAX_HEIGHT;
+        newWidth = newHeight * aspectRatio;
+      }
+    }
+
+    // Create a canvas element to draw the resized image
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    context.drawImage(image, 0, 0, newWidth, newHeight);
+
+    // Create a new image element with the resized image
+    const resizedImage = document.createElement('img');
+    resizedImage.src = canvas.toDataURL();
+
+    // Replace the original image with the resized image
+    choicepicture.removeChild(image);
+    choicepicture.appendChild(resizedImage);
+
+    // Create the Cropper instance with the resized image
+    const cropper = new Cropper(resizedImage, {
+      aspectRatio: 1, // Set the desired aspect ratio for cropping
+      viewMode: 2, // Set the view mode to restrict the crop box within the container
+
+      // Define the crop event handler
+      crop(event) {
+        // Get the cropped image data as a base64-encoded string
+        const croppedImageData = cropper.getCroppedCanvas().toDataURL();
+
+        // Set the cropped image as the source of the "croppedImage" element
+        const croppedImage = document.getElementById('croppedImage');
+        croppedImage.src = croppedImageData;
+      },
+    });
+
+    // Destroy the Cropper instance when the modal is closed
+    const makeBackBtn = document.querySelector('.makeBackBtn');
+    makeBackBtn.addEventListener('click', function () {
+      cropper.destroy();
+      imageInput.value = ''; // Reset the input field
+      choicepicture.removeChild(resizedImage); // Remove the preview image
+    });
+  };
+
+  // Set the source of the selected image file
+  image.src = URL.createObjectURL(selectedImage);
+});	
  		
  	</script>
 </body>
