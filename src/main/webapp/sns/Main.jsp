@@ -13,7 +13,6 @@
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);//본인을 제외한 5명리스트 불러오기(유저이메일 별명,유저이미지저장)
 		Vector<PostBean> plist = umgr.listPBlog(email);//게시물리스트(포스트빈에 다저장)
 		
-		
 %>
 <!DOCTYPE html>
 <html>
@@ -269,6 +268,7 @@
     			</div>
 	</div>
 	<%}%>
+	
 </div>
 <!-- 화면꺼지게 -->
 <div class="overlay">
@@ -504,11 +504,11 @@
  		makepostInsert.addEventListener('click',()=>{
  			fixmodal.style.display='none';
  			postcomplete.style.display='block';
- 		
+ 			const userEmail=mbean.getUserEmail();
  			const croppedImage = document.getElementById('croppedImage');
  			const croppedImageUrl = croppedImage.src;
  			const postData = JSON.stringify({ imageUrl: croppedImageUrl });
- 			  
+ 			
  			$.ajax({
 				    url: "PostInsertServlet", 
 				    type: "POST",
@@ -516,7 +516,7 @@
 				    		postData:  postData		    		
 				    },
 				    success: function(result) {
-				    	input.value = ""; // clear input field    	
+				    	  	
 				    },   
 				    error: function(xhr, status, error) {
 				    }
