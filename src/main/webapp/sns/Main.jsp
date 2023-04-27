@@ -299,7 +299,9 @@
 				<input type="file" accept="image/*" class="imageInput">
 			</div>
 			<div class="choiceafterpicture">
-				 <img id="croppedImage" src="" alt="Cropped Image">
+				
+        			<img id="croppedImage" src="" alt="Cropped Image">
+      			
 			</div>
 			<img src="./img/makePostInsertBtn.svg" class="makepostInsert">
 		</div>				
@@ -502,6 +504,23 @@
  		makepostInsert.addEventListener('click',()=>{
  			fixmodal.style.display='none';
  			postcomplete.style.display='block';
+ 		
+ 			const croppedImage = document.getElementById('croppedImage');
+ 			const croppedImageUrl = croppedImage.src;
+ 			const postData = JSON.stringify({ imageUrl: croppedImageUrl });
+ 			  
+ 			$.ajax({
+				    url: "PostInsertServlet", 
+				    type: "POST",
+				    data: { userEmail: userEmail,
+				    		postData:  postData		    		
+				    },
+				    success: function(result) {
+				    	input.value = ""; // clear input field    	
+				    },   
+				    error: function(xhr, status, error) {
+				    }
+				  });
  		});
  		makepostCheck.addEventListener('click',()=>{
  			overlay.classList.toggle('active');
@@ -509,7 +528,7 @@
  			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
  			postcomplete.style.display='none';
  		})
- 		 // Get the image input element
+ 		//fwea
 const imageInput = document.querySelector('.imageInput');
 
 // Create a Cropper instance when an image is selected
@@ -582,7 +601,7 @@ imageInput.addEventListener('change', function (event) {
 
   // Set the source of the selected image file
   image.src = URL.createObjectURL(selectedImage);
-});	
+});
  		
  	</script>
 </body>

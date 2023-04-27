@@ -382,6 +382,8 @@ c{
 	margin-bottom:50px;
   	border: solid 25px var(--black);
   	
+  	
+  	position: ralative;
 }
 .choiceafterpicture  {
   	width: 200px;
@@ -391,7 +393,26 @@ c{
   	margin-right:10px;
 	margin-bottom:50px;
   	
+  	
+  	position: relative;
 }
+.beforeImageContainer {
+  width: 250px;
+  height: 250px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.afterImageContainer {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
 .makepostInsert{
 	margin-left:215px;
 	margin-top:130px;
