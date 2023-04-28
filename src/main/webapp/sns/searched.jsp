@@ -45,7 +45,7 @@
         <a href="javascript:goURL('Main.jsp','')"><img src="./images/mainLogo.png"  alt="Image Button"/></a>
 	    <a id = "PhoTalk" class = "navbar-brand" href="Main.jsp">PhoTalk</a>
 	    <form method="post" action="searched.jsp">
-        	<span><input type="text" class = "InputBase" placeholder="검색"></span>
+        	<span><input type="text" class = "InputBase" placeholder="검색" name="searchWord"></span>
         </form>
         <img id = "mainMessageFalse" src="./images/mainMessageFalse.png" alt="Image Button"/>
         <img id = "mainAlarmFalse" src="./images/mainAlarmFalse.png" alt="Image Button"/>
