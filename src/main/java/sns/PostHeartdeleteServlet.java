@@ -1,5 +1,5 @@
 package sns;
-//하트 올려주기
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,21 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-/**
- * Servlet implementation class PostHeartCntServlet
- */
-@WebServlet("/sns/PostHeartCntServlet")
-public class PostHeartCntServlet extends HttpServlet {
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-			throws ServletException, IOException {
-		
+@WebServlet("/sns/PostHeartdeleteServlet")
+public class PostHeartdeleteServlet extends HttpServlet {
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PostMgr pmgr = new PostMgr();
 		PostlikeMgr plmgr=new PostlikeMgr();
 		int postId = Integer.parseInt(request.getParameter("postId"));
 		String userEmail=request.getParameter("userEmail");
-		pmgr.upHCnt(postId);
-		System.out.println("추가중:"+userEmail+":"+postId);
-		plmgr.insertPostlike(userEmail, postId);
+		pmgr.minusHCnt(postId);
+		System.out.println("삭제중:"+userEmail+":"+postId);
+		plmgr.deletePostlike(userEmail, postId);
 		String gid = request.getParameter("gid");
 		if(gid==null)
 			response.sendRedirect("Main.jsp");

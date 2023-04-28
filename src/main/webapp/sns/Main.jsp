@@ -3,6 +3,7 @@
 <jsp:useBean id="umgr" class="sns.UserinfoMgr"/>
 <jsp:useBean id="cmgr" class="sns.CommentMgr"/>
 <jsp:useBean id="fmgr" class="sns.FriemdmanagerMgr"/>
+<jsp:useBean id="pmgr" class="sns.PostlikeMgr"/>
 <%
 		//String email = (String)session.getAttribute("idKey");
 		String email="jseok@aaa.com";
@@ -171,9 +172,16 @@
 		<tr>
 			<td colspan="2" >
 			
-			<a href="javascript:heart('<%=pbean.getPostId()%>')" id="ddd">
-				<img src="./img/heart.jpg" align="top">
-			</a> 
+			
+				<%if (pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
+					<a href="javascript:heartdel('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">
+					<img src="./img/hearjfull.jpg" align="top">
+					</a>
+				<%}else if(!pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
+					<a href="javascript:heart('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">				
+					<img src="./img/heart.jpg" align="top">
+					</a>
+				<%} %> 
 			<a href="javascript:chat('<%=pbean.getPostId()%>')" id="ddd">
 				<img src="./img/postMessageFalse.svg" align="top">
 			</a>
@@ -349,9 +357,20 @@
 			document.frm1.gid.value=gid;
 			document.frm1.submit();
 		}
- 		function heart(postId){//햇음 하트누르면 하트올라가기
+ 		function heart(emailpostid){//햇음 하트누르면 하트올라가기
+ 			const sentence=emailpostid;
+ 			const [postId,userEmail]=sentence.split(",");
  			document.frm.action = "PostHeartCntServlet";
 			document.frm.postId.value=postId;
+			document.frm.userEmail.value=userEmail;
+			document.frm.submit();
+ 		}
+ 		function heartdel(emailpostid){
+ 			const sentence=emailpostid;
+ 			const [postId,userEmail]=sentence.split(",");
+ 			document.frm.action = "PostHeartdeleteServlet";
+			document.frm.postId.value=postId;
+			document.frm.userEmail.value=userEmail;
 			document.frm.submit();
  		}
  		function cdel(commentId){//햇음 코멘트삭제

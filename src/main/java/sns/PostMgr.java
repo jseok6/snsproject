@@ -40,6 +40,22 @@ public class PostMgr {
 				pool.freeConnection(con, pstmt);
 			}
 		}
+	public void minusHCnt(int num) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		try {
+			con = pool.getConnection();
+			sql = "update post set likeNum=likeNum-1 where postId=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+		}
 	//게시물 신고 누적증가
 	public void upReport(int num) {
 		Connection con=null;

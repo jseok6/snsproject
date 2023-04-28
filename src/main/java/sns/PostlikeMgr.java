@@ -42,13 +42,13 @@ public class PostlikeMgr {
 		String sql=null;
 		try {
 			con=pool.getConnection();
-			sql="insert into posetlike(postId,userEmail,likeNum) values(?,?,?)";
+			sql="insert into postlike(postId,userEmail,likeNum) values(?,?,?)";
 			
 			pstmt=con.prepareStatement(sql);
 			pstmt.setInt(1, postId);
 			pstmt.setString(2, userEmail);
 			pstmt.setInt(3, 1);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -66,7 +66,7 @@ public class PostlikeMgr {
 			pstmt=con.prepareStatement(sql);
 			pstmt.setString(1, userEmail);
 			pstmt.setInt(2, postId);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
