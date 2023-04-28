@@ -1,19 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="java.util.Vector,sns.*"%>
-<% request.setCharacterEncoding("UTF-8"); %>
 <jsp:useBean id="umgr" class="sns.UserinfoMgr"/>
 <jsp:useBean id="cmgr" class="sns.CommentMgr"/>
 <jsp:useBean id="fmgr" class="sns.FriemdmanagerMgr"/>
 <jsp:useBean id="pmgr" class="sns.PostlikeMgr"/>
 <%
-		//String email = (String)session.getAttribute("idKey");
-		String email="jseok@aaa.com";
-		//if(email==null) {
-			//response.sendRedirect("login.jsp");
-		//}
-		UserinfoBean mbean = umgr.getPMember(email);//유저정보 불러오기(유저이메일,이름,프로파일,별명저장)
-		Vector<UserinfoBean> uilist = umgr.listPMember(email);//본인을 제외한 5명리스트 불러오기(유저이메일 별명,유저이미지저장)
-		Vector<PostBean> plist = umgr.listPBlog(email);//게시물리스트(포스트빈에 다저장)
+	
+	String searchWord = null;
+	if(request.getParameter("searchWord")!=null){
+		searchWord = (String) request.getParameter("searchWord");
+		System.out.println("searchword from parameter is :" + searchWord);
+	}
+	if(session.getAttribute("searchWord")!=null){
+		searchWord = (String) session.getAttribute("searchWord");
+		System.out.println("searchword from session is :" + searchWord);
+	}
+	UserinfoBean mbean = umgr.getPMember(searchWord);
+	Vector<UserinfoBean> uilist = umgr.listPMember(searchWord);
+	Vector<PostBean> plist = umgr.listPBlog(searchWord);
+	System.out.println(searchWord);
 		
 %>
 <!DOCTYPE html>
@@ -40,7 +45,7 @@
         <a href="javascript:goURL('Main.jsp','')"><img src="./images/mainLogo.png"  alt="Image Button"/></a>
 	    <a id = "PhoTalk" class = "navbar-brand" href="Main.jsp">PhoTalk</a>
 	    <form method="post" action="searched.jsp">
-        	<span><input type="text" class = "InputBase" placeholder="검색" name="searchWord"></span>
+        	<span><input type="text" class = "InputBase" placeholder="검색"></span>
         </form>
         <img id = "mainMessageFalse" src="./images/mainMessageFalse.png" alt="Image Button"/>
         <img id = "mainAlarmFalse" src="./images/mainAlarmFalse.png" alt="Image Button"/>
@@ -209,18 +214,18 @@
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<%=cbean.getCommentDetail()%>
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
-				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<%if(searchWord.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
-				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<%if(searchWord.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a></c><%}%>&nbsp;
 				<br>
 				<%} else {%>
 					<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
 				<br>
 				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
-				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<%if(searchWord.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
-				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
+				<%if(searchWord.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a></b><%}%>&nbsp;
 				<br>
 				<%} %>
@@ -456,42 +461,43 @@
  				  });
  		}
  		
- 		
  		document.addEventListener('DOMContentLoaded', function() {
- 			  var input = document.querySelector('.postTextbox');
- 			 var postId = input.dataset.postid;
- 			var userEmail = '';
- 			  if (input.hasAttribute('data-userEmail')) {
- 			    userEmail = input.getAttribute('data-userEmail');
- 			  }
- 			  if (input) {
- 			    input.addEventListener('keydown', function(event) {
- 			      if (event.key === 'Enter') {
- 			        addComment(postId,userEmail);
- 			      }
- 			    });
- 			  }
- 			 function addComment(posetId,userEmail){
- 				 // Send Ajax request
- 				$.ajax({
- 				    url: "commentAdd", 
- 				    type: "POST",
- 				    data: { postId: postId,
- 				    		commentDetail:input.value,
- 				    		userEmail:userEmail
- 				    },
- 				    success: function(result) {
- 				    	input.value = ""; // clear input field
- 				    	
- 				    },
- 				    
- 				    error: function(xhr, status, error) {
- 				    }
- 				  });
- 	 		
- 	 		}
- 			 
- 			});
+			  var input = document.querySelector('.postTextbox');
+			 var postId = input.dataset.postid;
+			var userEmail = '';
+			  if (input.hasAttribute('data-userEmail')) {
+			    userEmail = input.getAttribute('data-userEmail');
+			  }
+			  if (input) {
+			    input.addEventListener('keydown', function(event) {
+			      if (event.key === 'Enter') {
+			        addComment(postId,userEmail);
+			      }
+			    });
+			  }
+			 function addComment(posetId,userEmail){
+				 // Send Ajax request
+				$.ajax({
+				    url: "commentAdd", 
+				    type: "POST",
+				    data: { postId: postId,
+				    		commentDetail:input.value,
+				    		userEmail:userEmail
+				    },
+				    success: function(result) {
+				    	input.value = ""; // clear input field
+				    	
+				    },
+				    
+				    error: function(xhr, status, error) {
+				    }
+				  });
+	 		
+	 		}
+			 
+			});
+ 		
+ 		
  		//만들기버튼 기능들
  		const makePostButton = document.querySelector('#make-post');
  		const overlay = document.querySelector('.overlay');
