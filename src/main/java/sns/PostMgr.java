@@ -269,6 +269,74 @@ public class PostMgr {
 		}
 		return bean;
 	}
+	public Vector<PostBean> listPostsByUserAndFriend(String friendEmail) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    Vector<PostBean> vlist = new Vector<PostBean>();
+	    
+	    try {
+	      con = pool.getConnection();
+	      sql = "SELECT * FROM post WHERE userEmail=? ORDER BY postId DESC";
+	      pstmt = con.prepareStatement(sql);
+	      pstmt.setString(1, friendEmail);
+	      rs = pstmt.executeQuery();
+	      
+	      while (rs.next()) {
+	        PostBean bean = new PostBean();
+	        bean.setPostId(rs.getInt(1));
+	        bean.setUserEmail(rs.getString(2));
+	        bean.setLikeNum(rs.getInt(3));
+	        bean.setImageName(rs.getString(4));
+	        bean.setVideoName(rs.getString(5));
+	        bean.setShareNum(rs.getInt(6));
+	        bean.setCommentNum(rs.getInt(7));
+	        bean.setCreationDate(rs.getString(8));
+	        vlist.addElement(bean);
+	      }
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    } finally {
+	      pool.freeConnection(con, pstmt, rs);
+	    }
+	    
+	    return vlist;
+	  }
+	public Vector<PostBean> userpost(String userEmail) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    Vector<PostBean> vlist = new Vector<PostBean>();
+	    
+	    try {
+	      con = pool.getConnection();
+	      sql = "SELECT * FROM post WHERE userEmail=? ORDER BY postId DESC";
+	      pstmt = con.prepareStatement(sql);
+	      pstmt.setString(1, userEmail);
+	      rs = pstmt.executeQuery();
+	      
+	      while (rs.next()) {
+	        PostBean bean = new PostBean();
+	        bean.setPostId(rs.getInt(1));
+	        bean.setUserEmail(rs.getString(2));
+	        bean.setLikeNum(rs.getInt(3));
+	        bean.setImageName(rs.getString(4));
+	        bean.setVideoName(rs.getString(5));
+	        bean.setShareNum(rs.getInt(6));
+	        bean.setCommentNum(rs.getInt(7));
+	        bean.setCreationDate(rs.getString(8));
+	        vlist.addElement(bean);
+	      }
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    } finally {
+	      pool.freeConnection(con, pstmt, rs);
+	    }
+	    
+	    return vlist;
+	  }
 	
 	
 }

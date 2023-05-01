@@ -14,7 +14,7 @@
 		UserinfoBean mbean = umgr.getPMember(email);//유저정보 불러오기(유저이메일,이름,프로파일,별명저장)
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);//본인을 제외한 5명리스트 불러오기(유저이메일 별명,유저이미지저장)
 		Vector<PostBean> uplist=fmgr.friendlist(email);
-
+		
 		
 %>
 <!DOCTYPE html>

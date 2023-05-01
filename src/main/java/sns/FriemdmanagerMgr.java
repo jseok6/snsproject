@@ -3,6 +3,8 @@ package sns;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 public class FriemdmanagerMgr {
@@ -145,14 +147,20 @@ public class FriemdmanagerMgr {
 			    pstmt.setString(1, email);
 			    ResultSet rs = pstmt.executeQuery();
 			    UserinfoMgr umgr = new UserinfoMgr();
+			    PostMgr pmgr = new PostMgr();
 			    while (rs.next()) {
 			      String friendEmail = rs.getString(1);
-			      Vector<PostBean> friendPosts = umgr.listPBlog(email, friendEmail);
-			      System.out.println("friendEmail값:"+friendEmail);
-			      System.out.println("friendPosts값:"+uplist.size());
+			      Vector<PostBean> friendPosts = pmgr.listPostsByUserAndFriend(friendEmail);
 			      uplist.addAll(friendPosts);
-			      friendPosts.clear();
 			    }
+			    Vector<PostBean> myPosts = pmgr.userpost(email);
+			    uplist.addAll(myPosts);
+			    Collections.sort(uplist, new Comparator<PostBean>() {
+			        public int compare(PostBean post1, PostBean post2) {
+			          return Integer.compare(post2.getPostId(), post1.getPostId());
+			        }
+			      });
+			    
 			  } catch (Exception e) {
 			    e.printStackTrace();
 			  } finally {
