@@ -1,167 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Cropper.js</title>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-  <link rel="stylesheet" type="text/css" href="/theme/inet/css/cropper.css">
-<style>
-.wraper {padding:50px;}
-.desc {
-    font-size: 12px;
-    color: #6c757d;
-}
-.desc .title {
-    display: block;
-    font-size: 24px;
-    font-weight: 600;
-    color:#000;
-}
-.half {display:inline-block;vertical-align:top;margin-top:15px;}
-.half span {
-    display: block;
-    font-size: 18px;
-    font-weight: 600;
-}
-.full {margin-top:15px;}
-.img-container {width:250px;}
-.img-container img {max-width: 100%;}
-.preview {}
-.operation {
-    text-align: center;
-    margin-top: 35px;
-}
-.progress {display:none;}
-</style>
-<div class=wraper>
-    <div class="half">
-        <span>원본이미지</span>
-        <div class="img-container">
-            <img class="rounded" id="image" src="/theme/inet/img/upload/indPhotoDefault.jpg">
-        </div>
-    </div>
-    <div class="half">
-        <span>반영이미지</span>
-        <div class="preview"></div>
-    </div>
-    <div class="full">
-        <div class="custom-file">
-    <input type="hidden" id="cInput" name="cInput">
-            <input type="file" class="custom-file-input" id="input" name="image" accept="image/*">
-            <label class="custom-file-label" for="customFile">파일선택</label>
-        </div>
-        <div class="operation">
-        <button type="button" class="btn btn-primary" id="crop">업로드</button>         <button type="button" class="btn btn-secondary">취소</button>
-        </div>
-    </div>
-</div>
-    <img class="rounded" id="avatar" src="/theme/inet/img/upload/indPhotoDefault.jpg" alt="avatar" style="display:none;">
-    <div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-    </div>
-    <div class="alert" role="alert"></div>
-  <script src="https://unpkg.com/jquery@3/dist/jquery.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="https://fengyuanchen.github.io/cropperjs/js/cropper.js"></script>
-    <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      var preview = document.getElementById('preview');
-      var image = document.getElementById('image');
-      var $progress = $('.progress');
-      var $progressBar = $('.progress-bar');
-      var $alert = $('.alert');
-      var pInput = opener.document.getElementById('mb_id').value;
-      var cropper;
-      input.addEventListener('change', function (e) {
-        var files = e.target.files;
-        var done = function (url) {
-          input.value = '';
-          image.src = url;
-        };
-        var reader;
-        var file;
-        var url;
-        if (files && files.length > 0) {
-          file = files[0];
-          if (URL) {
-            done(URL.createObjectURL(file));
-          } else if (FileReader) {
-            reader = new FileReader();
-            reader.onload = function (e) {
-              done(reader.result);
-            };
-            reader.readAsDataURL(file);
-          }
+<html>
+<meta charset="UTF-8">
+<body>
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+ 
+  <div id="Context">
+    test
+  </div>
+ 
+  <script type="text/javascript">
+ 
+    function ajaxTest(){
+      $.ajax({
+        type : "GET",
+        url : "test.jsp",
+        dataType : "text",
+        error : function() {
+          alert('통신실패!!');
+        },
+        success : function(data) {
+          $('#Context').html(data);
         }
-      var $image = $('#image'), 
-      height = $image.height() + 4;
-$('.preview').css({ 
-     width: '100%', //width,  sets the starting size to the same as orig image  
-     overflow: 'hidden',
-     height:    height,
-     maxWidth:  $image.width(),
-     maxHeight: height
-   });
-        cropper = new Cropper(image, {
-      dragMode: 'crop',
-          aspectRatio: 13/16,
-       minCropBoxWidth:130,
-          viewMode: 2,
-      preview: '.preview',
-        });
-  });
-      document.getElementById('crop').addEventListener('click', function () {
-        var initialAvatarURL;
-        var canvas;
-        if (cropper) {
-          canvas = cropper.getCroppedCanvas({
-            width: 160,
-            height: 160,
-          });
-          initialAvatarURL = avatar.src;
-          avatar.src = canvas.toDataURL();
-          $progress.show();
-          $alert.removeClass('alert-success alert-warning');
-          canvas.toBlob(function (blob) {
-            var formData = new FormData();
-            formData.append('avatar', blob, 'profile.jpg');
-        formData.append('fileId',pInput);
-            $.ajax('crop_save.php', {
-              method: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
-              xhr: function () {
-                var xhr = new XMLHttpRequest();
-                xhr.upload.onprogress = function (e) {
-                  var percent = '0';
-                  var percentage = '0%';
-                  if (e.lengthComputable) {
-                    percent = Math.round((e.loaded / e.total) * 100);
-                    percentage = percent + '%';
-                    $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
-                  }
-                };
-                return xhr;
-              },
-              success: function(response, textStatus, jqXHR) {
-                $alert.show().addClass('alert-success').text(jqXHR.responseText);
-                opener.document.location.reload();
-                self.close();
-                },
-              error: function () {
-                avatar.src = initialAvatarURL;
-                $alert.show().addClass('alert-warning').text('Upload error');
-              },
-              complete: function () {
-                $progress.hide();
-              },
-            });
-          });
-        }
+ 
       });
-    });
-    </script>
+    }
+ 
+    ajaxTest();
+ 
+  </script>
+</body>
+ 
+</html>

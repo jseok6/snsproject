@@ -15,18 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 public class PostInsertServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Read the JSON data from the request body
-        BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        String json = "";
-        if (reader != null) {
-            json = reader.readLine();
-        }
-
-        // Process the JSON data (e.g., save the image URL to a database)
-        // Replace this with your own logic
-        System.out.println("Received JSON data: " + json);
-
-        // Send a response back to the client
+		request.setCharacterEncoding("UTF-8");
+	    response.setContentType("application/json;charset=UTF-8");
+        String userEmail=request.getParameter("userEmail");
+        PostMgr pmgr=new PostMgr();
+        pmgr.insertPost(request);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("{\"message\": \"Post created successfully.\"}");

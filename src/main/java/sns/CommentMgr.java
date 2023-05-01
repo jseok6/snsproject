@@ -78,6 +78,23 @@ public class CommentMgr {
 			pool.freeConnection(con, pstmt);
 		}
 	}
+	public void updateComment(int commentId, String commentDetail) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    String sql = null;
+	    try {
+	        con = pool.getConnection();
+	        sql = "UPDATE comment SET commentDetail = ?, commentCorrect = NOW() WHERE commentId = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, commentDetail);
+	        pstmt.setInt(2, commentId);
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	}
 	
 	//덧글 리스트
 	public Vector<CommentBean> listPReply(int num){

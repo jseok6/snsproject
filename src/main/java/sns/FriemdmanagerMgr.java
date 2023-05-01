@@ -37,6 +37,25 @@ public class FriemdmanagerMgr {
 		}
 		
 	}
+	//친구에서 삭제
+		public void delFriend(String userEmail,String followEmail) {
+			Connection con=null;
+			PreparedStatement pstmt = null;
+			String sql = null;
+			try {
+				con=pool.getConnection();
+				sql="delete from friendmanager where userEmail=? AND friendEmail=?";
+				pstmt=con.prepareStatement(sql);
+				pstmt.setString(1,userEmail);
+				pstmt.setString(2, followEmail);
+				pstmt.executeUpdate();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+		}
 	//친구가 되어있는지 체크
 	public boolean friendCheck(String userEmail, String friendEmail) {
 		Connection con=null;
@@ -52,7 +71,10 @@ public class FriemdmanagerMgr {
 			pstmt.setString(1, friendEmail);
 			pstmt.setInt(3, 0);
 			rs = pstmt.executeQuery();
-			flag = rs.next();
+			if(rs.next()) {
+				flag=true;
+			}
+			return flag;
 		}
 		catch (Exception e){
 			e.printStackTrace();
@@ -109,44 +131,37 @@ public class FriemdmanagerMgr {
 				pool.freeConnection(con, pstmt);
 			}
 		}
-	//친구에서 삭제
-	public void delFriend(String userEmail,String followEmail) {
-		Connection con=null;
-		PreparedStatement pstmt = null;
-		String sql = null;
-		try {
-			con=pool.getConnection();
-			sql="delete from friendmanager where userEmail=? AND friendEmail=?";
-			pstmt=con.prepareStatement(sql);
-			pstmt.setString(1,userEmail);
-			pstmt.setString(2, followEmail);
-			pstmt.executeUpdate();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			pool.freeConnection(con, pstmt);
+	
+		public Vector<PostBean> friendlist(String email) {
+			  Connection con = null;
+			  PreparedStatement pstmt = null;
+			  String sql = null;
+			  FriendmanagerBean bean = new FriendmanagerBean();
+			  Vector<PostBean> uplist = new Vector<PostBean>();
+			  try {
+			    con = pool.getConnection();
+			    sql = "select friendEmail from friendmanager where userEmail=? and friendSign=1";
+			    pstmt = con.prepareStatement(sql);
+			    pstmt.setString(1, email);
+			    ResultSet rs = pstmt.executeQuery();
+			    UserinfoMgr umgr = new UserinfoMgr();
+			    while (rs.next()) {
+			      String friendEmail = rs.getString(1);
+			      Vector<PostBean> friendPosts = umgr.listPBlog(email, friendEmail);
+			      System.out.println("friendEmail값:"+friendEmail);
+			      System.out.println("friendPosts값:"+uplist.size());
+			      uplist.addAll(friendPosts);
+			      friendPosts.clear();
+			    }
+			  } catch (Exception e) {
+			    e.printStackTrace();
+			  } finally {
+			    pool.freeConnection(con, pstmt);
+			  }
+			  
+			  return uplist;
 		}
-	}
-	public FriendmanagerBean friendlist(String email) {
-		Connection con=null;
-		PreparedStatement pstmt=null;
-		String sql=null;
-		FriendmanagerBean bean=new FriendmanagerBean();
-		try {
-			con=pool.getConnection();
-			sql="select friendEmail from friendmanager where userEmail=? and friendSign=1";
-			pstmt=con.prepareStatement(sql);
-			pstmt.setString(1, email);
-			pstmt.executeQuery();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			pool.freeConnection(con, pstmt);
-		}
-		return bean;
-	}
-	//friendEmail의 값 불러오기
+		//friendEmail의 값 불러오기
 		public Vector<FriendmanagerBean> friend(String email) {
 			Connection con = null;
 			PreparedStatement pstmt = null;

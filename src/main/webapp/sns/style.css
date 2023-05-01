@@ -40,14 +40,14 @@ a {
 }
 .ccc {
 	width: 520px;
-  	height: 900px;
+	height:auto;
   	margin-top:20px;
   	padding: 9px 0 19px;
   	border-radius: 5px;
   	border: solid 1px var(--invalid-name);
 	background-color: #fff;
   	position:relative;
-  		left:690px;
+  	left:690px;
   	top:-450px;
 }
 #ddd{
@@ -214,6 +214,7 @@ img.postMessageProfile {
 	border-radius: 7px;
 	box-shadow: 0 3px 30px 0 rgba(0, 0, 0, 0.16);
 	background-color: #fff;
+	z-index:9999;
 }
 #main-modal-text {
   width: 60px;
@@ -448,3 +449,35 @@ c{
 	padding-top:100px;
 }
 
+.searchmodal{
+	display:none;
+	position:absolute;
+	z-index:1;
+	left:0;
+	top:50px;
+	width:50%;
+	height:auto;
+	overflow:auto;
+	background-color:rgba(0,0,0,0.4)
+}
+.modal-content{
+	background-color:#fefefe;
+	margin:auto;
+	padding:20px;
+	border:1px solid #888;
+	width:80%;
+	
+}
+#suggetstList{
+	list-style:none;
+	padding-left:0;
+	margin-top:0;
+	
+}
+.suggetItem{
+	padding:5px 10px;
+	cursor:pointer;
+}
+.suggestItem:hover{
+	background-color:#eee;
+}

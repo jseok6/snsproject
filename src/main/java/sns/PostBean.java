@@ -9,6 +9,13 @@ public class PostBean {
 	private int shareNum;
 	private int commentNum;
 	private String creationDate;
+	private int postReport;
+	public int getPostReport() {
+		return postReport;
+	}
+	public void setPostReport(int postReport) {
+		this.postReport = postReport;
+	}
 	public int getPostId() {
 		return postId;
 	}

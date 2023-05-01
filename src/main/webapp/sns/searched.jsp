@@ -17,7 +17,7 @@
 	}
 	UserinfoBean mbean = umgr.getPMember(searchWord);
 	Vector<UserinfoBean> uilist = umgr.listPMember(searchWord);
-	Vector<PostBean> plist = umgr.listPBlog(searchWord);
+	Vector<PostBean> uplist=fmgr.friendlist(searchWord);
 	System.out.println(searchWord);
 		
 %>
@@ -152,8 +152,8 @@
     	<h5>© 2023 Social Net Work Project</h5>
     </div>
     <%
-				for(int i=0;i<plist.size();i++){
-					PostBean pbean = plist.get(i);
+				for(int i=0;i<uplist.size();i++){
+					PostBean pbean = uplist.get(i);
 					UserinfoBean uibean = umgr.getPMember(pbean.getUserEmail());
 	%>
     <div class="ccc">

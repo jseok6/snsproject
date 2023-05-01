@@ -13,7 +13,8 @@
 		//}
 		UserinfoBean mbean = umgr.getPMember(email);//유저정보 불러오기(유저이메일,이름,프로파일,별명저장)
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);//본인을 제외한 5명리스트 불러오기(유저이메일 별명,유저이미지저장)
-		Vector<PostBean> plist = umgr.listPBlog(email);//게시물리스트(포스트빈에 다저장)
+		Vector<PostBean> uplist=fmgr.friendlist(email);
+
 		
 %>
 <!DOCTYPE html>
@@ -28,10 +29,10 @@
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
  	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
- 	
 </head>
 <body>
-
+<script src="//developers.kakao.com/sdk/js/kakao.js"></script>
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 <form method="post" name="frm1" action="Main.jsp">
 	<input type="hidden" name="gid">
 </form>
@@ -42,6 +43,8 @@
 	    <form method="post" action="searched.jsp">
         	<span><input type="text" class = "InputBase" placeholder="검색" name="searchWord"></span>
         </form>
+        <!-- 모달창 -->
+        
         <img id = "mainMessageFalse" src="./images/mainMessageFalse.png" alt="Image Button"/>
         <img id = "mainAlarmFalse" src="./images/mainAlarmFalse.png" alt="Image Button"/>
     	<img id = "mainProfile2" src="./images/mainProfile2.png" alt="Image Button"/>
@@ -127,17 +130,16 @@
 			</div>
 			</td>
 			<td>
-				<a href="javascript:dofriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="follow-btn">
 				<%
 					if(fmgr.friendCheck(ubean.getUserEmail(), mbean.getUserEmail())){
 						%>
-						팔로워<% 
+						<a href="javascript:deletefriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="followdelbtn">팔로워</a><% 
 					}
 					else {
-						%>팔로우<% 
+						%><a href="javascript:dofriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="follow-btn">팔로우</a><% 
 					}
 				%>
-				</a>
+				
 			</td>
 		<%}%>	
 		</tr>
@@ -147,9 +149,12 @@
     	<h5>© 2023 Social Net Work Project</h5>
     </div>
     <%
-				for(int i=0;i<plist.size();i++){
-					PostBean pbean = plist.get(i);
+				for(int i=0;i<uplist.size();i++){
+					PostBean pbean = uplist.get(i);
 					UserinfoBean uibean = umgr.getPMember(pbean.getUserEmail());
+					Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
+					int commentCount = clist.size();
+					
 	%>
     <div class="ccc">
     <table>
@@ -173,7 +178,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2" >
+			<td colspan="2">
 			
 			
 				<%if (pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
@@ -197,31 +202,31 @@
 		<tr>
 			<td width="250"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
 		</tr>
-		<tr>
+		<tr class="commenter" stlye="height:<%=commentCount*50%>px;">
 			<td colspan="3" width="500"> 
 				<%
-				Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
 				for(int j=0;j<clist.size();j++){
 					CommentBean cbean = clist.get(j);
 					if(!cbean.getCommentParrent().equals("0")){
-		%>	
-				
-				<c><%=cbean.getUserEmail()%></c>&nbsp;<%=cbean.getCommentDetail()%>
+				%>	
+				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a></c><%}%>&nbsp;
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')">삭제</a></c><%}%>&nbsp;
 				<br>
 				<%} else {%>
-					<b><%=cbean.getUserEmail()%></b>&nbsp;<%=cbean.getCommentDetail()%>
+					<b><%=cbean.getUserEmail()%></b>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
 				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
+				
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box">수정</a><%}%>&nbsp;
+				
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cdel('<%=cbean.getCommentId()%>')">삭제</a></b><%}%>&nbsp;
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')">삭제</a></b><%}%>&nbsp;
 				<br>
 				<%} %>
 			
@@ -282,6 +287,7 @@
 	
 </div>
 <!-- 화면꺼지게 -->
+
 <div class="overlay">
 	<!-- 만들기모달 -->
 	<div class="makemodal">
@@ -298,6 +304,7 @@
 		</div> 				
   	</div>
   	<!-- 편집하기모달 -->
+  	<form name="postFrm" method="post" action="PostInsertServlet" enctype="multipart/form-data" >
   	<div class="fixmodal">
 		<div class="maketexttitle">
 		&nbsp;&nbsp;<b>편집하기</b><img src="./img/makePostBackBtn.svg" class="makeBackBtn">
@@ -307,7 +314,7 @@
 			<b class="makepostBefore">Before</b>
 			<b class="makepostAfter">After</b>
 			<div class="choicepicture">
-				<input type="file" accept="image/*" class="imageInput">
+				<input type="file" accept="image/*" class="imageInput" name="imageName">
 			</div>
 			<div class="choiceafterpicture">
 				
@@ -317,6 +324,7 @@
 			<img src="./img/makePostInsertBtn.svg" class="makepostInsert">
 		</div>				
   	</div>
+  	</form>
   	<!-- 게시물완료모달 -->
   	<div class="postcomplete">
 		<div class="maketexttitle">
@@ -340,11 +348,16 @@
     <div class="sharecancel">x</div>
   </div>
   <hr>
-  <a href="#" onclick="javascript:window.open('http://share.naver.com/web/shareView.nhn?url='+encodeURIComponent(document.URL)+'&title='+encodeURIComponent(document.title),
- 'naversharedialog', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" alt="Share on Naver" >
-		<img src="./img/postShareNaver.jpg" class="postShareNaver"></a>
+  	<a href="#" class="naver-share-link" target="_blank" alt="Share on Naver">
+  		<img src="./img/postShareNaver.jpg" class="postShareNaver" />
+	</a>
   
-  <img src="./img/postShareKakao.jpg" class="postShareKakao"/>
+  	<a href="javascript:postShareKakao" id="btnKakao">
+  		<img src="./img/postShareKakao.jpg" class="postShareKakao"/>
+  	</a>
+</div>
+<div class="updateComment">
+	
 </div>
 <form method="post" name="frm">
 		<input type="hidden" name="userNickName">
@@ -355,6 +368,8 @@
 		<input type="hidden" name="comment">
 </form>
 <script type="text/javascript">
+		var request=new XMLHttpRequest();
+		
  		function goURL(url, gid) {
 			document.frm1.action=url;
 			document.frm1.gid.value=gid;
@@ -363,24 +378,112 @@
  		function heart(emailpostid){//햇음 하트누르면 하트올라가기
  			const sentence=emailpostid;
  			const [postId,userEmail]=sentence.split(",");
- 			document.frm.action = "PostHeartCntServlet";
-			document.frm.postId.value=postId;
-			document.frm.userEmail.value=userEmail;
-			document.frm.submit();
+			$.ajax({
+			    url: "PostHeartCntServlet", 
+			    type: "POST",
+			    dataType: "json",
+			    data: { postId: postId,
+			    		userEmail:userEmail
+			    },
+			    
+			    success: function(result) {
+			      	console.log("main에서작용");
+			        location.reload();
+			      },
+			    error: function(xhr, status, error) {
+			    	console.error("Error:", error);
+			    }
+			    
+			  }
+ 			);
  		}
  		function heartdel(emailpostid){
  			const sentence=emailpostid;
  			const [postId,userEmail]=sentence.split(",");
- 			document.frm.action = "PostHeartdeleteServlet";
-			document.frm.postId.value=postId;
-			document.frm.userEmail.value=userEmail;
-			document.frm.submit();
+			$.ajax({
+			    url: "PostHeartdeleteServlet", 
+			    type: "POST",
+			    dataType: "json",
+			    data: { postId: postId,
+			    		userEmail:userEmail
+			    },
+			    
+			    success: function(result) {
+			      	console.log("main에서작용");
+			        location.reload();
+			      },
+			    error: function(xhr, status, error) {
+			    	console.error("Error:", error);
+			    }
+			    
+			  }
+ 			);
  		}
- 		function cdel(commentId){//햇음 코멘트삭제
-			document.frm.action="cdel";
-			document.frm.commentId.value=commentId;
-			document.frm.submit();
+ 		function cdel(postemail){//햇음 코멘트삭제
+			const sentence=postemail;
+ 			const [commentId,postId]=sentence.split(",");
+ 			$.ajax({
+			    url: "cdel", 
+			    type: "POST",
+			    dataType: "json",
+			    data: { commentId: commentId,
+			    		postId:postId
+			    },
+			    
+			    success: function(result) {
+			      	console.log("main에서작용");
+			        location.reload();
+			      },
+			    error: function(xhr, status, error) {
+			    	console.error("Error:", error);
+			    }
+			    
+			  }
+ 			);
 		}
+ 		//수정
+ 		var isInputBoxAdded = false;
+
+ 		function cup(commentId) {
+ 		  const parentElement = document.getElementById("box");
+
+ 		  if (!isInputBoxAdded) {
+ 		    const inputBox = document.createElement('input');
+ 		    inputBox.type = 'text';
+ 		    const deleteButton = document.createElement('input');
+ 		    deleteButton.type = 'button';
+ 		    deleteButton.value = '취소';
+ 		    deleteButton.onclick = function() {
+ 		      parentElement.innerHTML = "수정"; 
+ 		      isInputBoxAdded = false;
+ 		    };
+
+ 		    const saveButton = document.createElement('input');
+ 		    saveButton.type = 'button';
+ 		    saveButton.value = '저장';
+ 		    saveButton.onclick = function() {
+ 		      var updatedComment = inputBox.value;
+ 		      $.ajax({
+ 		        url: 'CommentUpdate',
+ 		        type: 'POST',
+ 		        data: { commentId: commentId, commentDetail: updatedComment },
+ 		        success: function(result) {
+ 		        	console.log('댓글수정완료');
+ 		 			location.reload();
+ 		        },
+ 		        error: function(xhr, status, error) {
+ 		        }
+ 		      });
+ 		    };
+ 		    parentElement.innerHTML = '';
+ 		    parentElement.appendChild(inputBox);
+ 		    parentElement.appendChild(saveButton);
+ 		    parentElement.appendChild(deleteButton);
+ 		    isInputBoxAdded = true;
+ 		  }
+ 		}
+
+ 		
  		function hamberger(userEmail){//햄버거 모달 스크립트 완료
 			const modal = document.querySelector('.modal');
 		    const hams = document.querySelectorAll('.ham');
@@ -396,7 +499,6 @@
 		}
  		function share(postId){//공유하기모달 반쯤완료
  			const modal = document.querySelector('.modal');
- 		
  			const sharebtns=document.querySelectorAll('.sharebtn');
  			const sharecancel=document.querySelector('.sharecancel');
  			const sharemodal=document.querySelector('.sharemodal');
@@ -404,19 +506,38 @@
  			sharebtns[i].addEventListener('click', () => {
  				sharemodal.style.display='block';
  			 	modal.style.display = 'none';
- 			 	
+ 			
+ 			    const currentURL = encodeURIComponent(window.location.href);
+ 			    const naverShareLink = document.querySelector('.naver-share-link');
+ 			    naverShareLink.href = 'http://share.naver.com/web/shareView.nhn?url=' + currentURL + '&title=' + encodeURIComponent(document.title);
  			});
 			}
  			sharecancel.addEventListener('click', () => {
  				sharemodal.style.display='none';
  			});
 		}
+ 		function postShareKakao() {
+
+ 			  // 사용할 앱의 JavaScript 키 설정
+ 			  Kakao.init('22e95823c2f2830c0d276cb7b53d5dad');
+ 			  Kakao.Link.sendDefault({
+ 			    objectType: 'feed',
+ 			    content: {
+ 			      title: "phototalk", // title to be displayed
+ 			      description: "This is phototalk", // Description to be displayed
+ 			      imageUrl: "http://localhost:8081/sns-project/sns/photo/photo8.jpg", // Content URL
+ 			      link: {
+ 			        mobileWebUrl: "http://localhost:8081/sns-project/sns/Main.jsp",
+ 			        webUrl: "http://localhost:8081/sns-project/sns/Main.jsp"
+ 			      }
+ 			    }
+ 			  });
+ 		}
  		function dofriend(email){//팔로우
  			const sentence=email;
  			const [friendEmail,userEmail]=sentence.split(",");
- 			document.frm.friendEmail.value=friendEmail;
- 			document.frm.userEmail.value=userEmail;
-			const followBtn = document.querySelector(".follow-btn");
+ 			
+			const followBtns = document.querySelectorAll(".follow-btn");
 			$.ajax({
 				    url: "FollowServlet", 
 				    type: "POST",
@@ -424,14 +545,30 @@
 				    		userEmail:userEmail
 				    },
 				    success: function(result) {
-				    	followBtn.addEventListener("click", function() {
-				    		followBtn.innerHTML = "팔로워";
-							location.reload()
-					 	});
-				    },
+				    	console.log("팔로우신청");
+				    	location.reload();
+				        },
 				    error: function(xhr, status, error) {
 				    }
 				  });
+ 		}
+ 		function deletefriend(email){
+ 			const sentence=email;
+ 			const [friendEmail,userEmail]=sentence.split(",");
+			const followdelbtns = document.querySelectorAll(".followdelbtn");
+			$.ajax({
+				    url: "DelFollowServlet", 
+				    type: "POST",
+				    data: { friendEmail: friendEmail,
+				    		userEmail:userEmail
+				    },
+				    success: function(result) {
+				    	console.log("팔로우헤제");
+				    	location.reload();
+				    },
+				    error: function(xhr, status, error) {
+				    }
+			});
  		}
  		
  		var nowUrl = window.location.href;//링크 url따오기 완료
@@ -456,42 +593,47 @@
  				  });
  		}
  		
- 		
+ 		//댓글달기
  		document.addEventListener('DOMContentLoaded', function() {
- 			  var input = document.querySelector('.postTextbox');
- 			 var postId = input.dataset.postid;
- 			var userEmail = '';
- 			  if (input.hasAttribute('data-userEmail')) {
- 			    userEmail = input.getAttribute('data-userEmail');
- 			  }
- 			  if (input) {
- 			    input.addEventListener('keydown', function(event) {
- 			      if (event.key === 'Enter') {
- 			        addComment(postId,userEmail);
- 			      }
- 			    });
- 			  }
- 			 function addComment(posetId,userEmail){
- 				 // Send Ajax request
- 				$.ajax({
- 				    url: "commentAdd", 
- 				    type: "POST",
- 				    data: { postId: postId,
- 				    		commentDetail:input.value,
- 				    		userEmail:userEmail
- 				    },
- 				    success: function(result) {
- 				    	input.value = ""; // clear input field
- 				    	
- 				    },
- 				    
- 				    error: function(xhr, status, error) {
- 				    }
- 				  });
- 	 		
- 	 		}
- 			 
- 			});
+  		var inputs = document.querySelectorAll('.postTextbox');
+  
+  		inputs.forEach(function(input) {
+    		var postId = input.dataset.postid;
+    		var userEmail = '';
+    
+    		if (input.hasAttribute('data-userEmail')) {
+    			userEmail = input.getAttribute('data-userEmail');
+    		}
+    
+    		input.addEventListener('keydown', function(event) {
+      			if (event.key === 'Enter') {
+        			addComment(postId, userEmail, input.value);
+      			}
+    		});
+  		});
+		});
+
+		function addComment(postId, userEmail, commentDetail) {
+  		$.ajax({
+    		url: "commentAdd",
+    		type: "POST",
+    		data: {
+      		postId: postId,
+      		commentDetail: commentDetail,
+      		userEmail: userEmail
+    	},
+    		success: function(result) {
+      		var inputs = document.querySelectorAll('.postTextbox');
+      		inputs.forEach(function(input) {
+        		input.value = "";
+      		});
+      		location.reload();
+    		},
+    		error: function(xhr, status, error) {
+      		console.error("Error:", error);
+    		}
+  		});
+		}
  		//만들기버튼 기능들
  		const makePostButton = document.querySelector('#make-post');
  		const overlay = document.querySelector('.overlay');
@@ -526,24 +668,36 @@
  		makepostInsert.addEventListener('click',()=>{
  			fixmodal.style.display='none';
  			postcomplete.style.display='block';
- 			const userEmail=mbean.getUserEmail();
+ 			const userEmail="jseok@aaa.com";
  			const croppedImage = document.getElementById('croppedImage');
- 			const croppedImageUrl = croppedImage.src;
- 			const postData = JSON.stringify({ imageUrl: croppedImageUrl });
- 			
+ 			const croppedFile = dataURLtoFile(croppedImage.src, 'croppedImage.jpg');
+ 			const formData = new FormData();
+ 			formData.append('userEmail', userEmail);
+ 			formData.append('imageName', croppedFile);
  			$.ajax({
 				    url: "PostInsertServlet", 
 				    type: "POST",
-				    data: { userEmail: userEmail,
-				    		postData:  postData		    		
-				    },
+				    data:formData,
+				    contentType: false,
+				    processData: false,
 				    success: function(result) {
-				    	  	
+				    	  	alert("성공");
 				    },   
 				    error: function(xhr, status, error) {
 				    }
 				  });
  		});
+ 		function dataURLtoFile(dataURL, fileName) {
+ 			  const arr = dataURL.split(',');
+ 			  const mime = arr[0].match(/:(.*?);/)[1];
+ 			  const bstr = atob(arr[1]);
+ 			  let n = bstr.length;
+ 			  const u8arr = new Uint8Array(n);
+ 			  while (n--) {
+ 			    u8arr[n] = bstr.charCodeAt(n);
+ 			  }
+ 			  return new File([u8arr], fileName, { type: mime });
+ 			}
  		makepostCheck.addEventListener('click',()=>{
  			overlay.classList.toggle('active');
  			overlay.style.display = 'none';
@@ -581,38 +735,30 @@ imageInput.addEventListener('change', function (event) {
       }
     }
 
-    // Create a canvas element to draw the resized image
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     canvas.width = newWidth;
     canvas.height = newHeight;
     context.drawImage(image, 0, 0, newWidth, newHeight);
 
-    // Create a new image element with the resized image
     const resizedImage = document.createElement('img');
     resizedImage.src = canvas.toDataURL();
 
-    // Replace the original image with the resized image
     choicepicture.removeChild(image);
     choicepicture.appendChild(resizedImage);
 
-    // Create the Cropper instance with the resized image
     const cropper = new Cropper(resizedImage, {
-      aspectRatio: 1, // Set the desired aspect ratio for cropping
-      viewMode: 2, // Set the view mode to restrict the crop box within the container
-
-      // Define the crop event handler
+      aspectRatio: 1,
+      viewMode: 2, 
       crop(event) {
-        // Get the cropped image data as a base64-encoded string
+
         const croppedImageData = cropper.getCroppedCanvas().toDataURL();
 
-        // Set the cropped image as the source of the "croppedImage" element
         const croppedImage = document.getElementById('croppedImage');
         croppedImage.src = croppedImageData;
       },
     });
 
-    // Destroy the Cropper instance when the modal is closed
     const makeBackBtn = document.querySelector('.makeBackBtn');
     makeBackBtn.addEventListener('click', function () {
       cropper.destroy();
@@ -621,10 +767,12 @@ imageInput.addEventListener('change', function (event) {
     });
   };
 
-  // Set the source of the selected image file
   image.src = URL.createObjectURL(selectedImage);
+  
+  
 });
- 		
+	
+	
  	</script>
 </body>
 </html>

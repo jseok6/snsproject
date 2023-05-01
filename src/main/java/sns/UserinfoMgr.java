@@ -77,7 +77,7 @@ public class UserinfoMgr {
 			return vlist;
 		}
 		// 게시물 리스트
-		public Vector<PostBean> listPBlog(String email) {
+		public Vector<PostBean> listPBlog(String email,String FriendEmail) {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -85,9 +85,10 @@ public class UserinfoMgr {
 			Vector<PostBean> vlist = new Vector<PostBean>();
 			try {
 				con = pool.getConnection();
-				sql = "select * from post where userEmail=? order by postId desc";
+				sql = "select * from post where userEmail=? or userEmail=? order by postId desc";
 				pstmt = con.prepareStatement(sql);
 				pstmt.setString(1, email);
+				pstmt.setString(2, FriendEmail);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					PostBean bean = new PostBean();

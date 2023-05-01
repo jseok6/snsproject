@@ -14,7 +14,7 @@
 		UserinfoBean mbean = umgr.getPMember(email);
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);
 		Vector<FriendmanagerBean> flist=fmgr.friendpost(email);//프렌드sign이 1인애들 가져오기
-		Vector<PostBean> plist = umgr.listPBlog(email);
+		Vector<PostBean> uplist=fmgr.friendlist(email);
 		
 %>
 
