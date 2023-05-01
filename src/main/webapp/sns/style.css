@@ -335,8 +335,6 @@ c{
   	object-fit: contain;
 }
 .imageposition4{
-	padding-left:30px;
-	padding-top:180px;
   	object-fit: contain;
 }
 .makebodytext{
@@ -361,6 +359,40 @@ c{
   	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   	z-index:9999;
   	display:none;
+}
+.videomodal{
+	position:fixed;
+  	top:20%;
+  	left:33%;
+  	width:600px;
+  	height:600px;
+  	border-radius: 5px;
+  	background-color: #fff;
+  	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  	z-index:9999;
+  	display:none;
+}
+.makevideoBackBtn{
+	height:20px;
+	padding-left:235px;
+	padding-top:10px
+}
+.videotitle{
+	text-align:center;
+}
+.choicevideo{
+	width:250px;
+	height:250px;
+	margin-left:200px;
+	margin-top:80px;
+	margin-right:50px;
+	margin-bottom:50px;
+	text-align:center;
+  	border: solid 25px var(--black);
+  	position: ralative;
+}
+.videopostInsert{
+	margin-left:220px;
 }
 .makeBackBtn{
 	height:20px;
@@ -481,3 +513,4 @@ c{
 .suggestItem:hover{
 	background-color:#eee;
 }
+

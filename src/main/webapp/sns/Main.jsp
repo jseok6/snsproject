@@ -183,7 +183,7 @@
 			
 				<%if (pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
 					<a href="javascript:heartdel('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">
-					<img src="./img/hearjfull.jpg" align="top">
+					<img src="./img/postLikeTrue.svg" align="top">
 					</a>
 				<%}else if(!pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
 					<a href="javascript:heart('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">				
@@ -300,7 +300,7 @@
 			<img src="./img/makePostVideo.svg" class="imageposition2"><br>
 			<h5 class="makebodytext">사진과 동영상을 선택하세요</h5>
 			<img src="./img/makePostSelectImage.svg" class="imageposition3">
-			<img src="./img/makePostSelectVideo.svg">
+			<img src="./img/makePostSelectVideo.svg" class="imageposition4">
 		</div> 				
   	</div>
   	<!-- 편집하기모달 -->
@@ -322,6 +322,22 @@
       			
 			</div>
 			<img src="./img/makePostInsertBtn.svg" class="makepostInsert">
+		</div>				
+  	</div>
+  	</form>
+  	<!-- 동영상모달 -->
+  	<form name="postFrm" method="post" action="VideoInsertServlet" enctype="multipart/form-data" >
+  	<div class="videomodal">
+		<div class="maketexttitle">
+		&nbsp;&nbsp;<b>동영상모달</b><img src="./img/makePostBackBtn.svg" class="makevideoBackBtn">
+		</div>
+		<hr>
+		<div class="makebody">
+			<h5 class="videotitle">동영상을 선택하세요</h5>
+			<div class="choicevideo">
+				<input type="file" accept="image/*" class="imageInput" name="imageName">
+			</div>
+			<img src="./img/makePostInsertBtn.svg" class="videopostInsert">
 		</div>				
   	</div>
   	</form>
@@ -592,7 +608,6 @@
  				    }
  				  });
  		}
- 		
  		//댓글달기
  		document.addEventListener('DOMContentLoaded', function() {
   		var inputs = document.querySelectorAll('.postTextbox');
@@ -640,7 +655,9 @@
 		const makemodal=document.querySelector('.makemodal');
 		const makecancel=document.querySelector('.makecancel');
 		const imageposition3=document.querySelector('.imageposition3');
+		const imageposition4=document.querySelector('.imageposition4');
 		const fixmodal=document.querySelector('.fixmodal');
+		const videomodal = document.querySelector('.videomodal');
 		const makeBackBtn=document.querySelector('.makeBackBtn');
 		const makepostInsert=document.querySelector('.makepostInsert');
 		const postcomplete=document.querySelector('.postcomplete');
@@ -661,6 +678,10 @@
  			makemodal.style.display = 'none';
  			fixmodal.style.display = 'block';
  		});
+ 		imageposition4.addEventListener('click', ()=>{
+ 			makemodal.style.display='none';
+ 			videomodal.style.display='block';
+ 		});
  		makeBackBtn.addEventListener('click', ()=>{
  			fixmodal.style.display='none';
  			makemodal.style.display='block';
@@ -668,7 +689,7 @@
  		makepostInsert.addEventListener('click',()=>{
  			fixmodal.style.display='none';
  			postcomplete.style.display='block';
- 			const userEmail="jseok@aaa.com";
+ 			const userEmail="jseok@aaa.com";//유저 이메일 받아오기
  			const croppedImage = document.getElementById('croppedImage');
  			const croppedFile = dataURLtoFile(croppedImage.src, 'croppedImage.jpg');
  			const formData = new FormData();
@@ -681,7 +702,8 @@
 				    contentType: false,
 				    processData: false,
 				    success: function(result) {
-				    	  	alert("성공");
+				    	console.log("main에서작용");
+				        location.reload();
 				    },   
 				    error: function(xhr, status, error) {
 				    }
@@ -704,73 +726,73 @@
  			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
  			postcomplete.style.display='none';
  		})
- 		//fwea
-const imageInput = document.querySelector('.imageInput');
+ 		//크롭
+		const imageInput = document.querySelector('.imageInput');
 
-// Create a Cropper instance when an image is selected
-imageInput.addEventListener('change', function (event) {
-  const selectedImage = event.target.files[0];
 
-  // Create an <img> element to display the selected image
-  const image = document.createElement('img');
-  const choicepicture = document.querySelector('.choicepicture');
-  choicepicture.appendChild(image);
+		imageInput.addEventListener('change', function (event) {
+  		const selectedImage = event.target.files[0];
 
-  // Initialize the Cropper instance once the image is loaded
-  image.onload = function () {
-    // Resize the image to a maximum width of 250px and height of 250px
-    const MAX_WIDTH = 250;
-    const MAX_HEIGHT = 250;
-    const aspectRatio = image.width / image.height;
-    let newWidth = image.width;
-    let newHeight = image.height;
+  
+  		const image = document.createElement('img');
+  		const choicepicture = document.querySelector('.choicepicture');
+  		choicepicture.appendChild(image);
 
-    if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
-      if (newWidth / newHeight > aspectRatio) {
-        newWidth = MAX_WIDTH;
-        newHeight = newWidth / aspectRatio;
-      } else {
-        newHeight = MAX_HEIGHT;
-        newWidth = newHeight * aspectRatio;
-      }
-    }
+  
+  		image.onload = function () {
+    
+    		const MAX_WIDTH = 250;
+    		const MAX_HEIGHT = 250;
+    		const aspectRatio = image.width / image.height;
+    		let newWidth = image.width;
+    		let newHeight = image.height;
 
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    context.drawImage(image, 0, 0, newWidth, newHeight);
+    		if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
+      			if (newWidth / newHeight > aspectRatio) {
+        			newWidth = MAX_WIDTH;
+        			newHeight = newWidth / aspectRatio;
+      		} else {
+        		newHeight = MAX_HEIGHT;
+        		newWidth = newHeight * aspectRatio;
+      			}
+    		}
 
-    const resizedImage = document.createElement('img');
-    resizedImage.src = canvas.toDataURL();
+    		const canvas = document.createElement('canvas');
+    		const context = canvas.getContext('2d');
+    		canvas.width = newWidth;
+    		canvas.height = newHeight;
+    		context.drawImage(image, 0, 0, newWidth, newHeight);
 
-    choicepicture.removeChild(image);
-    choicepicture.appendChild(resizedImage);
+    		const resizedImage = document.createElement('img');
+    		resizedImage.src = canvas.toDataURL();
 
-    const cropper = new Cropper(resizedImage, {
-      aspectRatio: 1,
-      viewMode: 2, 
-      crop(event) {
+    		choicepicture.removeChild(image);
+    		choicepicture.appendChild(resizedImage);
 
-        const croppedImageData = cropper.getCroppedCanvas().toDataURL();
+    		const cropper = new Cropper(resizedImage, {
+      		aspectRatio: 1,
+      		viewMode: 2, 
+      		crop(event) {
 
-        const croppedImage = document.getElementById('croppedImage');
-        croppedImage.src = croppedImageData;
-      },
-    });
+        		const croppedImageData = cropper.getCroppedCanvas().toDataURL();
 
-    const makeBackBtn = document.querySelector('.makeBackBtn');
-    makeBackBtn.addEventListener('click', function () {
-      cropper.destroy();
-      imageInput.value = ''; // Reset the input field
-      choicepicture.removeChild(resizedImage); // Remove the preview image
-    });
-  };
+        		const croppedImage = document.getElementById('croppedImage');
+        		croppedImage.src = croppedImageData;
+      			},
+    		});
 
-  image.src = URL.createObjectURL(selectedImage);
+    		const makeBackBtn = document.querySelector('.makeBackBtn');
+    		makeBackBtn.addEventListener('click', function () {
+      		cropper.destroy();
+      		imageInput.value = '';
+      		choicepicture.removeChild(resizedImage);
+    		});
+  		};
+
+  		image.src = URL.createObjectURL(selectedImage);
   
   
-});
+		});
 	
 	
  	</script>
