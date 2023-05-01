@@ -60,6 +60,39 @@ public class PostMgr {
 					pool.freeConnection(con, pstmt);
 				}
 		}
+		//비디오
+		public void insertvideo(HttpServletRequest req) {
+			Connection con=null;
+			PreparedStatement pstmt=null;
+			String sql=null;
+			try {
+				con = pool.getConnection();
+				File dir=new File(SAVEFOLDER);
+				if(!dir.exists())/*존재하지않으면*/{
+					dir.mkdirs();//상위폴더가 없어도 생성가능
+					//mkdir:상위폴더가 없으면 생성불가
+				}
+				MultipartRequest multi = new MultipartRequest(req, SAVEFOLDER,MAXSIZE, ENCODING, new DefaultFileRenamePolicy());
+				String imageName = null;
+				if(multi.getFilesystemName("imageName")!=null) {
+					imageName=multi.getFilesystemName("imageName");
+				}
+				sql="insert into post(userEmail,likeNum,imageName,videoName,shareNum,commentNum,creationDate,postReport) VALUES(?, ?,?, ?,?,?,now(),?);";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, multi.getParameter("userEmail"));
+				pstmt.setInt(2, 0);
+				pstmt.setString(3, null);
+				pstmt.setString(4, imageName);
+				pstmt.setInt(5, 0);
+				pstmt.setInt(6, 0);
+				pstmt.setInt(7,0);
+				pstmt.executeUpdate();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					pool.freeConnection(con, pstmt);
+				}
+		}
 	//하트 카운트
 	public void upHCnt(int num) {
 		Connection con = null;

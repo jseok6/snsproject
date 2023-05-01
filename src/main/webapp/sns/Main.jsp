@@ -326,7 +326,7 @@
   	</div>
   	</form>
   	<!-- 동영상모달 -->
-  	<form name="postFrm" method="post" action="VideoInsertServlet" enctype="multipart/form-data" >
+  	<form name="videoFrm" method="post" action="VideoPostInsertServlet" enctype="multipart/form-data" >
   	<div class="videomodal">
 		<div class="maketexttitle">
 		&nbsp;&nbsp;<b>동영상모달</b><img src="./img/makePostBackBtn.svg" class="makevideoBackBtn">
@@ -335,7 +335,7 @@
 		<div class="makebody">
 			<h5 class="videotitle">동영상을 선택하세요</h5>
 			<div class="choicevideo">
-				<input type="file" accept="image/*" class="imageInput" name="imageName">
+				<input type="file" accept="image/*" id="videoElement" name="videoElement">
 			</div>
 			<img src="./img/makePostInsertBtn.svg" class="videopostInsert">
 		</div>				
@@ -532,6 +532,7 @@
  				sharemodal.style.display='none';
  			});
 		}
+ 		//카카오공유
  		function postShareKakao() {
 
  			  // 사용할 앱의 JavaScript 키 설정
@@ -656,10 +657,12 @@
 		const makecancel=document.querySelector('.makecancel');
 		const imageposition3=document.querySelector('.imageposition3');
 		const imageposition4=document.querySelector('.imageposition4');
-		const fixmodal=document.querySelector('.fixmodal');
-		const videomodal = document.querySelector('.videomodal');
-		const makeBackBtn=document.querySelector('.makeBackBtn');
-		const makepostInsert=document.querySelector('.makepostInsert');
+		const fixmodal=document.querySelector('.fixmodal');//사진모달
+		const videomodal = document.querySelector('.videomodal');//동영상모달
+		const makeBackBtn=document.querySelector('.makeBackBtn');//사진뒤로가기
+		const makevideoBackBtn=document.querySelector('.makevideoBackBtn');//동영상뒤로가기
+		const makepostInsert=document.querySelector('.makepostInsert');//사진완료
+		const videopostInsert=document.querySelector('.videopostInsert');//영상완료
 		const postcomplete=document.querySelector('.postcomplete');
 		const makepostCheck=document.querySelector('.makepostCheck');
  		makePostButton.addEventListener('click', () => {
@@ -686,6 +689,10 @@
  			fixmodal.style.display='none';
  			makemodal.style.display='block';
  		});
+ 		makevideoBackBtn.addEventListener('click',()=>{
+ 			videomodal.style.display='none';
+ 			makemodal.style.display='block';
+ 		})
  		makepostInsert.addEventListener('click',()=>{
  			fixmodal.style.display='none';
  			postcomplete.style.display='block';
@@ -726,6 +733,36 @@
  			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
  			postcomplete.style.display='none';
  		})
+ 		//영상
+ 		document.addEventListener('DOMContentLoaded', function() {
+    const videopostInsert = document.querySelector('.videopostInsert');
+    videopostInsert.addEventListener('click', function() {
+        const videomodal = document.querySelector('.videomodal');
+        const postcomplete = document.querySelector('.postcomplete');
+        const userEmail = "jseok@aaa.com";
+        const videoElement = document.getElementById('videoElement');
+        const videoFile = videoElement.files[0];
+        const formData = new FormData();
+        formData.append('userEmail', userEmail);
+        formData.append('video', videoFile);
+        $.ajax({
+            url: "VideoPostInsertServlet",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                console.log("action in main");
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+            }
+        });
+    });
+});
+
+		
  		//크롭
 		const imageInput = document.querySelector('.imageInput');
 
