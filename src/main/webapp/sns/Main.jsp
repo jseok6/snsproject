@@ -395,7 +395,7 @@
   				const selectedImage = event.target.files[0];
   				const image = document.createElement('img');
   				const choicepicture = document.querySelector('.choicepicture');
-  				choicepicture.appendChild(image);  
+  				choicepicture.appendChild(image);
   				image.onload = function () {
     				const MAX_WIDTH = 150;
     				const MAX_HEIGHT = 150;
@@ -426,13 +426,14 @@
       				crop(event) {
       					const croppedImageData = cropper.getCroppedCanvas().toDataURL();
         				const croppedImage = document.getElementById('croppedImage');
-        				croppedImage.src = croppedImageData;
+        				croppedImage.src = croppedImageData;//After이미지
+        				cropper.destroy();
+      			      	imageInput.value = '';
       					},
     				});
   				};
   				image.src = URL.createObjectURL(selectedImage);
   				});
-			
  		function goURL(url, gid) {
 			document.frm1.action=url;
 			document.frm1.gid.value=gid;
@@ -725,9 +726,6 @@
  		makeBackBtn.addEventListener('click', ()=>{
  			fixmodal.style.display='none';
  			makemodal.style.display='block';
- 			cropper.destroy();
-      		imageInput.value = '';
-      		choicepicture.removeChild(resizedImage);
  		});
  		makevideoBackBtn.addEventListener('click',()=>{
  			videomodal.style.display='none';
