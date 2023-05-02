@@ -174,7 +174,12 @@
 		</tr>
 		<tr>
 			<td colspan="3">
-				<img src="photo/<%=pbean.getImageName()%>" width="515" height="480">
+			<!-- 이미지가 null이면 영상불러오기 -->
+				<%if (pbean.getImageName() == null || pbean.getImageName().equals("NULL")){ %>
+					<embed src="photo/<%=pbean.getVideoName()%>" width="515" height="480">
+				<%} else {%>
+					<img src="photo/<%=pbean.getImageName()%>" width="515" height="480">
+				<%} %>
 			</td>
 		</tr>
 		<tr>

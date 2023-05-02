@@ -48,6 +48,32 @@ public class UserinfoMgr {
 			}
 			return bean;
 		}
+		// 유저 정보 불러오기
+				public UserinfoBean getsearchPMember(String userNickName) {
+					Connection con = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+					String sql = null;
+					UserinfoBean bean = new UserinfoBean();
+					try {
+						con = pool.getConnection();
+						sql = "select userName,userImage,userNickName,userEmail from userinfo where userNickName=?";
+						pstmt = con.prepareStatement(sql);
+						pstmt.setString(1, userNickName);
+						rs = pstmt.executeQuery();
+						if (rs.next()) {
+							bean.setUserName(rs.getString(1));
+							bean.setUserImage(rs.getString(2));
+							bean.setUserNickName(rs.getString(3));
+							bean.setUserEmail(rs.getString(4));
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						pool.freeConnection(con, pstmt, rs);
+					}
+					return bean;
+				}
 	
 	//본인을 제외한 5명 리스트
 		public Vector<UserinfoBean> listPMember(String email) {
@@ -76,6 +102,33 @@ public class UserinfoMgr {
 			}
 			return vlist;
 		}
+		//본인을 제외한 5명 리스트
+				public Vector<UserinfoBean> listsearchPMember(String userNickName) {
+					Connection con = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+					String sql = null;
+					Vector<UserinfoBean> vlist = new Vector<UserinfoBean>();
+					try {
+						con = pool.getConnection();
+						sql = "select userEmail,userNickName,userImage from userinfo where userNickName !=? order by rand() limit 5";
+						pstmt = con.prepareStatement(sql);
+						pstmt.setString(1, userNickName);
+						rs = pstmt.executeQuery();
+						while (rs.next()) {
+							UserinfoBean bean = new UserinfoBean();
+							bean.setUserEmail(rs.getString(1));
+							bean.setUserNickName(rs.getString(2));
+							bean.setUserImage(rs.getString(3));
+							vlist.addElement(bean);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						pool.freeConnection(con, pstmt, rs);
+					}
+					return vlist;
+				}
 		// 게시물 리스트
 		public Vector<PostBean> listPBlog(String email,String FriendEmail) {
 			Connection con = null;

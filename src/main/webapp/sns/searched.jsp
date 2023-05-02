@@ -15,9 +15,9 @@
 		searchWord = (String) session.getAttribute("searchWord");
 		System.out.println("searchword from session is :" + searchWord);
 	}
-	UserinfoBean mbean = umgr.getPMember(searchWord);
-	Vector<UserinfoBean> uilist = umgr.listPMember(searchWord);
-	Vector<PostBean> uplist=fmgr.friendlist(searchWord);
+	UserinfoBean mbean = umgr.getsearchPMember(searchWord);
+	Vector<UserinfoBean> uilist = umgr.listsearchPMember(searchWord);
+	Vector<PostBean> uplist=fmgr.friendlist(mbean.getUserEmail());
 	System.out.println(searchWord);
 		
 %>
