@@ -218,7 +218,7 @@
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cup('<%=cbean.getCommentId()%>')">수정</a><%}%>&nbsp;
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>">수정</a><%}%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')">삭제</a></c><%}%>&nbsp;
 				<br>
@@ -228,7 +228,7 @@
 				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				
-				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box">수정</a><%}%>&nbsp;
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>">수정</a><%}%>&nbsp;
 				
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')">삭제</a></b><%}%>&nbsp;
@@ -508,7 +508,7 @@
  		//수정
  		var isInputBoxAdded = false;
  		function cup(commentId) {
- 		  const parentElement = document.getElementById("box");
+ 		  const parentElement = document.getElementById("box"+commentId);
  		  if (!isInputBoxAdded) {
  		    const inputBox = document.createElement('input');
  		    inputBox.type = 'text';
@@ -537,7 +537,7 @@
  		        }
  		      });
  		    };
- 		    parentElement.innerHTML = '';
+ 		   	parentElement.innerHTML = '';
  		    parentElement.appendChild(inputBox);
  		    parentElement.appendChild(saveButton);
  		    parentElement.appendChild(deleteButton);
