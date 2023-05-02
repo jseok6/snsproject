@@ -319,12 +319,11 @@
 			<b class="makepostBefore">Before</b>
 			<b class="makepostAfter">After</b>
 			<div class="choicepicture">
+				<!-- 크롭될이미지 -->
 				<input type="file" accept="image/*" class="imageInput" name="imageName">
 			</div>
 			<div class="choiceafterpicture">
-				
         			<img id="croppedImage" src="" alt="Cropped Image">
-      			
 			</div>
 			<img src="./img/makePostInsertBtn.svg" class="makepostInsert">
 		</div>				
@@ -390,7 +389,50 @@
 </form>
 <script type="text/javascript">
 		var request=new XMLHttpRequest();
-		
+		//크롭
+		const imageInput = document.querySelector('.imageInput');
+			imageInput.addEventListener('change', function (event) {
+  				const selectedImage = event.target.files[0];
+  				const image = document.createElement('img');
+  				const choicepicture = document.querySelector('.choicepicture');
+  				choicepicture.appendChild(image);  
+  				image.onload = function () {
+    				const MAX_WIDTH = 150;
+    				const MAX_HEIGHT = 150;
+    				const aspectRatio = image.width / image.height;
+    				let newWidth = image.width;
+    				let newHeight = image.height;
+    				if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
+      					if (newWidth / newHeight > aspectRatio) {
+        					newWidth = MAX_WIDTH;
+        					newHeight = newWidth / aspectRatio;
+      				} else {
+        				newHeight = MAX_HEIGHT;
+        				newWidth = newHeight * aspectRatio;
+      					}
+    				}
+    				const canvas = document.createElement('canvas');
+    				const context = canvas.getContext('2d');
+    				canvas.width = newWidth;
+    				canvas.height = newHeight;
+    				context.drawImage(image, 0, 0, newWidth, newHeight);
+    				const resizedImage = document.createElement('img');
+    				resizedImage.src = canvas.toDataURL();
+    				choicepicture.removeChild(image);
+    				choicepicture.appendChild(resizedImage);
+    				const cropper = new Cropper(resizedImage, {
+      				aspectRatio: 1,
+      				viewMode: 2, 
+      				crop(event) {
+      					const croppedImageData = cropper.getCroppedCanvas().toDataURL();
+        				const croppedImage = document.getElementById('croppedImage');
+        				croppedImage.src = croppedImageData;
+      					},
+    				});
+  				};
+  				image.src = URL.createObjectURL(selectedImage);
+  				});
+			
  		function goURL(url, gid) {
 			document.frm1.action=url;
 			document.frm1.gid.value=gid;
@@ -683,6 +725,9 @@
  		makeBackBtn.addEventListener('click', ()=>{
  			fixmodal.style.display='none';
  			makemodal.style.display='block';
+ 			cropper.destroy();
+      		imageInput.value = '';
+      		choicepicture.removeChild(resizedImage);
  		});
  		makevideoBackBtn.addEventListener('click',()=>{
  			videomodal.style.display='none';
@@ -758,73 +803,7 @@
 });
 
 		
- 		//크롭
-		const imageInput = document.querySelector('.imageInput');
-
-
-		imageInput.addEventListener('change', function (event) {
-  		const selectedImage = event.target.files[0];
-
-  
-  		const image = document.createElement('img');
-  		const choicepicture = document.querySelector('.choicepicture');
-  		choicepicture.appendChild(image);
-
-  
-  		image.onload = function () {
-    
-    		const MAX_WIDTH = 250;
-    		const MAX_HEIGHT = 250;
-    		const aspectRatio = image.width / image.height;
-    		let newWidth = image.width;
-    		let newHeight = image.height;
-
-    		if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
-      			if (newWidth / newHeight > aspectRatio) {
-        			newWidth = MAX_WIDTH;
-        			newHeight = newWidth / aspectRatio;
-      		} else {
-        		newHeight = MAX_HEIGHT;
-        		newWidth = newHeight * aspectRatio;
-      			}
-    		}
-
-    		const canvas = document.createElement('canvas');
-    		const context = canvas.getContext('2d');
-    		canvas.width = newWidth;
-    		canvas.height = newHeight;
-    		context.drawImage(image, 0, 0, newWidth, newHeight);
-
-    		const resizedImage = document.createElement('img');
-    		resizedImage.src = canvas.toDataURL();
-
-    		choicepicture.removeChild(image);
-    		choicepicture.appendChild(resizedImage);
-
-    		const cropper = new Cropper(resizedImage, {
-      		aspectRatio: 1,
-      		viewMode: 2, 
-      		crop(event) {
-
-        		const croppedImageData = cropper.getCroppedCanvas().toDataURL();
-
-        		const croppedImage = document.getElementById('croppedImage');
-        		croppedImage.src = croppedImageData;
-      			},
-    		});
-
-    		const makeBackBtn = document.querySelector('.makeBackBtn');
-    		makeBackBtn.addEventListener('click', function () {
-      		cropper.destroy();
-      		imageInput.value = '';
-      		choicepicture.removeChild(resizedImage);
-    		});
-  		};
-
-  		image.src = URL.createObjectURL(selectedImage);
-  
-  
-		});
+ 		
 	
 	
  	</script>
