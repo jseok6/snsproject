@@ -212,7 +212,7 @@
 				<%
 				for(int j=0;j<clist.size();j++){
 					CommentBean cbean = clist.get(j);
-					if(!cbean.getCommentParrent().equals("0")){
+					if(cbean.getCommentParrent()!=null){
 				%>	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
@@ -516,20 +516,20 @@
  		    deleteButton.type = 'button';
  		    deleteButton.value = '취소';
  		    deleteButton.onclick = function() {
- 		      parentElement.innerHTML = "수정"; 
- 		      isInputBoxAdded = true;
+ 		    	parentElement.innerHTML = "수정"; 
+ 		      	isInputBoxAdded = true;
+ 		      	location.reload();
  		    };
-
  		    const saveButton = document.createElement('input');
  		    saveButton.type = 'button';
  		    saveButton.value = '저장';
  		    saveButton.onclick = function() {
- 		      var updatedComment = inputBox.value;
- 		      $.ajax({
- 		        url: 'CommentUpdate',
- 		        type: 'POST',
- 		        data: { commentId: commentId, commentDetail: updatedComment },
- 		        success: function(result) {
+ 		    	var updatedComment = inputBox.value;
+ 		      	$.ajax({
+ 		        	url: 'CommentUpdate',
+ 		        	type: 'POST',
+ 		        	data: { commentId: commentId, commentDetail: updatedComment },
+ 		        	success: function(result) {
  		        	console.log('댓글수정완료');
  		 			location.reload();
  		        },

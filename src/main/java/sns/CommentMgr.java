@@ -101,22 +101,24 @@ public class CommentMgr {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = null;
 		String sql2=null;
 		Vector<CommentBean> vlist = new Vector<CommentBean>();
 		try {
 			con = pool.getConnection();
-			sql = "select * from comment where postId=? order by if (isnull(commentParrent), commentId, commentParrent),  commentChild;";
-			sql2="SELECT * FROM comment \r\n"
-					+ "WHERE postId = ? \r\n"
-					+ "ORDER BY \r\n"
-					+ "  CASE \r\n"
-					+ "    WHEN commentId = ? THEN 0 \r\n"
-					+ "    ELSE 1 \r\n"
-					+ "  END, \r\n"
-					+ "  commentId, \r\n"
-					+ "  commentChild, \r\n"
-					+ "  commentParrent;";
+			sql2="WITH RECURSIVE CTE AS (\n"
+					+ " SELECT commentId,postId,userEmail,commentDetail,commentParrent,commentChild,commentDate,commentCorrect,convert(commentId,char)as path\n"
+					+ " FROM comment\n"
+					+ " WHERE commentParrent IS NULL\n"
+					+ " AND postId=?\n"
+					+ " UNION ALL\n"
+					+ " SELECT uc.commentId,uc.postId,uc.userEmail,uc.commentDetail,uc.commentParrent,uc.commentChild,uc.commentDate,uc.commentCorrect,concat(CTE.commentId,'-',uc.commentId)AS path\n"
+					+ " FROM comment uc\n"
+					+ " INNER JOIN CTE ON uc.commentParrent=CTE.commentId\n"
+					+ "       WHERE uc.postId=?\n"
+					+ ")\n"
+					+ "SELECT commentId,postId,userEmail,commentDetail,commentParrent,commentChild,commentDate,commentCorrect,path\n"
+					+ "FROM CTE\n"
+					+ "ORDER BY CONVERT(SUBSTRING_INDEX(path,'-',1),UNSIGNED) ASC,commentId ASC, CONVERT(SUBSTRING_INDEX(path,'-',2),UNSIGNED) ASC, commentId ASC";
 			pstmt = con.prepareStatement(sql2);
 			pstmt.setInt(1, num);
 			pstmt.setInt(2, num);
