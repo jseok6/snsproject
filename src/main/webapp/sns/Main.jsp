@@ -391,36 +391,36 @@
 		var request=new XMLHttpRequest();
 		//크롭
 		const imageInput = document.querySelector('.imageInput');
-			imageInput.addEventListener('change', function (event) {
-  				const selectedImage = event.target.files[0];
-  				const image = document.createElement('img');
-  				const choicepicture = document.querySelector('.choicepicture');
-  				choicepicture.appendChild(image);
-  				image.onload = function () {
-    				const MAX_WIDTH = 150;
-    				const MAX_HEIGHT = 150;
-    				const aspectRatio = image.width / image.height;
-    				let newWidth = image.width;
-    				let newHeight = image.height;
-    				if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
-      					if (newWidth / newHeight > aspectRatio) {
-        					newWidth = MAX_WIDTH;
-        					newHeight = newWidth / aspectRatio;
+		imageInput.addEventListener('change', function (event) {
+  			const selectedImage = event.target.files[0];
+  			const image = document.createElement('img');
+  			const choicepicture = document.querySelector('.choicepicture');
+  			choicepicture.appendChild(image);
+  			image.onload = function () {
+    			const MAX_WIDTH = 150;
+    			const MAX_HEIGHT = 150;
+    			const aspectRatio = image.width / image.height;
+    			let newWidth = image.width;
+    			let newHeight = image.height;
+    			if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
+      				if (newWidth / newHeight > aspectRatio) {
+        				newWidth = MAX_WIDTH;
+        				newHeight = newWidth / aspectRatio;
       				} else {
         				newHeight = MAX_HEIGHT;
         				newWidth = newHeight * aspectRatio;
       					}
     				}
-    				const canvas = document.createElement('canvas');
-    				const context = canvas.getContext('2d');
-    				canvas.width = newWidth;
-    				canvas.height = newHeight;
-    				context.drawImage(image, 0, 0, newWidth, newHeight);
-    				const resizedImage = document.createElement('img');
-    				resizedImage.src = canvas.toDataURL();
-    				choicepicture.removeChild(image);
-    				choicepicture.appendChild(resizedImage);
-    				const cropper = new Cropper(resizedImage, {
+    			const canvas = document.createElement('canvas');
+    			const context = canvas.getContext('2d');
+    			canvas.width = newWidth;
+    			canvas.height = newHeight;
+    			context.drawImage(image, 0, 0, newWidth, newHeight);
+    			const resizedImage = document.createElement('img');
+    			resizedImage.src = canvas.toDataURL();
+    			choicepicture.removeChild(image);
+    			choicepicture.appendChild(resizedImage);
+    			const cropper = new Cropper(resizedImage, {
       				aspectRatio: 1,
       				viewMode: 2, 
       				crop(event) {
@@ -433,7 +433,7 @@
     				});
   				};
   				image.src = URL.createObjectURL(selectedImage);
-  				});
+  			});
  		function goURL(url, gid) {
 			document.frm1.action=url;
 			document.frm1.gid.value=gid;
@@ -507,10 +507,8 @@
 		}
  		//수정
  		var isInputBoxAdded = false;
-
  		function cup(commentId) {
  		  const parentElement = document.getElementById("box");
-
  		  if (!isInputBoxAdded) {
  		    const inputBox = document.createElement('input');
  		    inputBox.type = 'text';
@@ -519,7 +517,7 @@
  		    deleteButton.value = '취소';
  		    deleteButton.onclick = function() {
  		      parentElement.innerHTML = "수정"; 
- 		      isInputBoxAdded = false;
+ 		      isInputBoxAdded = true;
  		    };
 
  		    const saveButton = document.createElement('input');
@@ -794,7 +792,6 @@
                 location.reload();
             },
             error: function(xhr, status, error) {
-                // Handle error
             }
         });
     });
