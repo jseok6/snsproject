@@ -29,10 +29,10 @@
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
  	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
+ 	<script type="text/JavaScript" src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 </head>
 <body>
-<script src="//developers.kakao.com/sdk/js/kakao.js"></script>
-<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
 <form method="post" name="frm1" action="Main.jsp">
 	<input type="hidden" name="gid">
 </form>
@@ -373,7 +373,7 @@
   		<img src="./img/postShareNaver.jpg" class="postShareNaver" />
 	</a>
   
-  	<a href="javascript:postShareKakao" id="btnKakao">
+  	<a href="#" id="btnKakao" onclick="postShareKakao()">
   		<img src="./img/postShareKakao.jpg" class="postShareKakao"/>
   	</a>
 </div>
@@ -540,20 +540,10 @@
  		//카카오공유
  		function postShareKakao() {
 
- 			  // 사용할 앱의 JavaScript 키 설정
- 			  Kakao.init('22e95823c2f2830c0d276cb7b53d5dad');
- 			  Kakao.Link.sendDefault({
- 			    objectType: 'feed',
- 			    content: {
- 			      title: "phototalk", // title to be displayed
- 			      description: "This is phototalk", // Description to be displayed
- 			      imageUrl: "http://localhost:8081/sns-project/sns/photo/photo8.jpg", // Content URL
- 			      link: {
- 			        mobileWebUrl: "http://localhost:8081/sns-project/sns/Main.jsp",
- 			        webUrl: "http://localhost:8081/sns-project/sns/Main.jsp"
- 			      }
- 			    }
- 			  });
+ 			Kakao.init("22e95823c2f2830c0d276cb7b53d5dad");
+ 	        Kakao.Link.sendCustom({
+ 	            templateId: 93282
+ 	        });
  		}
  		function dofriend(email){//팔로우
  			const sentence=email;
@@ -838,5 +828,47 @@
 	
 	
  	</script>
+ 	<script>
+try {
+  function sendLinkDefault() {
+    Kakao.init('22e95823c2f2830c0d276cb7b53d5dad')
+    Kakao.Link.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '딸기 치즈 케익',
+        description: '#케익 #딸기 #삼평동 #카페 #분위기 #소개팅',
+        imageUrl:
+          'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+        link: {
+          mobileWebUrl: 'https://developers.kakao.com',
+          webUrl: 'https://developers.kakao.com',
+        },
+      },
+      social: {
+        likeCount: 286,
+        commentCount: 45,
+        sharedCount: 845,
+      },
+      buttons: [
+        {
+          title: '웹으로 보기',
+          link: {
+            mobileWebUrl: 'https://developers.kakao.com',
+            webUrl: 'https://developers.kakao.com',
+          },
+        },
+        {
+          title: '앱으로 보기',
+          link: {
+            mobileWebUrl: 'https://developers.kakao.com',
+            webUrl: 'https://developers.kakao.com',
+          },
+        },
+      ],
+    })
+  }
+; window.kakaoDemoCallback && window.kakaoDemoCallback() }
+catch(e) { window.kakaoDemoException && window.kakaoDemoException(e) }
+</script>
 </body>
 </html>
