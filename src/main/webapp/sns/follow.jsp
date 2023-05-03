@@ -118,7 +118,7 @@
                 <span class = "sidebar">홈</span>
             </a>
         </li>
-        <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
+        <li><a href="follow.jsp"><img src="./images/mainFollowTrue.svg" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
         <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
         <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" class="makeimage"><span class="sidebar">만들기</span></a></li>
         <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
