@@ -116,10 +116,8 @@
 		%>
 		<tr>	
 			<td width="50">
-				<div class="boxnored">
-					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
+				<div class="boxnored">		
 						<img class="profileimage" src="./photo/<%=ubean.getUserImage()%>">
-					</a>
 				</div>
 				
 			</td>
@@ -720,14 +718,16 @@
  		  	if (!isReplyBoxAdded) {
  		    	const replyBox = document.createElement('input');
  		   		replyBox.type = 'text';
- 		   		
+ 		   		replyBox.onclick = function(event) {
+ 		       		event.stopPropagation();
+ 		     	};
  		    	const replydelete = document.createElement('input');
  		   		replydelete.type = 'button';
  		  		replydelete.value = '취소';
  		 		replydelete.onclick = function() {
  		    		parentElement.innerHTML = "답글"; 
  		    		isReplyBoxAdded = true;
- 		      		location.reload();
+ 		    		location.reload();
  		    	};
  		    	const replysave = document.createElement('input');
  		   		replysave.type = 'button';
@@ -757,6 +757,7 @@
  		    	parentElement.appendChild(replysave);
  		   	 	parentElement.appendChild(replydelete);
  		   	 	isInputBoxAdded = true;
+ 		   		replyBox.focus();
  		  		}
  			}
 		
