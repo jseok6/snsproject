@@ -213,7 +213,7 @@
 					if(cbean.getCommentParrent()!=null){
 						
 				%>
-				<div id="myDIV<%=cbean.getCommentParrent()%>" style="display:none;">	
+				<div id="myDIV<%=cbean.getCommentParrent()%>">	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
@@ -932,12 +932,14 @@
 });
  		//댓글 보기숨기기
  		function doDisplay(commentId){ 	
-            var con = document.getElementById("myDIV"+commentId); 	
-            if(con.style.display=='none'){ 		
-                con.style.display = 'block';
-            }else{ 		
-                con.style.display = 'none'; 	
-            } 
+            const elements = document.querySelectorAll("#myDIV"+commentId);
+            for(var i=0; i<elements.length; i++){
+            	if(elements[i].style.display=='none'){ 		
+            		elements[i].style.display = 'block';
+                }else{ 		
+                	elements[i].style.display = 'none'; 	
+                } 
+            }
         } 
 </script>
 </body>
