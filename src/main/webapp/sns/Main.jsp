@@ -181,9 +181,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2">
-			
-			
+			<td colspan="2" style="padding-left:10px;">
 				<%if (pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
 					<a href="javascript:heartdel('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">
 					<img src="./img/postLikeTrue.svg" align="top">
@@ -200,20 +198,20 @@
 				<img src="./img/postShare.svg" align="top">
 			</a>
 			</td>
-			<td align="center"><a href="javascript:del('<%=pbean.getPostId()%>')">DEL</a></td>
+			
 		</tr>
 		<tr>
-			<td width="250"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
+			<td width="250" style="padding-left:10px;"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
 		</tr>
 		<tr class="commenter" stlye="height:<%=commentCount*50%>px;">
-			<td colspan="3" width="500"> 
+			<td colspan="3" width="500" style="padding-left:10px;"> 
 				<%
 				for(int j=0;j<clist.size();j++){
 					CommentBean cbean = clist.get(j);
 					if(cbean.getCommentParrent()!=null){
 						
 				%>
-				<div id="myDIV<%=cbean.getCommentParrent()%>">	
+				<div id="myDIV<%=cbean.getCommentParrent()%>" style="display:none;">	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
