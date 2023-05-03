@@ -512,6 +512,7 @@
  		  if (!isInputBoxAdded) {
  		    const inputBox = document.createElement('input');
  		    inputBox.type = 'text';
+ 		   	inputBox.style.borderRadius = '30px';
  		    const deleteButton = document.createElement('input');
  		    deleteButton.type = 'button';
  		    deleteButton.value = '취소';
@@ -718,6 +719,7 @@
  		  	if (!isReplyBoxAdded) {
  		    	const replyBox = document.createElement('input');
  		   		replyBox.type = 'text';
+ 		   		replyBox.style.borderRadius = '30px';
  		   		replyBox.onclick = function(event) {
  		       		event.stopPropagation();
  		     	};
