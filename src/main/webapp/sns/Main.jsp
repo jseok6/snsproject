@@ -516,6 +516,18 @@
  		    const deleteButton = document.createElement('input');
  		    deleteButton.type = 'button';
  		    deleteButton.value = '취소';
+ 		    deleteButton.style.border='1px solid skyblue';
+ 		    deleteButton.style.backgroundColor='rgba(0,0,0,0)';
+ 		   	deleteButton.style.color='skyblue';
+ 		   	deleteButton.style.borderRadius='5px';
+ 		   	deleteButton.addEventListener('mouseover', function() {
+ 		   		deleteButton.style.color = 'white';
+ 		   		deleteButton.style.backgroundColor = 'skyblue';
+		  	});
+ 		   	deleteButton.addEventListener('mouseout', function() {
+		   		deleteButton.style.color = 'skyblue';
+		   		deleteButton.style.backgroundColor = 'rgba(0,0,0,0)';
+		  	});
  		    deleteButton.onclick = function() {
  		    	parentElement.innerHTML = "수정"; 
  		      	isInputBoxAdded = true;
@@ -524,6 +536,18 @@
  		    const saveButton = document.createElement('input');
  		    saveButton.type = 'button';
  		    saveButton.value = '저장';
+ 		    saveButton.style.border='1px solid skyblue';
+ 		    saveButton.style.backgroundColor='rgba(0,0,0,0)';
+ 		    saveButton.style.color='skyblue';
+ 		   	saveButton.style.borderRadius='5px';
+ 		   	saveButton.addEventListener('mouseover', function() {
+ 		   		saveButton.style.color = 'white';
+ 		   		saveButton.style.backgroundColor = 'skyblue';
+		  	});
+ 		 	saveButton.addEventListener('mouseout', function() {
+ 		 		saveButton.style.color = 'skyblue';
+ 		 		saveButton.style.backgroundColor = 'rgba(0,0,0,0)';
+		  	});
  		    saveButton.onclick = function() {
  		    	var updatedComment = inputBox.value;
  		      	$.ajax({
@@ -726,6 +750,21 @@
  		    	const replydelete = document.createElement('input');
  		   		replydelete.type = 'button';
  		  		replydelete.value = '취소';
+ 		  		replydelete.style.border='1px solid skyblue';
+ 		  		replydelete.style.backgroundColor='rgba(0,0,0,0)';
+ 		  		replydelete.style.color='skyblue';
+ 		  		replydelete.style.borderRadius='5px';
+ 		  		//마우스 올릴시 기능
+ 		  		replydelete.addEventListener('mouseover', function() {
+ 		  	      replydelete.style.color = 'white';
+ 		  	      replydelete.style.backgroundColor = 'skyblue';
+ 		  	    });
+ 		  	    replydelete.addEventListener('mouseout', function() {
+ 		  	      replydelete.style.color = 'skyblue';
+ 		  	      replydelete.style.backgroundColor = 'rgba(0,0,0,0)';
+ 		  	    });
+ 		  	    
+ 		  	    
  		 		replydelete.onclick = function() {
  		    		parentElement.innerHTML = "답글"; 
  		    		isReplyBoxAdded = true;
@@ -734,6 +773,20 @@
  		    	const replysave = document.createElement('input');
  		   		replysave.type = 'button';
  		  		replysave.value = '저장';
+ 		  		replysave.style.border='1px solid skyblue';
+ 		  		replysave.style.backgroundColor='rgba(0,0,0,0)';
+ 		  		replysave.style.color='skyblue';
+ 		  		replysave.style.borderRadius='5px';
+ 		  		//마우스 올릴시 기능
+ 		  		replysave.addEventListener('mouseover', function() {
+ 		  	      replysave.style.color = 'white';
+ 		  	      replysave.style.backgroundColor = 'skyblue';
+ 		  	    });
+ 		  	    replysave.addEventListener('mouseout', function() {
+ 		  	      replysave.style.color = 'skyblue';
+ 		  	      replysave.style.backgroundColor = 'rgba(0,0,0,0)';
+ 		  	    });
+ 		  	    
  		 		replysave.onclick = function() {
  		    		var replyDetail = replyBox.value;
  		      		$.ajax({
