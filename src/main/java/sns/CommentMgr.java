@@ -41,6 +41,27 @@ public class CommentMgr {
 			pool.freeConnection(con, pstmt);
 		}
 	}
+	//답글확인
+	public boolean replycheck(int commentId) {
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		String sql=null;
+		ResultSet rs=null;
+		boolean flag=false;
+		try {
+			con = pool.getConnection();
+			sql = "SELECT * FROM comment WHERE commentParrent=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, commentId);
+			rs=pstmt.executeQuery();
+			flag = rs.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt,rs);
+		}
+		return flag;
+	}
 	public void insertPReply(CommentBean bean) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -164,35 +185,7 @@ public class CommentMgr {
 		}
 		return vlist;
 	}
-	//Board Reply:답글 입력
-/**		public void replyBoard(CommentBean bean) {
-			Connection con = null;
-			PreparedStatement pstmt = null;
-			String sql = null;
-			try {
-				con = pool.getConnection();
-				sql = "insert tblBoard(name,content,subject,ref,pos,depth,regdate,"
-						+ "pass,count,ip)values(?, ?, ?, ?, ?, ?, now(), ?, 0, ?)";
-				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, bean.getName());
-				pstmt.setString(2, bean.getContent());
-				pstmt.setString(3, bean.getSubject());
-				//////////////////////////////////////
-				pstmt.setInt(4, bean.getRef());//원글과 동일한ref(그룹)
-				pstmt.setInt(5, bean.getPos()+1);//원글 pos+1(정렬)
-				pstmt.setInt(6,bean.getDepth()+1);//원글 depth+1
-				///////////////////////////////////
-				pstmt.setString(7, bean.getPass());
-				pstmt.setString(8, bean.getIp());
-				
-				pstmt.executeUpdate();
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				pool.freeConnection(con, pstmt);
-			}
-			
-		}*/
+	
 		//댓글리스트:검색기능,페이지 및 블럭처리
 		//limit 시작번호,가져올 개수
 		public Vector<CommentBean> getBoardList(String keyField, String keyWord, int start, int cnt){

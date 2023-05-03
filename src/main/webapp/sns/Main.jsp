@@ -212,7 +212,8 @@
 					CommentBean cbean = clist.get(j);
 					if(cbean.getCommentParrent()!=null){
 						
-				%>	
+				%>
+				<div id="myDIV<%=cbean.getCommentParrent()%>" style="display:none;">	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
@@ -221,10 +222,11 @@
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')" style="font-size: 90%; color: #8e8e8e;">삭제</a></c><%}%>&nbsp;
 				<br>
+				</div>
 				<%} else {%>
 					<b><%=cbean.getUserEmail()%></b>&nbsp;<c class="commentDetail" ><%=cbean.getCommentDetail()%></c>
 				<br>
-				<b>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
+				<b><%if (cmgr.replycheck(cbean.getCommentId())) {%><a href="javascript:doDisplay('<%=cbean.getCommentId()%>');" style="font-size: 90%; color: #8e8e8e;"> > 답글보기</a><%}%>&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
 				<a href="javascript:creply('<%=cbean.getCommentParrent()%>,<%=mbean.getUserEmail()%>,<%=pbean.getPostId()%>,<%=cbean.getCommentId()%>')" id="rep<%=cbean.getCommentId()%>" style="font-size: 90%; color: #8e8e8e;">답글</a> &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				
@@ -513,6 +515,7 @@
  		    const inputBox = document.createElement('input');
  		    inputBox.type = 'text';
  		   	inputBox.style.borderRadius = '30px';
+ 		   	inputBox.style.width='120px';
  		    const deleteButton = document.createElement('input');
  		    deleteButton.type = 'button';
  		    deleteButton.value = '취소';
@@ -743,7 +746,8 @@
  		  	if (!isReplyBoxAdded) {
  		    	const replyBox = document.createElement('input');
  		   		replyBox.type = 'text';
- 		   		replyBox.style.borderRadius = '30px';
+ 		   		replyBox.style.borderRadius = '10px';
+ 		   		replyBox.style.width='120px';
  		   		replyBox.onclick = function(event) {
  		       		event.stopPropagation();
  		     	};
@@ -926,6 +930,15 @@
         });
     });
 });
+ 		//댓글 보기숨기기
+ 		function doDisplay(commentId){ 	
+            var con = document.getElementById("myDIV"+commentId); 	
+            if(con.style.display=='none'){ 		
+                con.style.display = 'block';
+            }else{ 		
+                con.style.display = 'none'; 	
+            } 
+        } 
 </script>
 </body>
 </html>
