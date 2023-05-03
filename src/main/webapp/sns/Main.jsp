@@ -94,7 +94,7 @@
 		%>
 			<td width="100">
 				<div class="box1">
-					<a href="javascript:goURL('guest.jsp','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
+					<a href="javascript:goURL('searched.jsp?userEmail=<%=ubean.getUserEmail()%>','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
 						<img class="profileimage" src="./photo/<%=ubean.getUserImage()%>">
 					</a>
 				</div>
@@ -871,13 +871,6 @@
         });
     });
 });
-
-		
- 		
-	
-	
- 	</script>
-
 </script>
 </body>
 </html>
