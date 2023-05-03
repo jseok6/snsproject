@@ -18,7 +18,29 @@ public class CommentMgr {
 		}
 	}
 	
-	//덧글 달기
+	//답글 달기
+	public void insertReply(CommentBean bean) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		try {
+			
+			con = pool.getConnection();
+			sql = "insert comment(postId,userEmail,commentDetail,commentParrent,commentChild,commentDate,commentCorrect)values(?,?,?,?,?,now(),?) ";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bean.getPostId());
+			pstmt.setString(2, bean.getUserEmail());
+			pstmt.setString(3, bean.getCommentDetail());
+			pstmt.setString(4, bean.getCommentParrent());
+			pstmt.setString(5, bean.getCommentChild());
+			pstmt.setString(6, null);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+	}
 	public void insertPReply(CommentBean bean) {
 		Connection con = null;
 		PreparedStatement pstmt = null;

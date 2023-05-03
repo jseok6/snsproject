@@ -213,10 +213,11 @@
 				for(int j=0;j<clist.size();j++){
 					CommentBean cbean = clist.get(j);
 					if(cbean.getCommentParrent()!=null){
+						
 				%>	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
-				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
+				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>">수정</a><%}%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
@@ -225,7 +226,8 @@
 				<%} else {%>
 					<b><%=cbean.getUserEmail()%></b>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
-				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 답글 &nbsp;
+				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 
+				<a href="javascript:creply('<%=cbean.getCommentParrent()%>,<%=mbean.getUserEmail()%>,<%=pbean.getPostId()%>,<%=cbean.getCommentId()%>')" id="rep<%=cbean.getCommentId()%>">답글</a> &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				
 				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>">수정</a><%}%>&nbsp;
@@ -605,6 +607,29 @@
 				    }
 				  });
  		}
+ 		function friendtext(email){
+ 			var formData = new FormData();
+ 			$.ajax({
+ 				type : "get",
+ 				url : "reply?boardIdx=${boardInfo.boardIdx}&writer=${boardInfo.userIdx}",
+ 					dataType : "text",
+ 					data : formData, 
+ 					contentType: false, 
+ 					processData: false, 
+ 					cache : false,
+ 					success : function(data) {
+ 		           		 // C에서 받아온 데이터로 새로 뿌려주기
+ 						var html = jQuery('<div>').html(data);
+ 						var contents1 = html.find("div#replyList").html();
+ 						var contents2 = html.find("div#replyCount").html();
+ 						$("#replyList").html(contents1);
+ 						$("#replyCount").html(contents2);
+ 					},
+ 					error : function(){
+ 		                alert("통신실패");
+ 		            }
+ 				});
+ 		}
  		function deletefriend(email){
  			const sentence=email;
  			const [friendEmail,userEmail]=sentence.split(",");
@@ -686,6 +711,55 @@
     		}
   		});
 		}
+		//답글
+		var isReplyBoxAdded = false;
+ 		function creply(idemail) {
+ 			const sentence=idemail;
+ 			const [commentParrent,userEmail,postId,commentId]=sentence.split(",");
+ 		  	const parentElement = document.getElementById("rep"+commentId);
+ 		  	if (!isReplyBoxAdded) {
+ 		    	const replyBox = document.createElement('input');
+ 		   		replyBox.type = 'text';
+ 		   		
+ 		    	const replydelete = document.createElement('input');
+ 		   		replydelete.type = 'button';
+ 		  		replydelete.value = '취소';
+ 		 		replydelete.onclick = function() {
+ 		    		parentElement.innerHTML = "답글"; 
+ 		    		isReplyBoxAdded = true;
+ 		      		location.reload();
+ 		    	};
+ 		    	const replysave = document.createElement('input');
+ 		   		replysave.type = 'button';
+ 		  		replysave.value = '저장';
+ 		 		replysave.onclick = function() {
+ 		    		var replyDetail = replyBox.value;
+ 		      		$.ajax({
+ 		        		url: 'CommentReply',
+ 		        		type: 'POST',
+ 		        		data: { 
+ 		        			commentParrent: commentParrent, 
+ 		        			commentDetail: replyDetail,
+ 		        			userEmail: userEmail,
+ 		        			postId: postId,
+ 		        			commentId: commentId
+ 		        			},
+ 		        		success: function(result) {
+ 		        		console.log('답글완료');
+ 		 				location.reload();
+ 		        	},
+ 		        	error: function(xhr, status, error) {
+ 		        	}
+ 		      	});
+ 		   	 };
+ 		   		parentElement.innerHTML = '';
+ 		    	parentElement.appendChild(replyBox);
+ 		    	parentElement.appendChild(replysave);
+ 		   	 	parentElement.appendChild(replydelete);
+ 		   	 	isInputBoxAdded = true;
+ 		  		}
+ 			}
+		
  		//만들기버튼 기능들
  		const makePostButton = document.querySelector('#make-post');
  		const overlay = document.querySelector('.overlay');
