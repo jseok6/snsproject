@@ -215,23 +215,23 @@
 				%>	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
-				<c>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 
+				<c>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>">수정</a><%}%>&nbsp;
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>" style="font-size: 90%; color: #8e8e8e;">수정</a><%}%>&nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')">삭제</a></c><%}%>&nbsp;
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')" style="font-size: 90%; color: #8e8e8e;">삭제</a></c><%}%>&nbsp;
 				<br>
 				<%} else {%>
-					<b><%=cbean.getUserEmail()%></b>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
+					<b><%=cbean.getUserEmail()%></b>&nbsp;<c class="commentDetail" ><%=cbean.getCommentDetail()%></c>
 				<br>
-				<b>&nbsp;&nbsp;&nbsp;&nbsp;<%=cbean.getCommentDate()%>&nbsp;&nbsp; 
-				<a href="javascript:creply('<%=cbean.getCommentParrent()%>,<%=mbean.getUserEmail()%>,<%=pbean.getPostId()%>,<%=cbean.getCommentId()%>')" id="rep<%=cbean.getCommentId()%>">답글</a> &nbsp;
+				<b>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
+				<a href="javascript:creply('<%=cbean.getCommentParrent()%>,<%=mbean.getUserEmail()%>,<%=pbean.getPostId()%>,<%=cbean.getCommentId()%>')" id="rep<%=cbean.getCommentId()%>" style="font-size: 90%; color: #8e8e8e;">답글</a> &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				
-				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>">수정</a><%}%>&nbsp;
+				<a href="javascript:cup('<%=cbean.getCommentId()%>')" id="box<%=cbean.getCommentId()%>" style="font-size: 90%; color: #8e8e8e;">수정</a><%}%>&nbsp;
 				
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
-				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')">삭제</a></b><%}%>&nbsp;
+				<a href="javascript:cdel('<%=cbean.getCommentId()%>,<%=pbean.getPostId()%>')" style="font-size: 90%; color: #8e8e8e;">삭제</a></b><%}%>&nbsp;
 				<br>
 				<%} %>
 			
