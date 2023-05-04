@@ -11,11 +11,11 @@
 	String searchWord = null;
 	if(request.getParameter("searchWord")!=null){
 		searchWord = (String) request.getParameter("searchWord");
-		System.out.println("searchword from parameter is :" + searchWord);
+		//System.out.println("searchword from parameter is :" + searchWord);
 	}
 	if(session.getAttribute("searchWord")!=null){
 		searchWord = (String) session.getAttribute("searchWord");
-		System.out.println("searchword from session is :" + searchWord);
+		//System.out.println("searchword from session is :" + searchWord);
 	}
 	if (searchWord == null) {
 		  String userEmail = request.getParameter("userEmail");
@@ -25,7 +25,7 @@
 	UserinfoBean mbean = umgr.getsearchPMember(searchWord);
 	Vector<UserinfoBean> uilist = umgr.listsearchPMember(searchWord);
 	Vector<PostBean> uplist=fmgr.friendlist(mbean.getUserEmail());
-	System.out.println(searchWord);
+	//System.out.println(searchWord);
 		
 %>
 <!DOCTYPE html>

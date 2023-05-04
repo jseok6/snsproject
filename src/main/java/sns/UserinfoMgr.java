@@ -21,6 +21,42 @@ public class UserinfoMgr {
 			e.printStackTrace();
 		}
 	}
+	//5개한정해서 자신및 친구추가신청중이거나 친구를 제외한 유저 정보 불러오기
+	public Vector<UserinfoBean> followrecommend(String email) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		Vector<UserinfoBean> vlist = new Vector<UserinfoBean>();
+		try {
+			con = pool.getConnection();
+			sql = "SELECT u.userNickName,u.userEmail,u.userImage\n"
+					+ "FROM userinfo u\n"
+					+ "WHERE u.userEmail NOT IN (\n"
+					+ "    SELECT f.friendEmail\n"
+					+ "    FROM friendmanager f\n"
+					+ "    WHERE f.userEmail = ?\n"
+					+ ") AND u.userEmail <> ?\n"
+					+ "ORDER BY RAND()\n"
+					+ "LIMIT 5";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, email);
+			pstmt.setString(2, email);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				UserinfoBean bean = new UserinfoBean();
+				bean.setUserNickName(rs.getString(1));
+				bean.setUserEmail(rs.getString(2));
+				bean.setUserImage(rs.getString(3));
+				vlist.addElement(bean);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
 	
 	// 유저 정보 불러오기
 		public UserinfoBean getPMember(String email) {

@@ -422,12 +422,10 @@ c{
 .choiceafterpicture  {
   	width: 200px;
   	height: 200px;
-  	margin-left:365px;
-  	margin-top:-280px;
+  	margin-left:395px;
+  	margin-top:-250px;
   	margin-right:10px;
 	margin-bottom:50px;
-  	
-  	
   	position: relative;
 }
 .beforeImageContainer {

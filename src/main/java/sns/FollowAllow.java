@@ -17,7 +17,6 @@ public class FollowAllow extends HttpServlet {
 	        String friendEmail = request.getParameter("friendEmail");
 	        FriemdmanagerMgr fmgr = new FriemdmanagerMgr();
 	        fmgr.friendallow(userEmail, friendEmail);
-	        
 	        response.setContentType("text/plain");
 	        response.setCharacterEncoding("UTF-8");
 	        response.sendRedirect("follow.jsp");

@@ -5,16 +5,15 @@
 <jsp:useBean id="fmgr" class="sns.FriemdmanagerMgr"/>
 <%
 		//String email = (String)session.getAttribute("idKey");
-		String email="jseok@aaa.com";
+		String email="1234@aaa.com";
 		//if(email==null) {
 			//response.sendRedirect("login.jsp");
 		//}
 		UserinfoBean mbean = umgr.getPMember(email);
-		Vector<UserinfoBean> uilist = umgr.listPMember(email);
 		Vector<FriendmanagerBean> flist=fmgr.listfMember(email);
-		Vector<FriendmanagerBean> fcommand=fmgr.friend(email);
-		
-		
+		Vector<UserinfoBean> fcommand=umgr.followrecommend(email);
+			
+	
 %>
 
 <!DOCTYPE html>
@@ -29,72 +28,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"></link>
     <link type="text/css" rel="stylesheet" href="follow.css"></link>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-    	function follow(emailnick){
-    		const followmodal = document.querySelector('.followmodal');
-            const followBtns=document.querySelectorAll('.followBtn');
-            const followCheck=document.querySelector('.followCheck');
-            const sentence=emailnick;
- 			const [friendEmail,nickName,userEmail]=sentence.split(",");
- 			document.frm.friendEmail.value=friendEmail;
- 			document.frm.nickName.value=nickName;
- 			document.frm.userEmail.value=userEmail;
-            document.querySelector("#followNickName").textContent = nickName;
-            for (var i = 0; i <followBtns.length ; i++) {
-                followBtns[i].addEventListener('click', () => {
-                	$.ajax({
-                	    url: 'FollowAllow',
-                	    type: 'POST',
-                	    data: {
-                	        userEmail: userEmail,
-                	        friendEmail: friendEmail
-                	    },
-                	    success: function(response) {
-                	        console.log(response);
-                	        followmodal.style.display = 'block';
-                	        location.reload()
-                	    },
-                	    error: function(xhr, status, error) {
-                	        console.log("Error: " + error);
-                	    }
-                	});
-                });
-            }
-            followCheck.addEventListener('click', () => {
-                followmodal.style.display = 'none';
-            });
-    	}
-    	function followCancel(emailnick){
-    		const followCancelBtns=document.querySelectorAll('.followCancelBtn');
-            const sentence=emailnick;
- 			const [friendEmail,nickName,userEmail]=sentence.split(",");
- 			document.frm.friendEmail.value=friendEmail;
- 			document.frm.nickName.value=nickName;
- 			document.frm.userEmail.value=userEmail;
-            document.querySelector("#followNickName").textContent = nickName;
-            for (var i = 0; i <followCancelBtns.length ; i++) {
-            	followCancelBtns[i].addEventListener('click', () => {
-                	$.ajax({
-                	    url: 'FollowCancel',
-                	    type: 'POST',
-                	    data: {
-                	        userEmail: userEmail,
-                	        friendEmail: friendEmail
-                	    },
-                	    success: function(response) {
-                	        console.log(response);
-                	        location.reload()
-                	    },
-                	    error: function(xhr, status, error) {
-                	        console.log("Error: " + error);
-                	    }
-                	});
-                });
-            }
-    	}
-    	
-    </script>
-    
+    <link rel="stylesheet" href="./css/modal.css"/> 
 </head>
 <body>
 
@@ -188,7 +122,7 @@
     	</td>
     </tr>
     </table>
-    <hr>
+    <hr style="width: 1700px;">
     
     <div data-role="page">
     	<div class="followtext">
@@ -197,18 +131,17 @@
     </div>
     <table>
     <tr>
-    <% for (int i = 0; i <flist.size(); i++) { 
-    	FriendmanagerBean fbean = fcommand.get(i);
-		UserinfoBean uibean = umgr.followrecommend(fbean.getFriendEmail(), email);
+    <% for (int i = 0; i <fcommand.size(); i++) { 
+    	UserinfoBean fbean = fcommand.get(i);
     	%>
     	<td>
     		<div class="followrequest">
     			<div class="followimage">
-    				<img src="./photo/<%=uibean.getUserImage()%>" width="220" height="200" >
+    				<img src="./photo/<%=fbean.getUserImage()%>" width="220" height="200" >
     			</div>
     			<div class="followidtext">
-    				<p><br>&nbsp;&nbsp;<%=uibean.getUserNickName() %></p>
-    				<a href="javascript:follow('<%=uibean.getUserEmail()%>,<%=uibean.getUserNickName()%>,<%=mbean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
+    				<p><br>&nbsp;&nbsp;<%=fbean.getUserNickName() %></p>
+    				<a href="javascript:follow('<%=fbean.getUserEmail()%>,<%=fbean.getUserNickName()%>,<%=mbean.getUserEmail()%>')"><img src="./img/followBtn.svg" class="followBtn"></a>
     				<img src="./img/followCancelBtn.svg" class="followCancelBtn">
     			</div>
     		</div>
@@ -272,89 +205,98 @@
 		<input type="hidden" name="friendEmail">
 		<input type="hidden" name="nickName">
 </form>
-<script>
-//만들기버튼 기능들
-	const makePostButton = document.querySelector('#make-post');
-	const overlay = document.querySelector('.overlay');
-const makemodal=document.querySelector('.makemodal');
-const makecancel=document.querySelector('.makecancel');
-const imageposition3=document.querySelector('.imageposition3');
-const fixmodal=document.querySelector('.fixmodal');
-const makeBackBtn=document.querySelector('.makeBackBtn');
-const makepostInsert=document.querySelector('.makepostInsert');
-const postcomplete=document.querySelector('.postcomplete');
-const makepostCheck=document.querySelector('.makepostCheck');
-	makePostButton.addEventListener('click', () => {
-		overlay.classList.toggle('active');
-	 	overlay.style.display='block';
-	  	makemodal.style.display='block';
-	  	$(".makeimage").attr("src", "./images/mainMakePostTrue.svg");
-	});
-	makecancel.addEventListener('click', ()=>{
-		overlay.classList.toggle('active');
-		overlay.style.display = 'none';
-		makemodal.style.display='none';
-		$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
-	});
-	imageposition3.addEventListener('click', ()=>{
-		makemodal.style.display = 'none';
-		fixmodal.style.display = 'block';
-	});
-	makeBackBtn.addEventListener('click', ()=>{
-		fixmodal.style.display='none';
-		makemodal.style.display='block';
-	});
-	makepostInsert.addEventListener('click',()=>{
-		fixmodal.style.display='none';
-		postcomplete.style.display='block';
-	});
-	makepostCheck.addEventListener('click',()=>{
-		overlay.classList.toggle('active');
-		overlay.style.display = 'none';
-		$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
-		postcomplete.style.display='none';
-	})
-	 // Get the image input element
-const imageInput = document.querySelector('.imageInput');
 
-// Create a Cropper instance when an image is selected
-imageInput.addEventListener('change', function (event) {
-const selectedImage = event.target.files[0];
 
-// Create an <img> element to display the selected image
-const image = document.createElement('img');
-const choiceafterpicture = document.querySelector('.choiceafterpicture');
-choiceafterpicture.appendChild(image);
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div class="modal-body">
+    <a href =profile.jsp style="text-decoration: none; color: black;"><img class= "Profile"src="./images/mainProfileModalProfile.svg"><span class="Profile-T">프로필 보기</span></a>
+    <a href =update.jsp style="text-decoration: none; color: black;"><img class= "N-Info"src="./images/mainProfileModalInfo.svg"><span class="Info-T">개인 정보</span><br></a>
+    <a href =help.jsp style="text-decoration: none; color: black;"><img class= "Help"src="./images/mainProfileModalHelp.svg"><span class="Help-T">도움말</span><br></a>
+    <a href =login.jsp style="text-decoration: none; color: black;"><img class= "Logout" src="./images/mainProfileModalLogout.svg"><span class="Logout-T">로그아웃</span><br></a>
+  </div>
+  </div>
+</div>
 
-// Initialize the Cropper instance once the image is loaded
-image.onload = function () {
-const cropper = new Cropper(image, {
-aspectRatio: 1, // Set the desired aspect ratio for cropping
-viewMode: 2, // Set the view mode to restrict the crop box within the container
+<script type="text/javascript">
+    	function follow(emailnick){
+    		const followmodal = document.querySelector('.followmodal');
+            const followBtns=document.querySelectorAll('.followBtn');
+            const followCheck=document.querySelector('.followCheck');
+            const sentence=emailnick;
+ 			const [friendEmail,nickName,userEmail]=sentence.split(",");
+ 			document.frm.friendEmail.value=friendEmail;
+ 			document.frm.nickName.value=nickName;
+ 			document.frm.userEmail.value=userEmail;
+            document.querySelector("#followNickName").textContent = nickName;
+            for (var i = 0; i <followBtns.length ; i++) {
+                followBtns[i].addEventListener('click', () => {
+                	$.ajax({
+                	    url: 'FollowAllow',
+                	    type: 'POST',
+                	    data: {
+                	        userEmail: userEmail,
+                	        friendEmail: friendEmail
+                	    },
+                	    success: function(response) {
+                	        console.log(response);
+                	        followmodal.style.display = 'block';
+                	        followCheck.addEventListener('click', () => {
+                                followmodal.style.display = 'none';
+                                location.reload();
+                            });
+                	    },
+                	    error: function(xhr, status, error) {
+                	        console.log("Error: " + error);
+                	    }
+                	});
+                });
+            }
+            
+    	}
+    	function followCancel(emailnick){
+    		const followCancelBtns=document.querySelectorAll('.followCancelBtn');
+            const sentence=emailnick;
+ 			const [friendEmail,nickName,userEmail]=sentence.split(",");
+ 			document.frm.friendEmail.value=friendEmail;
+ 			document.frm.nickName.value=nickName;
+ 			document.frm.userEmail.value=userEmail;
+            document.querySelector("#followNickName").textContent = nickName;
+            for (var i = 0; i <followCancelBtns.length ; i++) {
+            	followCancelBtns[i].addEventListener('click', () => {
+                	$.ajax({
+                	    url: 'FollowCancel',
+                	    type: 'POST',
+                	    data: {
+                	        userEmail: userEmail,
+                	        friendEmail: friendEmail
+                	    },
+                	    success: function(response) {
+                	        console.log(response);
+                	        location.reload()
+                	    },
+                	    error: function(xhr, status, error) {
+                	        console.log("Error: " + error);
+                	    }
+                	});
+                });
+            }
+    	}
+    	
+    	
+    	// 모달창 보이기
+        document.getElementById("mainProfile2").addEventListener("click", function() {
+          document.getElementById("modal").style.display = "block";
+        });
+        // 모달창 외부를 클릭하면 모달창 닫기
+        window.onclick = function(event) {
+          if (event.target == document.getElementById("modal")) {
+            document.getElementById("modal").style.display = "none";
+          }
+        }
 
-// Define the crop event handler
-crop(event) {
-  // Get the cropped image data as a base64-encoded string
-  const croppedImageData = cropper.getCroppedCanvas().toDataURL();
-
-  // Set the cropped image as the source of the "croppedImage" element
-  const croppedImage = document.getElementById('croppedImage');
-  croppedImage.src = croppedImageData;
-}
-});
-
-// Destroy the Cropper instance when the modal is closed
-const makecancel = document.querySelector('.makeBackBtn');
-makecancel.addEventListener('click', function () {
-cropper.destroy();
-imageInput.value = ''; // Reset the input fields
-choiceafterpicture.removeChild(image); // Remove the preview image
-});
-};
-
-// Set the source of the selected image file
-image.src = URL.createObjectURL(selectedImage);
-});
-</script>    
+    	
+    </script>
 </body>
 </html>

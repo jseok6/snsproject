@@ -25,11 +25,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pho talk</title>
     <link rel="shortcut icon" type="image/x-icon" href="./images/mainLogo.png" />
-    <link href="profile.css" rel="stylesheet" type="text/css"/>
-    <link type="text/css" rel="stylesheet" href="style.css"></link>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
  	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
  	<script type="text/JavaScript" src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+ 	<link rel="stylesheet" type="text/css" href="./css/modal.css"/>
+ 	<link rel="stylesheet" type="text/css" href="./css/profile.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
 </head>
 <body>
 
@@ -44,7 +45,6 @@
         	<span><input type="text" class = "InputBase" placeholder="검색" name="searchWord"></span>
         </form>
         <!-- 모달창 -->
-        
         <img id = "mainMessageFalse" src="./images/mainMessageFalse.png" alt="Image Button"/>
         <img id = "mainAlarmFalse" src="./images/mainAlarmFalse.png" alt="Image Button"/>
     	<img id = "mainProfile2" src="./images/mainProfile2.png" alt="Image Button"/>
@@ -129,12 +129,12 @@
 			</td>
 			<td>
 				<%
-					if(fmgr.friendCheck(ubean.getUserEmail(), mbean.getUserEmail())){
+					if(fmgr.friendCheck2(ubean.getUserEmail(), mbean.getUserEmail())){
 						%>
-						<a href="javascript:deletefriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="followdelbtn">팔로워</a><% 
+						<a href="javascript:deletefriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="followdelbtn<%=i%>">팔로워</a><% 
 					}
 					else {
-						%><a href="javascript:dofriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="follow-btn">팔로우</a><% 
+						%><a href="javascript:dofriend('<%=ubean.getUserEmail()%>,<%=mbean.getUserEmail() %>')" class="follow-btn" id="followbtn<%=ubean.getUserEmail()%>">팔로우</a><% 
 					}
 				%>
 				
@@ -376,9 +376,6 @@
   		<img src="./img/postShareKakao.jpg" class="postShareKakao"/>
   	</a>
 </div>
-<div class="updateComment">
-	
-</div>
 <form method="post" name="frm">
 		<input type="hidden" name="userNickName">
 		<input type="hidden" name="postId">
@@ -387,6 +384,21 @@
 		<input type="hidden" name="friendEmail">
 		<input type="hidden" name="comment">
 </form>
+
+<!-- 공유받은것 -->
+<!-- 모달창 -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div class="modal-body">
+    <a href =profile.jsp style="text-decoration: none; color: black;"><img class= "Profile"src="./images/mainProfileModalProfile.svg"><span class="Profile-T">프로필 보기</span></a>
+    <a href =update.jsp style="text-decoration: none; color: black;"><img class= "N-Info"src="./images/mainProfileModalInfo.svg"><span class="Info-T">개인 정보</span><br></a>
+    <a href =help.jsp style="text-decoration: none; color: black;"><img class= "Help"src="./images/mainProfileModalHelp.svg"><span class="Help-T">도움말</span><br></a>
+    <a href =login.jsp style="text-decoration: none; color: black;"><img class= "Logout" src="./images/mainProfileModalLogout.svg"><span class="Logout-T">로그아웃</span><br></a>
+  </div>
+  </div>
+</div>
+
 <script type="text/javascript">
 		var request=new XMLHttpRequest();
 		//크롭
@@ -617,6 +629,7 @@
  			const [friendEmail,userEmail]=sentence.split(",");
  			
 			const followBtns = document.querySelectorAll(".follow-btn");
+			const followbtn= document.getElementById("followbtn"+friendEmail);
 			$.ajax({
 				    url: "FollowServlet", 
 				    type: "POST",
@@ -625,7 +638,10 @@
 				    },
 				    success: function(result) {
 				    	console.log("팔로우신청");
-				    	location.reload();
+				    	followbtn.innerHTML="";
+				    	followbtn.innerHTML="팔로우<br>신청중";
+				    	followbtn.removeAttribute("href");
+				    	followbtn.style.pointerEvents = "none";
 				        },
 				    error: function(xhr, status, error) {
 				    }
@@ -882,7 +898,7 @@
 				    },   
 				    error: function(xhr, status, error) {
 				    }
-				  });
+				  });rk
  		});
  		function dataURLtoFile(dataURL, fileName) {
  			  const arr = dataURL.split(',');
@@ -938,7 +954,18 @@
                 	elements[i].style.display = 'none'; 	
                 } 
             }
-        } 
+        }
+ 	// 모달창 보이기
+ 	      document.getElementById("mainProfile2").addEventListener("click", function() {
+ 	        document.getElementById("modal").style.display = "block";
+ 	      });
+ 	      // 모달창 외부를 클릭하면 모달창 닫기
+ 	      window.onclick = function(event) {
+ 	        if (event.target == document.getElementById("modal")) {
+ 	          document.getElementById("modal").style.display = "none";
+ 	        }
+ 	      }
+
 </script>
 </body>
 </html>
