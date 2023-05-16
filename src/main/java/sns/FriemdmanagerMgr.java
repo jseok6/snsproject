@@ -27,8 +27,8 @@ public class FriemdmanagerMgr {
 			con=pool.getConnection();
 			sql="insert into friendmanager(userEmail,friendEmail,friendSign) values(?,?,?)";
 			pstmt=con.prepareStatement(sql);
-			pstmt.setString(1,followEmail);
-			pstmt.setString(2,userEmail);
+			pstmt.setString(1,userEmail);
+			pstmt.setString(2,followEmail);
 			pstmt.setInt(3, 0);
 			pstmt.executeUpdate();
 			
@@ -39,6 +39,28 @@ public class FriemdmanagerMgr {
 		}
 		
 	}
+	//친구 추가
+		public void followfirend2(String userEmail,String followEmail) {
+			Connection con=null;
+			PreparedStatement pstmt = null;
+			String sql = null;
+			try {
+				FriendmanagerBean bean=new FriendmanagerBean();
+				con=pool.getConnection();
+				sql="insert into friendmanager(userEmail,friendEmail,friendSign) values(?,?,?)";
+				pstmt=con.prepareStatement(sql);
+				pstmt.setString(1,userEmail);
+				pstmt.setString(2,followEmail);
+				pstmt.setInt(3, 1);
+				pstmt.executeUpdate();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+			
+		}
 	//친구에서 삭제
 		public void delFriend(String userEmail,String followEmail) {
 			Connection con=null;
@@ -86,33 +108,6 @@ public class FriemdmanagerMgr {
 		}
 		return flag;
 	}
-	public boolean friendCheck2(String userEmail, String friendEmail) {
-		Connection con=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		String sql=null;
-		boolean flag=false;
-		try {
-			con=pool.getConnection();
-			sql="SELECT friendSign FROM friendmanager WHERE userEmail=? and friendEmail=? and friendSign=?";
-			pstmt=con.prepareStatement(sql);
-			pstmt.setString(2, friendEmail);
-			pstmt.setString(1, userEmail);
-			pstmt.setInt(3, 1);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				flag=true;
-			}
-			return flag;
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-		finally {
-			pool.freeConnection(con, pstmt,rs);
-		}
-		return flag;
-	}
 	//userEmail값이랑 friendsign이 0인경우만 5명불러오기
 	public Vector<FriendmanagerBean> listfMember(String email) {
 		Connection con = null;
@@ -122,7 +117,7 @@ public class FriemdmanagerMgr {
 		Vector<FriendmanagerBean> vlist = new Vector<FriendmanagerBean>();
 		try {
 			con = pool.getConnection();
-			sql = "select * from friendmanager where userEmail=? and friendsign=0 order by friendIndex";
+			sql = "select * from friendmanager where userEmail =? and friendsign=0 order by idx limit 5";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, email);
 			rs = pstmt.executeQuery();
@@ -169,10 +164,11 @@ public class FriemdmanagerMgr {
 			  Vector<PostBean> uplist = new Vector<PostBean>();
 			  try {
 			    con = pool.getConnection();
-			    sql = "select userEmail from friendmanager where friendEmail=? and friendSign=1";
+			    sql = "select friendEmail from friendmanager where userEmail=? and friendSign=1";
 			    pstmt = con.prepareStatement(sql);
 			    pstmt.setString(1, email);
 			    ResultSet rs = pstmt.executeQuery();
+			    UserinfoMgr umgr = new UserinfoMgr();
 			    PostMgr pmgr = new PostMgr();
 			    while (rs.next()) {
 			      String friendEmail = rs.getString(1);

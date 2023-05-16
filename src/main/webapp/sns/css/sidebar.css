@@ -1,0 +1,45 @@
+/*----------------사이드바-----------------*/
+
+.sideUl {
+  list-style-type: none;
+  top: 0;
+  list-style-type: none;  
+  padding: 0px;
+  margin: 0px;
+  width: 300px;
+  background: #ececec;
+  height: 100%;
+  overflow: auto;
+  position: fixed;
+  margin-top: 81px;
+  border: solid 1px #e0e0e0;
+}
+
+.sideLi {
+  margin-top: 20px;
+}
+
+.sideLi a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #747474;
+  font-size: 17px;
+  padding: 10px 10px 10px 20px;
+  background-size: 15px;
+} 
+
+.sidebar {
+  margin-left: 20px;
+  line-height: 1.5;
+  font-family: "malgun";
+}
+
+@font-face {
+  src : url("/fonts/malgun.ttf");
+  font-family: "malgun" 
+}
+
+a:active {
+  font-weight: bold;
+}

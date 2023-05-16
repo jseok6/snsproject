@@ -246,6 +246,75 @@ public class PostMgr {
 		}
 		return bean;
 	}
+	//게시글불러오기
+	public Vector<PostBean> plist() {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		Vector<PostBean> vlist = new Vector<PostBean>();
+		try {
+			con = pool.getConnection();
+			sql = "select * from post order by postId desc";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				PostBean bean = new PostBean();
+				bean.setPostId(rs.getInt(1));
+				bean.setUserEmail(rs.getString(2));
+				bean.setLikeNum(rs.getInt(3));
+				bean.setImageName(rs.getString(4));
+				bean.setVideoName(rs.getString(5));
+				bean.setShareNum(rs.getInt(6));
+				bean.setCommentNum(rs.getInt(7));
+				bean.setCreationDate(rs.getString(8));
+				bean.setPostReport(rs.getInt(9));
+				vlist.addElement(bean);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
+	
+	//게시글불러오기
+	public Vector<PostBean> pPrivatelist(String userEmail) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		Vector<PostBean> vlist = new Vector<PostBean>();
+		try {
+			con = pool.getConnection();
+			sql = "select * from post where userEmail=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, userEmail);
+			rs = pstmt.executeQuery();
+					
+			while (rs.next()) {
+				PostBean bean = new PostBean();
+				bean.setPostId(rs.getInt(1));
+				bean.setUserEmail(rs.getString(2));
+				bean.setLikeNum(rs.getInt(3));
+				bean.setImageName(rs.getString(4));
+				bean.setVideoName(rs.getString(5));
+				bean.setShareNum(rs.getInt(6));
+				bean.setCommentNum(rs.getInt(7));
+				bean.setCreationDate(rs.getString(8));
+				bean.setPostReport(rs.getInt(9));
+				vlist.addElement(bean);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
+	
 	//프렌드 이메일의 image가져오기
 	public PostBean postImage(String email) {
 		Connection con = null;
@@ -376,5 +445,28 @@ public class PostMgr {
 	    return vlist;
 	  }
 	
-	
+	// 랜덤으로 이미지 30개 가져오기 
+	public ArrayList<PostBean> getRandomImage() {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		ArrayList<PostBean> userImageList = new ArrayList<PostBean>();
+		try {
+			con = pool.getConnection();
+			sql = "select imageName from post order by rand() limit 30;";
+			pstmt = con.prepareStatement(sql);		
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				PostBean bean = new PostBean();	
+				bean.setImageName(rs.getString(1));
+				userImageList.add(bean);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return userImageList;
+	}		
 }

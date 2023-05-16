@@ -5,16 +5,16 @@
 <jsp:useBean id="cmgr" class="sns.CommentMgr"/>
 <jsp:useBean id="fmgr" class="sns.FriemdmanagerMgr"/>
 <jsp:useBean id="pmgr" class="sns.PostlikeMgr"/>
+<jsp:useBean id="pomgr" class="sns.PostMgr"/>
 <%
-		//String email = (String)session.getAttribute("idKey");
-		String email="jseok@aaa.com";
-		//if(email==null) {
-			//response.sendRedirect("login.jsp");
-		//}
+		String email = (String)session.getAttribute("userEmail");
+		//String email="jseok@aaa.com";
+		if(email==null) {
+			response.sendRedirect("login.jsp");
+		}
 		UserinfoBean mbean = umgr.getPMember(email);//유저정보 불러오기(유저이메일,이름,프로파일,별명저장)
 		Vector<UserinfoBean> uilist = umgr.listPMember(email);//본인을 제외한 5명리스트 불러오기(유저이메일 별명,유저이미지저장)
-		Vector<PostBean> uplist=fmgr.friendlist(email);
-		
+		Vector<PostBean> uplist=pomgr.plist();//postId 내림차순으로 전체글 다가져오기
 		
 %>
 <!DOCTYPE html>
@@ -23,46 +23,95 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pho talk</title>
+    <title>Photalk</title>
     <link rel="shortcut icon" type="image/x-icon" href="./images/mainLogo.png" />
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <!-- 네브바 추가할것 !!!! -->    
+    <link type="text/css" rel="stylesheet" href="css/navbar.css"></link>
+    <link type="text/css" rel="stylesheet" href="css/sidebar.css"></link>
+    <link type="text/css" rel="stylesheet" href="style.css"></link>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
+    />
+    <!-- Cropper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css"
+    />
+    <link rel="stylesheet" href="css/message.css?after"/>
  	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
  	<script type="text/JavaScript" src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
- 	<link rel="stylesheet" type="text/css" href="./css/modal.css"/>
- 	<link rel="stylesheet" type="text/css" href="./css/profile.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+ 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 	<script src="js/navbar.js"></script>
 </head>
-<body>
+<div class="modal-wrapper"></div>
+<body style="overflow-x: hidden">
 
 <form method="post" name="frm1" action="Main.jsp">
 	<input type="hidden" name="gid">
 </form>
     <nav>
     <div class = "navbar">
-        <a href="javascript:goURL('Main.jsp','')"><img src="./images/mainLogo.png"  alt="Image Button"/></a>
+        <img src="images/mainLogo.png" alt="Image Button"/>
 	    <a id = "PhoTalk" class = "navbar-brand" href="Main.jsp">PhoTalk</a>
-	    <form method="post" action="searched.jsp">
-        	<span><input type="text" class = "InputBase" placeholder="검색" name="searchWord"></span>
+	    <img src="images/mainSearch.svg" alt="mainSearch" style="position:relative; left:180px;"/>
+	    	    
+	    <form method="post" id="navSearch" >
+        	<span><input type="text" class = "InputBase"  placeholder="검색" name="searchWord" onkeyup="searchUser()" autocomplete="off"></span>
+        	<input type="text" style="display:none;"/>
         </form>
         <!-- 모달창 -->
-        <img id = "mainMessageFalse" src="./images/mainMessageFalse.png" alt="Image Button"/>
-        <img id = "mainAlarmFalse" src="./images/mainAlarmFalse.png" alt="Image Button"/>
-    	<img id = "mainProfile2" src="./images/mainProfile2.png" alt="Image Button"/>
-    </div>
+        <div class="absol">
+        <img class="mainMessageButton" id ="mainMessageButtonfalse" src="images/mainMessageFalse.png" onclick="clickChatBtn('<%=email%>')" alt="Image Button" style="cursor: pointer"/>
+        <div id="alarm" class="alarm">
+        <span class="alarmBalloon"></span>
+        </div>
+        </div>             
+        <img class="mainMessageButton" id = "mainAlarmFalse" src="images/mainAlarmFalse.png" onclick="clickFollowBtn()" alt="Image Button" style="cursor: pointer"/>
+    	<img id = "mainProfile2" src="./images/mainProfile2.png" alt="Image Button" onclick="profileModal()" style="cursor: pointer"/>
+    </div>	   
 </nav>
-    <ul>
-        <li>
-            <a href="#">
+    <!-- 검색 창 -->
+    <!-- 네브바 추가할것 !!!! -->
+	<table class="userTable" id="userTable">
+		<tbody id="ajaxTable">
+	          	         	         		          		          		          		          		          		          		          		          		          		          		          		          		          		          		          	
+	    </tbody>
+	</table>
+<!-------------------- 사이드바 --------------------->
+    <ul class = "sideUl">
+        <li class = "sideLi">
+            <a class = "home" href="Main.jsp">
                 <img class = "homeTrue" src="./images/mainHomeTrue.png"  alt="Image Button" width="25" >
-                <span class = "sidebar">홈</span>
+                <span class = "sidebar" style="font-weight: bold">홈</span>
             </a>
         </li>
-        <li><a href="follow.jsp"><img src="./images/mainFollowFalse.png" alt="Image Button" width="25"><span class = "sidebar">팔로우</span></a></li>
-        <li><a href="quest.jsp"><img src="./images/mainExploreFalse.png" alt="Image Button" width="25" ><span class = "sidebar">탐색</span></a></li>
-        <li><a href="#" id="make-post"><img src="./images/mainMakePostFalse.png" alt="Image Button" width="25" class="makeimage"><span class="sidebar">만들기</span></a></li>
-        <li><a href="#"><img src="./images/mainProfile2.png" alt="Image Button" width="25" ><span class = "sidebar">프로필</span></a></li>
+        <li class = "sideLi">
+            <a class = "follow" href="follow.jsp">
+                <img src="images/mainFollowFalse.png" alt="Image Button" width="25">
+                <span class = "sidebar">팔로우</span>
+            </a>
+        </li>
+        <li class = "sideLi">
+            <a  class = "search" href="quest.jsp">
+                <img src="images/mainExploreFalse.png" alt="Image Button" width="25" >
+                <span class = "sidebar">탐색</span>
+            </a>
+        </li>      
+        <li class = "sideLi">
+            <a  id="make-post" href="#">
+                <img src="images/mainMakePostFalse.png" alt="Image Button" width="25" >
+                <span class = "sidebar">만들기</span>
+            </a>
+        </li>    
+        <li class = "sideLi"> 
+            <a  class = "profile" href="profile.jsp">
+                <img src="images/mainProfile2.png" alt="Image Button" width="25">
+                <span class = "sidebar">프로필</span>
+            </a>
+        </li>                      
         <%
-        	for(int i=0; i<23; i++){
+        	for(int i=0; i<27; i++){
         		%>
         		<br>
         		<%
@@ -80,13 +129,42 @@
         <dt>
         	&nbsp;
         	<span class="leftintroduce">사이트맵 © 2023 Social Net Work Project</span>
-        </dt>
-        
+        </dt>        
     </ul>
+	<!-- 프로필 모달 -->
+	<table class="profile-modal" id="profile-modal" style="display: none">
+		<tbody id="innerProfile">
+			<tr onclick="location.href='profile.jsp'">
+				<td class="profile-td"><img class= "Profile"src="./images/mainProfileModalProfile.svg"></td>
+				<td class="profile-td2">프로필 보기</td>		
+    		</tr>   	   				
+			<tr onclick="location.href='update.jsp'">
+				<td class="profile-td"><img class= "N-Info"src="./images/mainProfileModalInfo.svg"></td>
+				<td class="profile-td2">개인 정보</td>		
+    		</tr> 		
+			<tr onclick="location.href='help.jsp'">
+				<td class="profile-td"><img class= "Help"src="./images/mainProfileModalHelp.svg"><span class="Help-T"></td>
+				<td class="profile-td2">도움말</td>		
+    		</tr> 	
+			<tr onclick="showLogout()">			    
+				<td class="profile-td"><img class= "Logout" src="./images/mainProfileModalLogout.svg" id="show"></td>				   	
+				<td class="profile-td2">로그아웃</td>		
+    		</tr> 	    					  	         	         		          		          		          		          		          		          		          		          		          		          		          		          		          		          		          	
+	    </tbody>
+	</table>
+<!-- 로그아웃 모달 -->	   
+<div class="logout-modal" style="display: none" >
+  <div class="bg" >
+    <div class="logoutBox">
+    	<div class="logoutBtn" style="cursor: pointer" onclick="logout()"><span id="logoutText">로그아웃</span></div>
+    	<div class="logoutCancel" style="cursor: pointer" onclick="showLogout()"><span id="logoutCancelText">취소</span></div>
+    </div>
+  </div>    
+</div>
     <!-- <div style="overflow:scroll; height:1900px;"> -->
 <div data-role="page">
     <div class="aaa">
-    	<table>
+    	<table style="height: 100px">
 		<tr>
 		<%
 				for(int i=0;i<uilist.size();i++){
@@ -95,11 +173,11 @@
 			<td width="100">
 				<div class="box1">
 					<a href="javascript:goURL('searched.jsp?userEmail=<%=ubean.getUserEmail()%>','<%=ubean.getUserEmail()%>')"><!-- 여기에 jsp파일 -->
-						<img class="profileimage" src="./photo/<%=ubean.getUserImage()%>">
+						<img class="profileimage" src="<%=ubean.getUserImage()%>">
 					</a>
 				</div>
 				<div>
-					<h4><%=ubean.getUserNickName()%></h4>
+					<span style="position:relative; font-size: 14px; color: #303030; top:10px; left: 3px;"><%=ubean.getUserNickName()%></span>
 				</div>
 			</td>
 		<%}%>	
@@ -107,7 +185,7 @@
 		</table>
     </div>
     <div class="bbb">
-    	<h3>회원님을 위한 추천</h3>
+    	<h3 style="color: #868E96; font-size: 18px;">회원님을 위한 추천</h3>
     	<hr>
     	<table>
     	<%
@@ -117,7 +195,7 @@
 		<tr>	
 			<td width="50">
 				<div class="boxnored">		
-						<img class="profileimage" src="./photo/<%=ubean.getUserImage()%>">
+						<img class="profileimage" src="<%=ubean.getUserImage()%>">
 				</div>
 				
 			</td>
@@ -129,12 +207,12 @@
 			</td>
 			<td>
 				<%
-					if(fmgr.friendCheck2(ubean.getUserEmail(), mbean.getUserEmail())){
+					if(fmgr.friendCheck(ubean.getUserEmail(), mbean.getUserEmail())){
 						%>
-						<a href="javascript:deletefriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="followdelbtn<%=i%>">팔로워</a><% 
+						<a href="javascript:deletefriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="followdelbtn" style="color:#1877F2;font-size: 14px;">팔로워</a><% 
 					}
 					else {
-						%><a href="javascript:dofriend('<%=ubean.getUserEmail()%>,<%=mbean.getUserEmail() %>')" class="follow-btn" id="followbtn<%=ubean.getUserEmail()%>">팔로우</a><% 
+						%><a href="javascript:dofriend('<%=ubean.getUserEmail() %>,<%=mbean.getUserEmail() %>')" class="follow-btn" style="color:#1877F2;font-size: 14px;">팔로우</a><% 
 					}
 				%>
 				
@@ -152,58 +230,64 @@
 					UserinfoBean uibean = umgr.getPMember(pbean.getUserEmail());
 					Vector<CommentBean> clist = cmgr.listPReply(pbean.getPostId());
 					int commentCount = clist.size();
-					
-	%>
+	%>	
     <div class="ccc">
     <table>
-		<tr>
-			<td width="30">
-				<div class="box3">
-					<img class="profile" src="./photo/<%=uibean.getUserImage()%>" width="35" height="35">
+		<tr style="width: 517px; display: inline-block;">
+			<td style="padding-left: 10px; width: 50px;">
+				<div class="box3" style="display: inline-block;">
+					<img class="profile" src="<%=uibean.getUserImage()%>">
+					
 				</div>
-			</td>
-			<td width="250"><b><%=uibean.getUserNickName()%></b></td>
-			<td><a href="javascript:hamberger('<%=pbean.getUserEmail()%>')" class="ham">
-					<img src="./img/postCategory.svg">
 						
+			</td>
+			<td style="width: 100px">
+			<div style="font-size: 15px; color: #303030; display: inline-block;"><b><%=uibean.getUserNickName()%></b></div>
+			</td>		
+			<td>
+				<a href="javascript:hamberger('<%=pbean.getUserEmail()%>')" class="ham" style="margin-left: 320px;">
+					<img src="./img/postCategory.svg">				
 				</a>
 			</td>
 			
 		</tr>
 		<tr>
-			<td colspan="3">
+			<td colspan="3" style="border-bottom: solid 1px #eee;"	>
 			<!-- 이미지가 null이면 영상불러오기 -->
 				<%if (pbean.getImageName() == null || pbean.getImageName().equals("NULL")){ %>
-					<embed src="photo/<%=pbean.getVideoName()%>" width="515" height="480">
+					<embed src="photo/<%=pbean.getVideoName()%>" width="535" height="480">
 				<%} else {%>
-					<img src="photo/<%=pbean.getImageName()%>" width="515" height="480">
+					<img src="photo/<%=pbean.getImageName()%>" width="535" height="480">
 				<%} %>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="2" style="padding-left:10px;">
+		<tr style="float:left; height: 25px; padding-top: 15px;">
+			<td style="padding-left: 10px;">
 				<%if (pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
 					<a href="javascript:heartdel('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">
 					<img src="./img/postLikeTrue.svg" align="top">
 					</a>
 				<%}else if(!pmgr.postLike(mbean.getUserEmail(), pbean.getPostId())){ %>
 					<a href="javascript:heart('<%=pbean.getPostId()%>,<%=mbean.getUserEmail() %>')" id="ddd">				
-					<img src="./img/heart.jpg" align="top">
+					<img src="./img/postLikeFalse.svg" align="top">
 					</a>
 				<%} %> 
+			</td>
+			<td>
 			<a href="javascript:chat('<%=pbean.getPostId()%>')" id="ddd">
 				<img src="./img/postMessageFalse.svg" align="top">
 			</a>
+			</td>
+			<td>
 			<a href="javascript:share('<%=pbean.getPostId()%>')" id="ddd" class="sharebtn">
 				<img src="./img/postShare.svg" align="top">
 			</a>
-			</td>
-			
+			</td>							
 		</tr>
 		<tr>
 			<td width="250" style="padding-left:10px;"><%=uibean.getUserNickName() %>님 외 <b><%=pbean.getLikeNum() %>명</b>이 좋아합니다.</td>
 		</tr>
-		<tr class="commenter" stlye="height:<%=commentCount*50%>px;">
+		<tr class="commenter" style="height:<%=commentCount*50%>px;">
 			<td colspan="3" width="500" style="padding-left:10px;"> 
 				<%
 				for(int j=0;j<clist.size();j++){
@@ -211,7 +295,7 @@
 					if(cbean.getCommentParrent()!=null){
 						
 				%>
-				<div id="myDIV<%=cbean.getCommentParrent()%>" style="display:none;">	
+				<div id="myDIV<%=cbean.getCommentParrent()%>" style="display:none; padding-top: 10px;">	
 				<c><%=cbean.getUserEmail()%></c>&nbsp;<c class="commentDetail"><%=cbean.getCommentDetail()%></c>
 				<br>
 				<c>&nbsp;&nbsp;&nbsp;&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
@@ -224,7 +308,7 @@
 				<%} else {%>
 					<b><%=cbean.getUserEmail()%></b>&nbsp;<c class="commentDetail" ><%=cbean.getCommentDetail()%></c>
 				<br>
-				<b><%if (cmgr.replycheck(cbean.getCommentId())) {%><a href="javascript:doDisplay('<%=cbean.getCommentId()%>');" style="font-size: 90%; color: #8e8e8e;" id="linkText<%=cbean.getCommentId()%>"> > 답글보기</a><%}%>&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
+				<%if (cmgr.replycheck(cbean.getCommentId())) {%><a href="javascript:doDisplay('<%=cbean.getCommentId()%>');" style="font-size: 90%; color: #8e8e8e;" id="linkText<%=cbean.getCommentId()%>"><img src="img/postMessageReplyBtn.svg"/> 답글보기</a><%}%>&nbsp;<c style="font-size: 90%; color: #8e8e8e;"><%=cbean.getCommentDate()%></c>&nbsp;&nbsp; 
 				<a href="javascript:creply('<%=cbean.getCommentParrent()%>,<%=mbean.getUserEmail()%>,<%=pbean.getPostId()%>,<%=cbean.getCommentId()%>')" id="rep<%=cbean.getCommentId()%>" style="font-size: 90%; color: #8e8e8e;">답글</a> &nbsp;
 				<%if(email.equals(cbean.getUserEmail())){%><!-- 덧글이메일과 로그인 이메일같으면 -->
 				
@@ -243,7 +327,7 @@
 		
 			<td colspan="3" width="500">
 				<br>
-				<div class="asdf">
+				<div class="asdf" style="padding-left: 10px">
 				
 				<img src="./img/postLikeCount.svg">&nbsp;<%=pbean.getLikeNum() %>&nbsp;
 				
@@ -257,21 +341,19 @@
 				%>
 				공유하기 <%=pbean.getShareNum() %> 회
 				</div>
-				<hr>
+				<hr style="background-color: #d8d8d8">
 			</td>
 			
 		</tr>
 		
 		<tr>	
-			<td colspan="3" width="500">
+			<td colspan="3" width="500" style="padding-top: 15px;">
 				<img src="./img/postMessageProfile.svg" class="postMessageProfile">&nbsp;
 				<input class="postTextbox" id="postTextbox" placeholder="댓글을 입력하세요." data-postid="<%=pbean.getPostId()%>" data-userEmail="<%=mbean.getUserEmail() %>"/>
 			</td>
 
 		</tr>
-		<tr>
-			<td colspan="3"></td>
-		</tr>
+
 		
 	</table>
 	
@@ -279,12 +361,12 @@
 	<!-- 햄버거모달 -->
 	<div class="modal">
     			<div>
-        			<a href="javascript:report('<%=pbean.getPostId()%>')"><span id="main-modal-text">신고하기</span></a><br>
-        			<hr>
+        			<a href="javascript:report('<%=pbean.getPostId()%>')"><span id="main-modal-text" style="color: #fd3c56; font-weight: bold;">신고하기</span></a><br>
+        			<hr style="background: #d8d8d8; height: 1px; border: 0;">
         			<a href="javascript:share('<%=pbean.getPostId()%>')" class="sharebtn"><span id="main-modal-text">공유하기</span></a><br>
-        			<hr>
+        			<hr style="background: #d8d8d8; height: 1px; border: 0;">
         			<a href="javascript:copyUrl('<%=pbean.getPostId()%>')"><span id="main-modal-text">링크복사</span></a><br>
-        			<hr>
+        			<hr style="background: #d8d8d8; height: 1px; border: 0;">
         			<span id="main-modal-text" class="modal_close">취소</span>
     			</div>
 	</div>
@@ -292,40 +374,53 @@
 	
 </div>
 <!-- 화면꺼지게 -->
-
 <div class="overlay">
 	<!-- 만들기모달 -->
 	<div class="makemodal">
 		<div class="maketexttitle">
 				<b>게시물 만들기</b><img src="./img/makePostCancelBtn.svg" class="makecancel">	
 		</div>
-		<hr>
+		<hr style="background: #d8d8d8;height: 1px;border:0;">
 		<div class="makebody">
 			<img src="./img/makePostImage.svg" class="imageposition">
 			<img src="./img/makePostVideo.svg" class="imageposition2"><br>
 			<h5 class="makebodytext">사진과 동영상을 선택하세요</h5>
-			<img src="./img/makePostSelectImage.svg" class="imageposition3">
-			<img src="./img/makePostSelectVideo.svg" class="imageposition4">
+			<img src="./img/makePostSelectImage.svg" class="imageposition3" style="cursor: pointer;">
+			<img src="./img/makePostSelectVideo.svg" class="imageposition4" style="cursor: pointer;">
 		</div> 				
   	</div>
   	<!-- 편집하기모달 -->
   	<form name="postFrm" method="post" action="PostInsertServlet" enctype="multipart/form-data" >
+  	<input type="hidden" name="userEmail" value="<%=mbean.getUserEmail()%>">
   	<div class="fixmodal">
 		<div class="maketexttitle">
-		&nbsp;&nbsp;<b>편집하기</b><img src="./img/makePostBackBtn.svg" class="makeBackBtn">
+		&nbsp;&nbsp;<b>편집하기</b><img src="./img/makePostBackBtn.svg" class="makeBackBtn" style="cursor: pointer;">
 		</div>
-		<hr>
+		<hr style="background: #d8d8d8;height: 1px;border:0;">
 		<div class="makebody">
-			<b class="makepostBefore">Before</b>
-			<b class="makepostAfter">After</b>
-			<div class="choicepicture">
-				<!-- 크롭될이미지 -->
-				<input type="file" accept="image/*" class="imageInput" name="imageName">
+		    <img src="./img/makePostImage.svg" class="makePostImage">
+			<b class="makepostBefore" style="display: none">Before</b>
+			<b class="makepostAfter" style="display: none">After</b>
+			<!-- 크롭될이미지 -->
+			<div class="filebox">
+				<label for="imageInput">사진 선택</label> 
+		    	<input type="file" accept="image/*" class="imageInput" name="imageName" id="imageInput">		
+		    </div>	
+			<div class="choicepicture" style="display: none">
+				<div class="result"></div>
 			</div>
-			<div class="choiceafterpicture">
-        			<img id="croppedImage" src="" alt="Cropped Image">
+			<div class="choiceafterpicture" style="display: none">
+				<img class="cropped" src="./img/binImage.svg" alt="" />	
 			</div>
-			<img src="./img/makePostInsertBtn.svg" class="makepostInsert">
+			<!-- input file -->
+      		<div class="box" style="display: none">
+        		<div class="options hide">
+          		<input type="number" class="img-w" value="300" min="100" max="400" style="display: none"/>
+        		</div>
+        		<!-- save btn -->
+        		<button class="btn save hide" id="saveBtn" style="border-radius: 5px;cursor: pointer;">저장하기</button>
+      		</div>
+			<img src="./img/makePostInsertBtn.svg" class="makepostInsert" style="display: none">
 		</div>				
   	</div>
   	</form>
@@ -333,9 +428,9 @@
   	<form name="videoFrm" method="post" action="VideoPostInsertServlet" enctype="multipart/form-data" >
   	<div class="videomodal">
 		<div class="maketexttitle">
-		&nbsp;&nbsp;<b>동영상모달</b><img src="./img/makePostBackBtn.svg" class="makevideoBackBtn">
+			<b style="position:relative;  margin-left: 10px;">동영상모달</b><img src="./img/makePostBackBtn.svg" class="makevideoBackBtn" style="cursor: pointer;">
 		</div>
-		<hr>
+		<hr style="background: #d8d8d8;height: 1px;border:0;">
 		<div class="makebody">
 			<h5 class="videotitle">동영상을 선택하세요</h5>
 			<div class="choicevideo">
@@ -350,13 +445,13 @@
 		<div class="maketexttitle">
 			<b class="postcomtitle">게시물이 올라갔습니다.</b>
 		</div>
-		<hr>
+		<hr style="background: #d8d8d8;height: 1px;border:0;">
 		<div class="makebody">
 			<img src="./img/makePostCheckIcon.svg" class="makepostComple">
 			<br>
-			<b class="bodycomple">게시물이 올라갔습니다.</b>
+			<span class="bodycomple">게시물이 올라갔습니다.</span>
 			<br>
-			<img src="./img/makePostCheckBtn.svg" class="makepostCheck">
+			<img src="./img/makePostCheckBtn.svg" class="makepostCheck" style="cursor: pointer;">
 		</div>				
   	</div>
 </div>
@@ -367,7 +462,7 @@
     <span>공유하기</span>
     <div class="sharecancel">x</div>
   </div>
-  <hr>
+  <hr style="background: #d8d8d8;height: 1px;border:0;">
   	<a href="#" class="naver-share-link" target="_blank" alt="Share on Naver">
   		<img src="./img/postShareNaver.jpg" class="postShareNaver" />
 	</a>
@@ -376,6 +471,9 @@
   		<img src="./img/postShareKakao.jpg" class="postShareKakao"/>
   	</a>
 </div>
+<div class="updateComment">
+	
+</div>
 <form method="post" name="frm">
 		<input type="hidden" name="userNickName">
 		<input type="hidden" name="postId">
@@ -383,589 +481,16 @@
 		<input type="hidden" name="userEmail">
 		<input type="hidden" name="friendEmail">
 		<input type="hidden" name="comment">
+		<input type="hidden" name="email" name="" value="<%=email%>">
 </form>
-
-<!-- 공유받은것 -->
-<!-- 모달창 -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <div class="modal-body">
-    <a href =profile.jsp style="text-decoration: none; color: black;"><img class= "Profile"src="./images/mainProfileModalProfile.svg"><span class="Profile-T">프로필 보기</span></a>
-    <a href =update.jsp style="text-decoration: none; color: black;"><img class= "N-Info"src="./images/mainProfileModalInfo.svg"><span class="Info-T">개인 정보</span><br></a>
-    <a href =help.jsp style="text-decoration: none; color: black;"><img class= "Help"src="./images/mainProfileModalHelp.svg"><span class="Help-T">도움말</span><br></a>
-    <a href =login.jsp style="text-decoration: none; color: black;"><img class= "Logout" src="./images/mainProfileModalLogout.svg"><span class="Logout-T">로그아웃</span><br></a>
-  </div>
-  </div>
-</div>
-
-<script type="text/javascript">
-		var request=new XMLHttpRequest();
-		//크롭
-		const imageInput = document.querySelector('.imageInput');
-		imageInput.addEventListener('change', function (event) {
-  			const selectedImage = event.target.files[0];
-  			const image = document.createElement('img');
-  			const choicepicture = document.querySelector('.choicepicture');
-  			choicepicture.appendChild(image);
-  			image.onload = function () {
-    			const MAX_WIDTH = 150;
-    			const MAX_HEIGHT = 150;
-    			const aspectRatio = image.width / image.height;
-    			let newWidth = image.width;
-    			let newHeight = image.height;
-    			if (newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT) {
-      				if (newWidth / newHeight > aspectRatio) {
-        				newWidth = MAX_WIDTH;
-        				newHeight = newWidth / aspectRatio;
-      				} else {
-        				newHeight = MAX_HEIGHT;
-        				newWidth = newHeight * aspectRatio;
-      					}
-    				}
-    			const canvas = document.createElement('canvas');
-    			const context = canvas.getContext('2d');
-    			canvas.width = newWidth;
-    			canvas.height = newHeight;
-    			context.drawImage(image, 0, 0, newWidth, newHeight);
-    			const resizedImage = document.createElement('img');
-    			resizedImage.src = canvas.toDataURL();
-    			choicepicture.removeChild(image);
-    			choicepicture.appendChild(resizedImage);
-    			const cropper = new Cropper(resizedImage, {
-      				aspectRatio: 1,
-      				viewMode: 2, 
-      				crop(event) {
-      					const croppedImageData = cropper.getCroppedCanvas().toDataURL();
-        				const croppedImage = document.getElementById('croppedImage');
-        				croppedImage.src = croppedImageData;//After이미지
-        				cropper.destroy();
-      			      	imageInput.value = '';
-      					},
-    				});
-  				};
-  				image.src = URL.createObjectURL(selectedImage);
-  			});
- 		function goURL(url, gid) {
-			document.frm1.action=url;
-			document.frm1.gid.value=gid;
-			document.frm1.submit();
-		}
- 		function heart(emailpostid){//햇음 하트누르면 하트올라가기
- 			const sentence=emailpostid;
- 			const [postId,userEmail]=sentence.split(",");
-			$.ajax({
-			    url: "PostHeartCntServlet", 
-			    type: "POST",
-			    dataType: "json",
-			    data: { postId: postId,
-			    		userEmail:userEmail
-			    },
-			    
-			    success: function(result) {
-			      	console.log("main에서작용");
-			        location.reload();
-			      },
-			    error: function(xhr, status, error) {
-			    	console.error("Error:", error);
-			    }
-			    
-			  }
- 			);
- 		}
- 		function heartdel(emailpostid){
- 			const sentence=emailpostid;
- 			const [postId,userEmail]=sentence.split(",");
-			$.ajax({
-			    url: "PostHeartdeleteServlet", 
-			    type: "POST",
-			    dataType: "json",
-			    data: { postId: postId,
-			    		userEmail:userEmail
-			    },
-			    
-			    success: function(result) {
-			      	console.log("main에서작용");
-			        location.reload();
-			      },
-			    error: function(xhr, status, error) {
-			    	console.error("Error:", error);
-			    }
-			    
-			  }
- 			);
- 		}
- 		function cdel(postemail){//햇음 코멘트삭제
-			const sentence=postemail;
- 			const [commentId,postId]=sentence.split(",");
- 			$.ajax({
-			    url: "cdel", 
-			    type: "POST",
-			    dataType: "json",
-			    data: { commentId: commentId,
-			    		postId:postId
-			    },
-			    
-			    success: function(result) {
-			      	console.log("main에서작용");
-			        location.reload();
-			      },
-			    error: function(xhr, status, error) {
-			    	console.error("Error:", error);
-			    }
-			    
-			  }
- 			);
-		}
- 		//수정
- 		var isInputBoxAdded = false;
- 		function cup(commentId) {
- 		  const parentElement = document.getElementById("box"+commentId);
- 		  if (!isInputBoxAdded) {
- 		    const inputBox = document.createElement('input');
- 		    inputBox.type = 'text';
- 		   	inputBox.style.borderRadius = '30px';
- 		   	inputBox.style.width='120px';
- 		    const deleteButton = document.createElement('input');
- 		    deleteButton.type = 'button';
- 		    deleteButton.value = '취소';
- 		    deleteButton.style.border='1px solid skyblue';
- 		    deleteButton.style.backgroundColor='rgba(0,0,0,0)';
- 		   	deleteButton.style.color='skyblue';
- 		   	deleteButton.style.borderRadius='5px';
- 		   	deleteButton.addEventListener('mouseover', function() {
- 		   		deleteButton.style.color = 'white';
- 		   		deleteButton.style.backgroundColor = 'skyblue';
-		  	});
- 		   	deleteButton.addEventListener('mouseout', function() {
-		   		deleteButton.style.color = 'skyblue';
-		   		deleteButton.style.backgroundColor = 'rgba(0,0,0,0)';
-		  	});
- 		    deleteButton.onclick = function() {
- 		    	parentElement.innerHTML = "수정"; 
- 		      	isInputBoxAdded = true;
- 		      	location.reload();
- 		    };
- 		    const saveButton = document.createElement('input');
- 		    saveButton.type = 'button';
- 		    saveButton.value = '저장';
- 		    saveButton.style.border='1px solid skyblue';
- 		    saveButton.style.backgroundColor='rgba(0,0,0,0)';
- 		    saveButton.style.color='skyblue';
- 		   	saveButton.style.borderRadius='5px';
- 		   	saveButton.addEventListener('mouseover', function() {
- 		   		saveButton.style.color = 'white';
- 		   		saveButton.style.backgroundColor = 'skyblue';
-		  	});
- 		 	saveButton.addEventListener('mouseout', function() {
- 		 		saveButton.style.color = 'skyblue';
- 		 		saveButton.style.backgroundColor = 'rgba(0,0,0,0)';
-		  	});
- 		    saveButton.onclick = function() {
- 		    	var updatedComment = inputBox.value;
- 		      	$.ajax({
- 		        	url: 'CommentUpdate',
- 		        	type: 'POST',
- 		        	data: { commentId: commentId, commentDetail: updatedComment },
- 		        	success: function(result) {
- 		        	console.log('댓글수정완료');
- 		 			location.reload();
- 		        },
- 		        error: function(xhr, status, error) {
- 		        }
- 		      });
- 		    };
- 		   	parentElement.innerHTML = '';
- 		    parentElement.appendChild(inputBox);
- 		    parentElement.appendChild(saveButton);
- 		    parentElement.appendChild(deleteButton);
- 		    isInputBoxAdded = true;
- 		  }
- 		}
-
- 		
- 		function hamberger(userEmail){//햄버거 모달 스크립트 완료
-			const modal = document.querySelector('.modal');
-		    const hams = document.querySelectorAll('.ham');
-		    const cancelBtn = document.querySelector('.modal_close');
-		    for(var i=0; i<hams.length; i++){
-		    hams[i].addEventListener('click', () => {
-		    	modal.style.display = 'block';
-		    	});
-		    }
-		    cancelBtn.addEventListener('click', () => {
-		        modal.style.display = 'none';
-		    });
-		}
- 		function share(postId){//공유하기모달 반쯤완료
- 			const modal = document.querySelector('.modal');
- 			const sharebtns=document.querySelectorAll('.sharebtn');
- 			const sharecancel=document.querySelector('.sharecancel');
- 			const sharemodal=document.querySelector('.sharemodal');
- 			for (var i = 0; i <sharebtns.length ; i++) {
- 			sharebtns[i].addEventListener('click', () => {
- 				sharemodal.style.display='block';
- 			 	modal.style.display = 'none';
- 			
- 			    const currentURL = encodeURIComponent(window.location.href);
- 			    const naverShareLink = document.querySelector('.naver-share-link');
- 			    naverShareLink.href = 'http://share.naver.com/web/shareView.nhn?url=' + currentURL + '&title=' + encodeURIComponent(document.title);
- 			});
-			}
- 			sharecancel.addEventListener('click', () => {
- 				sharemodal.style.display='none';
- 			});
-		}
- 		//카카오공유
- 		function postShareKakao() {
-
- 			Kakao.init("22e95823c2f2830c0d276cb7b53d5dad");
- 	        Kakao.Link.sendCustom({
- 	            templateId: 93282
- 	        });
- 		}
- 		function dofriend(email){//팔로우
- 			const sentence=email;
- 			const [friendEmail,userEmail]=sentence.split(",");
- 			
-			const followBtns = document.querySelectorAll(".follow-btn");
-			const followbtn= document.getElementById("followbtn"+friendEmail);
-			$.ajax({
-				    url: "FollowServlet", 
-				    type: "POST",
-				    data: { friendEmail: friendEmail,
-				    		userEmail:userEmail
-				    },
-				    success: function(result) {
-				    	console.log("팔로우신청");
-				    	followbtn.innerHTML="";
-				    	followbtn.innerHTML="팔로우<br>신청중";
-				    	followbtn.removeAttribute("href");
-				    	followbtn.style.pointerEvents = "none";
-				        },
-				    error: function(xhr, status, error) {
-				    }
-				  });
- 		}
- 		function friendtext(email){
- 			var formData = new FormData();
- 			$.ajax({
- 				type : "get",
- 				url : "reply?boardIdx=${boardInfo.boardIdx}&writer=${boardInfo.userIdx}",
- 					dataType : "text",
- 					data : formData, 
- 					contentType: false, 
- 					processData: false, 
- 					cache : false,
- 					success : function(data) {
- 		           		 // C에서 받아온 데이터로 새로 뿌려주기
- 						var html = jQuery('<div>').html(data);
- 						var contents1 = html.find("div#replyList").html();
- 						var contents2 = html.find("div#replyCount").html();
- 						$("#replyList").html(contents1);
- 						$("#replyCount").html(contents2);
- 					},
- 					error : function(){
- 		                alert("통신실패");
- 		            }
- 				});
- 		}
- 		function deletefriend(email){
- 			const sentence=email;
- 			const [friendEmail,userEmail]=sentence.split(",");
-			const followdelbtns = document.querySelectorAll(".followdelbtn");
-			$.ajax({
-				    url: "DelFollowServlet", 
-				    type: "POST",
-				    data: { friendEmail: friendEmail,
-				    		userEmail:userEmail
-				    },
-				    success: function(result) {
-				    	console.log("팔로우헤제");
-				    	location.reload();
-				    },
-				    error: function(xhr, status, error) {
-				    }
-			});
- 		}
- 		
- 		var nowUrl = window.location.href;//링크 url따오기 완료
- 		function copyUrl(){
- 			const modal = document.querySelector('.modal');
- 			navigator.clipboard.writeText(nowUrl).then(res=>{
- 				  alert("주소가 복사되었습니다!");
- 				  modal.style.display='none';
- 				})
- 		}
- 		function report(postId){//신고하기 버튼 누르면 report 숫자올라가기 완료
- 			const modal = document.querySelector('.modal');
- 			  $.ajax({
- 				    url: "postReport", 
- 				    type: "POST",
- 				    data: { postId: postId },
- 				    success: function(result) {
- 				    	modal.style.display = 'none';
- 				    },
- 				    error: function(xhr, status, error) {
- 				    }
- 				  });
- 		}
- 		//댓글달기
- 		document.addEventListener('DOMContentLoaded', function() {
-  		var inputs = document.querySelectorAll('.postTextbox');
-  
-  		inputs.forEach(function(input) {
-    		var postId = input.dataset.postid;
-    		var userEmail = '';
-    
-    		if (input.hasAttribute('data-userEmail')) {
-    			userEmail = input.getAttribute('data-userEmail');
-    		}
-    
-    		input.addEventListener('keydown', function(event) {
-      			if (event.key === 'Enter') {
-        			addComment(postId, userEmail, input.value);
-      			}
-    		});
-  		});
-		});
-
-		function addComment(postId, userEmail, commentDetail) {
-  		$.ajax({
-    		url: "commentAdd",
-    		type: "POST",
-    		data: {
-      		postId: postId,
-      		commentDetail: commentDetail,
-      		userEmail: userEmail
-    	},
-    		success: function(result) {
-      		var inputs = document.querySelectorAll('.postTextbox');
-      		inputs.forEach(function(input) {
-        		input.value = "";
-      		});
-      		location.reload();
-    		},
-    		error: function(xhr, status, error) {
-      		console.error("Error:", error);
-    		}
-  		});
-		}
-		//답글
-		var isReplyBoxAdded = false;
- 		function creply(idemail) {
- 			const sentence=idemail;
- 			const [commentParrent,userEmail,postId,commentId]=sentence.split(",");
- 		  	const parentElement = document.getElementById("rep"+commentId);
- 		  	if (!isReplyBoxAdded) {
- 		    	const replyBox = document.createElement('input');
- 		   		replyBox.type = 'text';
- 		   		replyBox.style.borderRadius = '10px';
- 		   		replyBox.style.width='120px';
- 		   		replyBox.onclick = function(event) {
- 		       		event.stopPropagation();
- 		     	};
- 		    	const replydelete = document.createElement('input');
- 		   		replydelete.type = 'button';
- 		  		replydelete.value = '취소';
- 		  		replydelete.style.border='1px solid skyblue';
- 		  		replydelete.style.backgroundColor='rgba(0,0,0,0)';
- 		  		replydelete.style.color='skyblue';
- 		  		replydelete.style.borderRadius='5px';
- 		  		//마우스 올릴시 기능
- 		  		replydelete.addEventListener('mouseover', function() {
- 		  	      replydelete.style.color = 'white';
- 		  	      replydelete.style.backgroundColor = 'skyblue';
- 		  	    });
- 		  	    replydelete.addEventListener('mouseout', function() {
- 		  	      replydelete.style.color = 'skyblue';
- 		  	      replydelete.style.backgroundColor = 'rgba(0,0,0,0)';
- 		  	    });
- 		  	    
- 		  	    
- 		 		replydelete.onclick = function() {
- 		    		parentElement.innerHTML = "답글"; 
- 		    		isReplyBoxAdded = true;
- 		    		location.reload();
- 		    	};
- 		    	const replysave = document.createElement('input');
- 		   		replysave.type = 'button';
- 		  		replysave.value = '저장';
- 		  		replysave.style.border='1px solid skyblue';
- 		  		replysave.style.backgroundColor='rgba(0,0,0,0)';
- 		  		replysave.style.color='skyblue';
- 		  		replysave.style.borderRadius='5px';
- 		  		//마우스 올릴시 기능
- 		  		replysave.addEventListener('mouseover', function() {
- 		  	      replysave.style.color = 'white';
- 		  	      replysave.style.backgroundColor = 'skyblue';
- 		  	    });
- 		  	    replysave.addEventListener('mouseout', function() {
- 		  	      replysave.style.color = 'skyblue';
- 		  	      replysave.style.backgroundColor = 'rgba(0,0,0,0)';
- 		  	    });
- 		  	    
- 		 		replysave.onclick = function() {
- 		    		var replyDetail = replyBox.value;
- 		      		$.ajax({
- 		        		url: 'CommentReply',
- 		        		type: 'POST',
- 		        		data: { 
- 		        			commentParrent: commentParrent, 
- 		        			commentDetail: replyDetail,
- 		        			userEmail: userEmail,
- 		        			postId: postId,
- 		        			commentId: commentId
- 		        			},
- 		        		success: function(result) {
- 		        		console.log('답글완료');
- 		 				location.reload();
- 		        	},
- 		        	error: function(xhr, status, error) {
- 		        	}
- 		      	});
- 		   	 };
- 		   		parentElement.innerHTML = '';
- 		    	parentElement.appendChild(replyBox);
- 		    	parentElement.appendChild(replysave);
- 		   	 	parentElement.appendChild(replydelete);
- 		   	 	isInputBoxAdded = true;
- 		   		replyBox.focus();
- 		  		}
- 			}
-		
- 		//만들기버튼 기능들
- 		const makePostButton = document.querySelector('#make-post');
- 		const overlay = document.querySelector('.overlay');
-		const makemodal=document.querySelector('.makemodal');
-		const makecancel=document.querySelector('.makecancel');
-		const imageposition3=document.querySelector('.imageposition3');
-		const imageposition4=document.querySelector('.imageposition4');
-		const fixmodal=document.querySelector('.fixmodal');//사진모달
-		const videomodal = document.querySelector('.videomodal');//동영상모달
-		const makeBackBtn=document.querySelector('.makeBackBtn');//사진뒤로가기
-		const makevideoBackBtn=document.querySelector('.makevideoBackBtn');//동영상뒤로가기
-		const makepostInsert=document.querySelector('.makepostInsert');//사진완료
-		const videopostInsert=document.querySelector('.videopostInsert');//영상완료
-		const postcomplete=document.querySelector('.postcomplete');
-		const makepostCheck=document.querySelector('.makepostCheck');
- 		makePostButton.addEventListener('click', () => {
- 			overlay.classList.toggle('active');
- 		 	overlay.style.display='block';
- 		  	makemodal.style.display='block';
- 		  	$(".makeimage").attr("src", "./images/mainMakePostTrue.svg");
- 		});
- 		makecancel.addEventListener('click', ()=>{
- 			overlay.classList.toggle('active');
- 			overlay.style.display = 'none';
- 			makemodal.style.display='none';
- 			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
- 		});
- 		imageposition3.addEventListener('click', ()=>{
- 			makemodal.style.display = 'none';
- 			fixmodal.style.display = 'block';
- 		});
- 		imageposition4.addEventListener('click', ()=>{
- 			makemodal.style.display='none';
- 			videomodal.style.display='block';
- 		});
- 		makeBackBtn.addEventListener('click', ()=>{
- 			fixmodal.style.display='none';
- 			makemodal.style.display='block';
- 		});
- 		makevideoBackBtn.addEventListener('click',()=>{
- 			videomodal.style.display='none';
- 			makemodal.style.display='block';
- 		})
- 		makepostInsert.addEventListener('click',()=>{
- 			fixmodal.style.display='none';
- 			postcomplete.style.display='block';
- 			const userEmail="jseok@aaa.com";//유저 이메일 받아오기
- 			const croppedImage = document.getElementById('croppedImage');
- 			const croppedFile = dataURLtoFile(croppedImage.src, 'croppedImage.jpg');
- 			const formData = new FormData();
- 			formData.append('userEmail', userEmail);
- 			formData.append('imageName', croppedFile);
- 			$.ajax({
-				    url: "PostInsertServlet", 
-				    type: "POST",
-				    data:formData,
-				    contentType: false,
-				    processData: false,
-				    success: function(result) {
-				    	console.log("main에서작용");
-				        location.reload();
-				    },   
-				    error: function(xhr, status, error) {
-				    }
-				  });rk
- 		});
- 		function dataURLtoFile(dataURL, fileName) {
- 			  const arr = dataURL.split(',');
- 			  const mime = arr[0].match(/:(.*?);/)[1];
- 			  const bstr = atob(arr[1]);
- 			  let n = bstr.length;
- 			  const u8arr = new Uint8Array(n);
- 			  while (n--) {
- 			    u8arr[n] = bstr.charCodeAt(n);
- 			  }
- 			  return new File([u8arr], fileName, { type: mime });
- 			}
- 		makepostCheck.addEventListener('click',()=>{
- 			overlay.classList.toggle('active');
- 			overlay.style.display = 'none';
- 			$(".makeimage").attr("src", "./images/mainMakePostFalse.png");
- 			postcomplete.style.display='none';
- 		})
- 		//영상
- 		document.addEventListener('DOMContentLoaded', function() {
-    const videopostInsert = document.querySelector('.videopostInsert');
-    videopostInsert.addEventListener('click', function() {
-        const videomodal = document.querySelector('.videomodal');
-        const postcomplete = document.querySelector('.postcomplete');
-        const userEmail = "jseok@aaa.com";
-        const videoElement = document.getElementById('videoElement');
-        const videoFile = videoElement.files[0];
-        const formData = new FormData();
-        formData.append('userEmail', userEmail);
-        formData.append('video', videoFile);
-        $.ajax({
-            url: "VideoPostInsertServlet",
-            type: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-                console.log("action in main");
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-            }
-        });
-    });
-});
- 		//댓글 보기숨기기
- 		function doDisplay(commentId){ 	
-            const elements = document.querySelectorAll("#myDIV"+commentId);
-            for(var i=0; i<elements.length; i++){
-            	if(elements[i].style.display=='none'){ 		
-            		elements[i].style.display = 'block';
-                }else{ 		
-                	elements[i].style.display = 'none'; 	
-                } 
-            }
-        }
- 	// 모달창 보이기
- 	      document.getElementById("mainProfile2").addEventListener("click", function() {
- 	        document.getElementById("modal").style.display = "block";
- 	      });
- 	      // 모달창 외부를 클릭하면 모달창 닫기
- 	      window.onclick = function(event) {
- 	        if (event.target == document.getElementById("modal")) {
- 	          document.getElementById("modal").style.display = "none";
- 	        }
- 	      }
-
-</script>
+    <!-- js 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>    
+  	<script src="js/main.js"></script>
+  	<script src="js/message.js"></script>
+  	<script>
+    window.onload = function() {
+    	ready('<%=email%>','<%=mbean.getUserName()%>');
+    };
+	</script>
 </body>
 </html>

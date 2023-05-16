@@ -1,6 +1,6 @@
 package sns;
 
-public class UserinfoBean {
+public class UserinfoBean {	
 	private String userName;
 	private String userGender;
 	private String userNickName;
@@ -17,6 +17,57 @@ public class UserinfoBean {
 	private String userRegDate;
 	private int userAd;
 	private String userRegTime;
+	private String userInfoType;
+	
+	public UserinfoBean() {
+		super();
+	}
+	
+	public UserinfoBean(String userName, String userGender, String userNickName, String userEmail, String userPwd,
+			String userPN, String emailHash, String userImage, int userAd) {
+		super();
+		this.userName = userName;
+		this.userGender = userGender;
+		this.userNickName = userNickName;
+		this.userEmail = userEmail;
+		this.userPwd = userPwd;
+		this.userPN = userPN;
+		this.emailHash = emailHash;
+		this.userImage = userImage;
+		this.userAd = userAd;
+	}
+	
+	public UserinfoBean(String userName, String userGender, String userNickName, String userEmail, String userPN,
+			String userSocialId, int emailcertification, String userImage, int userAd, String userInfoType) {
+		super();
+		this.userName = userName;
+		this.userGender = userGender;
+		this.userNickName = userNickName;
+		this.userEmail = userEmail;
+		this.userPN = userPN;
+		this.userSocialId = userSocialId;
+		this.emailcertification = emailcertification;
+		this.userImage = userImage;
+		this.userAd = userAd;
+		this.userInfoType = userInfoType;
+	}
+	
+	public UserinfoBean(String userNickName, String userSchool, String userAddress, String userSocial) {
+	      super();
+	      this.userNickName = userNickName;
+	      this.userSchool = userSchool;
+	      this.userAddress = userAddress;
+	      this.userSocial = userSocial;
+	   }
+
+	public String getUserInfoType() {
+		return userInfoType;
+	}
+
+	public void setUserInfoType(String userInfoType) {
+		this.userInfoType = userInfoType;
+	}
+
 	public String getUserName() {
 		return userName;
 	}

@@ -104,22 +104,37 @@ public class CommentMgr {
 	}
 	
 	
-	//덧글 전부삭제
-	public void deleteAllPReply(int num) {
+	//삭제할 자식댓글리스트
+	public Vector<CommentBean> clist(int num) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
+		ResultSet rs = null;
+		Vector<CommentBean> vlist = new Vector<CommentBean>();
 		try {
 			con = pool.getConnection();
-			sql = "delete from comment where postId=? ";
+			sql = "SELECT * FROM comment WHERE commentParrent=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, num);
-			pstmt.executeUpdate();
+			rs=pstmt.executeQuery();
+			while (rs.next()) {
+				CommentBean bean = new CommentBean();
+				bean.setCommentId(rs.getInt(1));
+				bean.setPostId(rs.getInt(2));
+				bean.setUserEmail(rs.getString(3));
+				bean.setCommentDetail(rs.getString(4));
+				bean.setCommentParrent(rs.getString(5));
+				bean.setCommentChild(rs.getString(6));
+				bean.setCommentDate(rs.getString(7));
+				bean.setCommentCorrect(rs.getString(8));
+				vlist.addElement(bean);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			pool.freeConnection(con, pstmt);
+			pool.freeConnection(con, pstmt,rs);
 		}
+		return vlist;
 	}
 	public void updateComment(int commentId, String commentDetail) {
 	    Connection con = null;

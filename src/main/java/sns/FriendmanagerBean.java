@@ -5,12 +5,14 @@ public class FriendmanagerBean {
 	private String userEmail;
 	private String friendEmail;
 	private int friendSign;
+	
 	public int getFriendIndex() {
 		return friendIndex;
 	}
 	public void setFriendIndex(int friendIndex) {
 		this.friendIndex = friendIndex;
 	}
+
 	public String getUserEmail() {
 		return userEmail;
 	}

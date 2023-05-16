@@ -1,0 +1,129 @@
+body {
+    background-color: #f8f8f8; 
+  }
+
+.side-bar{
+    position:fixed;
+        width: 360px;
+        height: 1000px;
+        background-color: #ffffff;
+ 
+}
+
+.Help1{
+    position:absolute;
+    left:78px;
+    top: 150px;
+    font-size: 25px;
+     font-weight: bold;
+}
+
+.time1{
+    position:absolute;
+    left: 80px;
+    top: 250px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    
+}
+.time2{
+    position:absolute;
+    left: 80px;
+    top: 330px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    
+}
+.time3{
+    position:absolute;
+    left: 80px;
+    top: 410px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    
+}
+.time4{
+    position:absolute;
+    left: 80px;
+    top: 490px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    
+}
+.time5{
+    position:absolute;
+    left: 80px;
+    top: 570px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    
+}
+
+.time1-1{
+    position:absolute;
+    left: 220px;
+    top: 250px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    color: #0069d9 !important ;
+    font-weight: bold;
+}
+.time1-2{
+    position:absolute;
+    left: 220px;
+    top: 330px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    color: #0069d9 !important ;
+    font-weight: bold;
+}
+.time1-3{
+    position:absolute;
+    left: 220px;
+    top: 410px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    color: #0069d9 !important ;
+    font-weight: bold;
+}
+.time1-4{
+    position:absolute;
+    left: 220px;
+    top: 490px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    color: #0069d9 !important ;
+    font-weight: bold;
+}
+.time1-5{
+    position:absolute;
+    left: 220px;
+    top: 570px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    color: #0069d9 !important ;
+    font-weight: bold;
+}
+.time1-6{
+    position:absolute;
+    left: 220px;
+    top: 650px;
+    font-size: 15px;
+    z-index: 10;
+    text-align: center;
+    color: #0069d9 !important ;
+    font-weight: bold;
+}
+
+
+

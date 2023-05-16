@@ -23,7 +23,8 @@ public class FollowServlet extends HttpServlet {
 		String followEmail=request.getParameter("friendEmail");
 		
 		FriemdmanagerMgr fmgr=new FriemdmanagerMgr();
-		fmgr.followfirend(userEmail,followEmail);
+		fmgr.followfirend2(userEmail,followEmail);
+		fmgr.followfirend(followEmail,userEmail);
 		JSONObject jsonResponse = new JSONObject();
 	    jsonResponse.put("status", "success");
 	    PrintWriter out = response.getWriter();
